@@ -103,8 +103,7 @@ export default function Navbar() {
           <Link href="/search">
             <Search className="w-5 h-5 cursor-pointer hover:text-gray-300 transition" />
           </Link>
-          <span className="hidden md:inline text-sm">Kids</span>
-          <div 
+          <div
             className="relative hidden sm:block"
             onMouseEnter={() => setShowNotifications(true)}
             onMouseLeave={() => setShowNotifications(false)}
@@ -117,24 +116,24 @@ export default function Navbar() {
                 </div>
               )}
             </div>
-            
+
             {showNotifications && (
               <div className="absolute right-0 top-8 w-80 bg-black/95 border border-gray-800 rounded-md shadow-xl flex flex-col z-50 overflow-hidden">
                 <div className="px-4 py-3 text-sm font-bold text-white border-b border-gray-800 flex justify-between items-center">
                   <span>Notifications</span>
                   <span className="text-xs text-gray-400 font-normal cursor-pointer hover:text-white">Mark all as read</span>
                 </div>
-                
+
                 <div className="max-h-96 overflow-y-auto scrollbar-hide">
                   {notifications.length > 0 ? (
                     notifications.map((movie, idx) => (
-                      <Link 
-                        href={`/watch/${movie.media_type || 'movie'}/${movie.id}`} 
+                      <Link
+                        href={`/watch/${movie.media_type || 'movie'}/${movie.id}`}
                         key={movie.id}
                         className="px-4 py-3 hover:bg-gray-800 cursor-pointer transition flex items-start gap-3 border-b border-gray-800/50 last:border-0"
                       >
-                        <img 
-                          src={`https://image.tmdb.org/t/p/w92${movie.backdrop_path || movie.poster_path}`} 
+                        <img
+                          src={`https://image.tmdb.org/t/p/w92${movie.backdrop_path || movie.poster_path}`}
                           alt={movie.title || movie.name}
                           className="w-20 h-12 object-cover rounded flex-shrink-0"
                         />
@@ -158,7 +157,7 @@ export default function Navbar() {
             )}
           </div>
 
-          <div 
+          <div
             className="relative flex items-center gap-2 cursor-pointer"
             onMouseEnter={() => setShowAccountMenu(true)}
             onMouseLeave={() => setShowAccountMenu(false)}
@@ -172,7 +171,7 @@ export default function Navbar() {
                 <User className="w-5 h-5 text-white" />
               )}
             </div>
-            
+
             {showAccountMenu && (
               <div className="absolute right-0 top-10 w-48 bg-black/95 border border-gray-800 rounded-md shadow-xl py-2 flex flex-col z-50">
                 {user ? (
@@ -185,7 +184,7 @@ export default function Navbar() {
                     <Link href="#" className="px-4 py-2 hover:underline text-sm font-bold text-gray-300 transition">Account</Link>
                     <Link href="#" className="px-4 py-2 hover:underline text-sm text-gray-300 transition">Help Center</Link>
                     <div className="h-px bg-gray-700 my-2"></div>
-                    <div 
+                    <div
                       onClick={async () => {
                         await supabase.auth.signOut();
                         router.refresh();

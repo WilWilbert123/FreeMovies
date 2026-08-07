@@ -1,37 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+  <img src="./asset/FreeMovies.png" alt="FreeMovies Logo" width="200"/>
+  <h1>FreeMovies</h1>
+  <p>A premium, high-performance streaming platform built with Next.js 15, Tailwind CSS, and Supabase.</p>
+</div>
 
-## Getting Started
+---
 
-First, run the development server:
+![FreeMovies Screenshot](./asset/screenshot.png) 
+*(Note: Add a screenshot of your live app to the `asset` folder and name it `screenshot.png` to display it here!)*
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🎬 About The Project
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+FreeMovies is a full-stack, Netflix-inspired movie and TV show catalog application. It provides users with a stunning, dark-mode interface to discover trending media, watch trailers and full movies, and manage their own authenticated profiles.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✨ Key Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Premium UI/UX:** A responsive, dark-mode design with smooth micro-animations, glassmorphism, and a 3D animated welcome experience.
+- **Real-Time Data:** Fetches live, up-to-date movie and TV show data directly from the TMDB API.
+- **Secure Authentication:** Complete authentication system powered by Supabase, including secure JWT session management and edge middleware protection.
+- **Custom Email System:** Official domain-verified email confirmations powered by Resend SMTP, featuring custom 3D HTML email templates.
+- **Video Playback:** Integrated embedded video players for instant streaming.
 
-## Learn More
+## 🛠️ Built With
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework:** [Next.js 15](https://nextjs.org/) (App Router)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Database & Auth:** [Supabase](https://supabase.com/)
+- **Email Delivery:** [Resend](https://resend.com/)
+- **Deployment:** [Vercel](https://vercel.com/)
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **API:** [TMDB (The Movie Database)](https://www.themoviedb.org/)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To get a local copy up and running, follow these steps.
 
-## Deploy on Vercel
+### Prerequisites
+Make sure you have Node.js installed on your machine.
+- npm
+  ```sh
+  npm install npm@latest -g
+  ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Installation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-"# FreeMovies" 
+1. **Clone the repo**
+   ```sh
+   git clone https://github.com/WilWilbert123/FreeMovies.git
+   ```
+2. **Install NPM packages**
+   ```sh
+   cd FreeMovies
+   npm install
+   ```
+3. **Set up Environment Variables**
+   Create a `.env.local` file in the root directory and add your API keys:
+   ```env
+   NEXT_PUBLIC_TMDB_API_KEY=your_tmdb_api_key
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+4. **Run the Development Server**
+   ```sh
+   npm run dev
+   ```
+5. **Open the app**
+   Visit `http://localhost:3000` in your browser.
+
+## 🛡️ Security
+
+This project utilizes Next.js Edge Middleware to protect routes and verify active Supabase sessions on every request, preventing ghost sessions for deleted users. 
+
+## 👨‍💻 Author
+
+**John Wilbert Gamis**
+- GitHub: [@WilWilbert123](https://github.com/WilWilbert123)
+
+---
+*Created by John Wilbert Gamis &copy; 2026*
