@@ -2,7 +2,7 @@
 
 import { Movie } from "@/types";
 import { getImageUrl } from "@/lib/tmdb";
-import { Play, Plus, Check, ChevronDown } from "lucide-react";
+import { Play, Plus, Check, ChevronDown, Star } from "lucide-react";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MovieModal from "./MovieModal";
@@ -61,6 +61,21 @@ export default function MovieCard({ movie }: MovieCardProps) {
           alt={movie.title || movie.name}
           className="w-full h-full object-cover rounded-md"
         />
+
+        {/* Top Right Rating Badge */}
+        <div className="absolute top-1.5 right-1.5 md:top-2 md:right-2 bg-black/50 backdrop-blur-md px-1.5 py-0.5 md:px-2 md:py-1 rounded-md flex items-center gap-1 pointer-events-none border border-white/10 shadow-lg">
+          <Star className="w-2.5 h-2.5 md:w-3 md:h-3 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_6px_rgba(250,204,21,0.6)]" />
+          <span className="text-white text-[9px] md:text-[11px] font-bold tracking-wider">
+            {movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
+          </span>
+        </div>
+
+        {/* Glassmorphism Title Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-md rounded-b-md border-t border-white/10 p-2 sm:p-3 opacity-100 transition-all duration-300 pointer-events-none flex flex-col justify-end">
+          <div className="text-white text-xs md:text-sm font-bold truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-wide">
+            {movie.title || movie.name}
+          </div>
+        </div>
 
         <AnimatePresence>
           {isHovered && (
