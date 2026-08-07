@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, Bell, User } from "lucide-react";
+import { Search, Bell, User, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -13,6 +13,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [notifications, setNotifications] = useState<Movie[]>([]);
   const pathname = usePathname();
@@ -76,7 +77,13 @@ export default function Navbar() {
       )}
     >
       <div className="flex items-center justify-between px-4 md:px-12 py-4">
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4 md:gap-8">
+          <button 
+            className="md:hidden text-white hover:text-gray-300 transition"
+            onClick={() => setShowMobileMenu(true)}
+          >
+            <Menu className="w-6 h-6" />
+          </button>
           <Link href="/">
             <h1 className="text-netflix-red text-2xl md:text-3xl font-bold tracking-wider cursor-pointer">
               FREEMOVIES
@@ -205,6 +212,80 @@ export default function Navbar() {
                   </>
                 )}
               </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Drawer Menu */}
+      <div 
+        className={cn(
+          "fixed inset-0 bg-black/95 z-[100] md:hidden transition-transform duration-300 ease-in-out flex flex-col",
+          showMobileMenu ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <div className="flex items-center justify-between p-4 border-b border-gray-800">
+          <h1 className="text-netflix-red text-2xl font-bold tracking-wider">
+            FREEMOVIES
+          </h1>
+          <button 
+            onClick={() => setShowMobileMenu(false)}
+            className="p-2 text-white hover:text-gray-300 transition bg-gray-900 rounded-full"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto py-4 px-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
+            <h2 className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Browse</h2>
+            <ul className="flex flex-col gap-4">
+              {navLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setShowMobileMenu(false)}
+                    className={cn(
+                      "text-xl transition-colors hover:text-gray-300 block",
+                      pathname === link.href ? "text-white font-bold" : "text-gray-300"
+                    )}
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div className="h-px bg-gray-800 w-full my-2"></div>
+          
+          <div className="flex flex-col gap-4">
+            <h2 className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Notifications</h2>
+            {notifications.length > 0 ? (
+              notifications.map((movie) => (
+                <Link 
+                  href={`/watch/${movie.media_type || 'movie'}/${movie.id}`} 
+                  key={movie.id}
+                  onClick={() => setShowMobileMenu(false)}
+                  className="flex items-center gap-4 hover:bg-gray-800 p-2 rounded-md transition"
+                >
+                  <img 
+                    src={`https://image.tmdb.org/t/p/w92${movie.backdrop_path || movie.poster_path}`} 
+                    alt={movie.title || movie.name}
+                    className="w-24 h-14 object-cover rounded-md flex-shrink-0"
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-white truncate max-w-[200px]">
+                      {movie.title || movie.name}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      New Arrival
+                    </span>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="text-gray-500 text-sm">No new notifications</div>
             )}
           </div>
         </div>
