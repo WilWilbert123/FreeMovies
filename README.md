@@ -7,13 +7,13 @@
 ---
 
 ![FreeMovies Screenshot](./asset/screenshot.png) 
-*(Note: Add a screenshot of your live app to the `asset` folder and name it `screenshot.png` to display it here!)*
 
-## 🎬 About The Project
+
+##  About The Project
 
 FreeMovies is a full-stack, Netflix-inspired movie and TV show catalog application. It provides users with a stunning, dark-mode interface to discover trending media, watch trailers and full movies, and manage their own authenticated profiles.
 
-## ✨ Key Features
+##  Key Features
 
 - **Premium UI/UX:** A responsive, dark-mode design with smooth micro-animations, glassmorphism, and a 3D animated welcome experience.
 - **Real-Time Data:** Fetches live, up-to-date movie and TV show data directly from the TMDB API.
@@ -21,7 +21,7 @@ FreeMovies is a full-stack, Netflix-inspired movie and TV show catalog applicati
 - **Custom Email System:** Official domain-verified email confirmations powered by Resend SMTP, featuring custom 3D HTML email templates.
 - **Video Playback:** Integrated embedded video players for instant streaming.
 
-## 🛠️ Built With
+##  Built With
 
 - **Framework:** [Next.js 15](https://nextjs.org/) (App Router)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/)
@@ -31,7 +31,7 @@ FreeMovies is a full-stack, Netflix-inspired movie and TV show catalog applicati
 - **Icons:** [Lucide React](https://lucide.dev/)
 - **API:** [TMDB (The Movie Database)](https://www.themoviedb.org/)
 
-## 🚀 Getting Started
+##  Getting Started
 
 To get a local copy up and running, follow these steps.
 
@@ -67,11 +67,11 @@ Make sure you have Node.js installed on your machine.
 5. **Open the app**
    Visit `http://localhost:3000` in your browser.
 
-## 🛡️ Security
+##  Security
 
 This project utilizes Next.js Edge Middleware to protect routes and verify active Supabase sessions on every request, preventing ghost sessions for deleted users. 
 
-## 👨‍💻 Author
+##  Author
 
 **John Wilbert Gamis**
 - GitHub: [@WilWilbert123](https://github.com/WilWilbert123)
