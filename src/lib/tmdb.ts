@@ -30,10 +30,18 @@ export const requests = {
   fetchAnimation: '/discover/movie?with_genres=16',
   fetchClassics: '/discover/movie?primary_release_date.lte=1990-01-01',
   fetchUpcomingMovies: '/movie/upcoming',
+  fetchAnime: '/discover/tv?with_genres=16&with_original_language=ja',
+  fetchKDramas: '/discover/tv?with_original_language=ko',
+  fetchMystery: '/discover/movie?with_genres=9648',
+  fetchFamily: '/discover/movie?with_genres=10751',
 };
 
-export const fetchMovies = async (endpoint: string): Promise<TMDBResponse> => {
-  const { data } = await tmdb.get(endpoint);
+export const fetchMovies = async (endpoint: string, page: number = 1): Promise<TMDBResponse> => {
+  const { data } = await tmdb.get(endpoint, {
+    params: {
+      page,
+    }
+  });
   return data;
 };
 

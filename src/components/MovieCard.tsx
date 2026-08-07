@@ -8,12 +8,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import MovieModal from "./MovieModal";
 import { useUserStore } from "@/store/useUserStore";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface MovieCardProps {
   movie: Movie;
+  layout?: 'row' | 'grid';
 }
 
-export default function MovieCard({ movie }: MovieCardProps) {
+export default function MovieCard({ movie, layout = 'row' }: MovieCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -52,7 +54,12 @@ export default function MovieCard({ movie }: MovieCardProps) {
   return (
     <>
       <div
-        className="relative group w-[140px] sm:w-[180px] md:w-[220px] lg:w-[260px] h-[80px] sm:h-[100px] md:h-[120px] lg:h-[145px] shrink-0 cursor-pointer transition-transform duration-200"
+        className={cn(
+          "relative group shrink-0 cursor-pointer transition-transform duration-200",
+          layout === 'row' 
+            ? "w-[140px] sm:w-[180px] md:w-[220px] lg:w-[260px] h-[80px] sm:h-[100px] md:h-[120px] lg:h-[145px]" 
+            : "w-full aspect-video"
+        )}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
