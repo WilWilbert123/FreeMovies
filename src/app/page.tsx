@@ -1,0 +1,59 @@
+import Billboard from "@/components/Billboard";
+import MovieRow from "@/components/MovieRow";
+import Navbar from "@/components/Navbar";
+import { fetchMovies, requests } from "@/lib/tmdb";
+
+export const revalidate = 3600; // Revalidate every hour
+
+export default async function Home() {
+  const [
+    trending,
+    netflixOriginals,
+    topRated,
+    actionMovies,
+    comedyMovies,
+    horrorMovies,
+    romanceMovies,
+    documentaries,
+    sciFi,
+    animation,
+    classics
+  ] = await Promise.all([
+    fetchMovies(requests.fetchTrending),
+    fetchMovies(requests.fetchNetflixOriginals),
+    fetchMovies(requests.fetchTopRated),
+    fetchMovies(requests.fetchActionMovies),
+    fetchMovies(requests.fetchComedyMovies),
+    fetchMovies(requests.fetchHorrorMovies),
+    fetchMovies(requests.fetchRomanceMovies),
+    fetchMovies(requests.fetchDocumentaries),
+    fetchMovies(requests.fetchSciFi),
+    fetchMovies(requests.fetchAnimation),
+    fetchMovies(requests.fetchClassics),
+  ]);
+
+  const allTrending = trending.results;
+  // Select a random movie for the billboard
+  const billboardMovie = allTrending[Math.floor(Math.random() * allTrending.length)];
+
+  return (
+    <main className="relative min-h-screen bg-netflix-dark pb-20">
+      <Navbar />
+      <Billboard movie={billboardMovie} />
+      
+      <div className="relative z-10 md:mt-[-2rem] lg:mt-[-4rem] pb-20">
+        <MovieRow title="Trending Now" movies={allTrending} />
+        <MovieRow title="Netflix Originals" movies={netflixOriginals.results} />
+        <MovieRow title="Top Rated" movies={topRated.results} />
+        <MovieRow title="Action Thrillers" movies={actionMovies.results} />
+        <MovieRow title="Comedies" movies={comedyMovies.results} />
+        <MovieRow title="Scary Movies" movies={horrorMovies.results} />
+        <MovieRow title="Romance" movies={romanceMovies.results} />
+        <MovieRow title="Sci-Fi & Fantasy" movies={sciFi.results} />
+        <MovieRow title="Animation" movies={animation.results} />
+        <MovieRow title="Classics" movies={classics.results} />
+        <MovieRow title="Documentaries" movies={documentaries.results} />
+      </div>
+    </main>
+  );
+}

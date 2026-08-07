@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+  --color-netflix-red: #E50914;
+  --color-netflix-dark: #141414;
+  --color-netflix-light: #e5e5e5;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+:root {
+  --background: #141414;
+  --foreground: #ffffff;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+@utility text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.45);
+}
+
+@utility text-shadow-md {
+  text-shadow: 0 4px 6px rgba(0,0,0,0.5);
+}
+
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
