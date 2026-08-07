@@ -45,9 +45,19 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
     }
   };
 
-  return (
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    // Prevent scrolling on body when modal is open
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
+  const modalContent = (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4 sm:p-6">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -61,9 +71,8 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="relative w-full max-w-3xl max-h-[90vh] bg-[#181818] rounded-xl overflow-hidden shadow-2xl z-10 flex flex-col"
+          className="relative w-full h-full md:h-auto max-w-3xl md:max-h-[90vh] bg-[#181818] md:rounded-xl overflow-y-auto scrollbar-hide shadow-2xl z-10 flex flex-col"
         >
-          {/* Close Button */}
           <button
             onClick={onClose}
             className="absolute top-4 right-4 z-20 p-2 bg-[#181818]/70 hover:bg-[#181818] rounded-full transition"
@@ -73,26 +82,35 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
 
           {/* Header Image / Trailer Fallback */}
           <div className="relative w-full h-[40vh] sm:h-[50vh] shrink-0">
-            <img
-              src={getImageUrl(movie.backdrop_path || movie.poster_path, 'original')}
-              alt={movie.title || movie.name}
-              className="w-full h-full object-cover"
-            />
+            {details?.videos?.results && details.videos.results.length > 0 ? (
+              <iframe
+                className="w-full h-full pointer-events-none"
+                src={`https://www.youtube.com/embed/${details.videos.results[0].key}?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=${details.videos.results[0].key}`}
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              />
+            ) : (
+              <img
+                src={getImageUrl(movie.backdrop_path || movie.poster_path, 'original')}
+                alt={movie.title || movie.name}
+                className="w-full h-full object-cover"
+              />
+            )}
+            
             <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-transparent to-transparent" />
             
-            <div className="absolute bottom-6 left-6 right-6 flex items-center gap-3">
+            {/* Play Button & Controls */}
+            <div className="absolute bottom-6 left-6 flex items-center gap-4">
               <Link
                 href={`/watch/${movie.media_type || 'movie'}/${movie.id}`}
-                className="bg-white text-black px-6 py-2 rounded-md font-bold flex items-center gap-2 hover:bg-white/80 transition"
+                className="flex items-center gap-2 bg-white text-black px-6 py-2 rounded-md font-bold hover:bg-neutral-300 transition"
               >
-                <Play className="w-5 h-5" fill="currentColor" />
+                <Play className="w-6 h-6" fill="currentColor" />
                 Play
               </Link>
-              
               <button 
                 onClick={toggleList}
-                className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center bg-black/50 hover:border-white hover:bg-black/80 transition group"
-                title={isSaved ? "Remove from My List" : "Add to My List"}
+                className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center hover:border-white bg-[#181818]/50 transition"
               >
                 {isSaved ? (
                   <Check className="w-5 h-5 text-white" />
@@ -100,62 +118,59 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
                   <Plus className="w-5 h-5 text-white" />
                 )}
               </button>
-              
-              <button className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center bg-black/50 hover:border-white hover:bg-black/80 transition">
-                <ThumbsUp className="w-4 h-4 text-white" />
+              <button className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center hover:border-white bg-[#181818]/50 transition">
+                <ThumbsUp className="w-5 h-5 text-white" />
               </button>
             </div>
           </div>
 
-          {/* Details Section */}
-          <div className="p-6 overflow-y-auto scrollbar-hide text-white text-sm md:text-base grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="col-span-2 space-y-4">
-              <div className="flex items-center gap-3 font-semibold">
-                <span className="text-green-400">
+          {/* Movie Details */}
+          <div className="p-6 md:p-12 flex flex-col md:flex-row gap-8">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-green-400 font-semibold">
                   {Math.round((movie.vote_average || 0) * 10)}% Match
                 </span>
-                <span>
-                  {movie.release_date 
-                    ? new Date(movie.release_date).getFullYear() 
-                    : movie.first_air_date 
-                      ? new Date(movie.first_air_date).getFullYear() 
-                      : ''}
+                <span className="text-gray-300">
+                  {new Date(movie.release_date || movie.first_air_date || '').getFullYear()}
                 </span>
                 {details?.runtime && (
-                  <span>
+                  <span className="text-gray-300">
                     {Math.floor(details.runtime / 60)}h {details.runtime % 60}m
                   </span>
                 )}
-                <span className="border border-gray-500 px-1.5 py-0.5 rounded text-xs">HD</span>
+                <span className="border border-gray-500 px-1.5 py-0.5 rounded text-xs text-white">
+                  HD
+                </span>
               </div>
               
-              <p className="text-gray-200 leading-relaxed text-sm md:text-base">
+              <p className="text-white text-base md:text-lg leading-relaxed">
                 {movie.overview}
               </p>
             </div>
             
-            <div className="col-span-1 space-y-4 text-sm">
-              {details?.credits?.cast && details.credits.cast.length > 0 && (
-                <div>
-                  <span className="text-gray-400">Cast: </span>
-                  <span className="text-gray-200">
-                    {details.credits.cast.slice(0, 4).map(c => c.name).join(', ')}
-                  </span>
-                </div>
-              )}
-              
-              {details?.genres && details.genres.length > 0 && (
-                <div>
-                  <span className="text-gray-400">Genres: </span>
-                  <span className="text-gray-200">
-                    {details.genres.map(g => g.name).join(', ')}
-                  </span>
-                </div>
-              )}
+            <div className="w-full md:w-1/3 flex flex-col gap-4 text-sm">
+              <div>
+                <span className="text-gray-500">Cast: </span>
+                <span className="text-gray-300">
+                  {details?.credits?.cast?.slice(0, 4).map(c => c.name).join(', ') || 'Unknown'}
+                </span>
+              </div>
+              <div>
+                <span className="text-gray-500">Genres: </span>
+                <span className="text-gray-300">
+                  {details?.genres?.map(g => g.name).join(', ') || 'Unknown'}
+                </span>
+              </div>
             </div>
           </div>
         </motion.div>
       </div>
     </AnimatePresence>
   );
+
+  if (!mounted) return null;
+
+  const { createPortal } = require('react-dom');
+  return createPortal(modalContent, document.body);
 }
