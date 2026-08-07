@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Play, Plus, Check, ThumbsUp } from "lucide-react";
+import { X, Play, Plus, Check, ThumbsUp, Star } from "lucide-react";
 import { Movie, MovieDetails } from "@/types";
 import { fetchMovieDetails, getImageUrl } from "@/lib/tmdb";
 import { useUserStore } from "@/store/useUserStore";
@@ -97,14 +97,27 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
               />
             )}
             
-            <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/40 to-transparent" />
             
-            {/* Play Button & Controls */}
-            <div className="absolute bottom-6 left-6 flex items-center gap-4">
-              <Link
-                href={`/watch/${movie.media_type || 'movie'}/${movie.id}`}
-                className="flex items-center gap-2 bg-white text-black px-6 py-2 rounded-md font-bold hover:bg-neutral-300 transition"
-              >
+            {/* Title, Rating & Controls */}
+            <div className="absolute bottom-6 left-6 flex flex-col gap-4 w-[90%] md:w-[70%]">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mb-2 line-clamp-2">
+                  {movie.title || movie.name}
+                </h2>
+                <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 md:w-5 md:h-5 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]" />
+                  <span className="text-white text-sm md:text-base font-bold tracking-wider drop-shadow-md">
+                    {movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <Link
+                  href={`/watch/${movie.media_type || 'movie'}/${movie.id}`}
+                  className="flex items-center gap-2 bg-white text-black px-6 py-2 rounded-md font-bold hover:bg-neutral-300 transition"
+                >
                 <Play className="w-6 h-6" fill="currentColor" />
                 Play
               </Link>
@@ -123,6 +136,7 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
               </button>
             </div>
           </div>
+        </div>
 
           {/* Movie Details */}
           <div className="p-6 md:p-12 flex flex-col md:flex-row gap-8">

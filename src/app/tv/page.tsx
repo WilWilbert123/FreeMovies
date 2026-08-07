@@ -10,12 +10,16 @@ export default async function TVShows() {
     trending,
     topRated,
     netflixOriginals,
-    comedy
+    comedy,
+    anime,
+    kDramas
   ] = await Promise.all([
     fetchMovies(requests.fetchTrendingTV),
     fetchMovies(requests.fetchTopRatedTV),
     fetchMovies(requests.fetchNetflixOriginals),
     fetchMovies(requests.fetchComedyTV),
+    fetchMovies(requests.fetchAnime),
+    fetchMovies(requests.fetchKDramas),
   ]);
 
   const allTrending = trending.results;
@@ -32,6 +36,8 @@ export default async function TVShows() {
         <MovieRow title="Top Rated TV" movies={topRated.results} />
         <MovieRow title="Netflix Originals" movies={netflixOriginals.results} />
         <MovieRow title="Comedy TV Shows" movies={comedy.results} />
+        <MovieRow title="Anime" movies={anime.results} />
+        <MovieRow title="K-Dramas" movies={kDramas.results} />
       </div>
     </main>
   );

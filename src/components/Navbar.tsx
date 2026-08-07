@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, Bell, User, Menu, X } from "lucide-react";
+import { Search, Bell, User, Menu, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -89,7 +89,7 @@ export default function Navbar() {
               FREEMOVIES
             </h1>
           </Link>
-          <ul className="hidden md:flex gap-5 text-sm font-medium">
+          <ul className="hidden md:flex gap-5 text-sm font-medium items-center">
             {navLinks.map((link) => (
               <li key={link.name}>
                 <Link
@@ -103,6 +103,21 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+            
+            {/* Categories Dropdown */}
+            <li className="relative group cursor-pointer">
+              <span className="text-gray-200 transition-colors hover:text-gray-300 flex items-center gap-1">
+                Categories <ChevronDown className="w-4 h-4 transition group-hover:rotate-180" />
+              </span>
+              <div className="absolute left-0 top-6 hidden w-48 bg-black/95 border border-gray-800 rounded-md shadow-xl py-2 group-hover:flex flex-col z-50">
+                <Link href="/category/anime" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Anime</Link>
+                <Link href="/category/k-dramas" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">K-Dramas</Link>
+                <Link href="/category/mystery" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Mystery</Link>
+                <Link href="/category/family" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Family</Link>
+                <Link href="/category/action" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Action</Link>
+                <Link href="/category/comedy" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Comedy</Link>
+              </div>
+            </li>
           </ul>
         </div>
 
@@ -255,6 +270,20 @@ export default function Navbar() {
                 </li>
               ))}
             </ul>
+          </div>
+          
+          <div className="h-px bg-gray-800 w-full my-2"></div>
+
+          <div className="flex flex-col gap-4">
+            <h2 className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Categories</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <Link href="/category/anime" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Anime</Link>
+              <Link href="/category/k-dramas" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">K-Dramas</Link>
+              <Link href="/category/mystery" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Mystery</Link>
+              <Link href="/category/family" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Family</Link>
+              <Link href="/category/action" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Action</Link>
+              <Link href="/category/comedy" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Comedy</Link>
+            </div>
           </div>
           
           <div className="h-px bg-gray-800 w-full my-2"></div>

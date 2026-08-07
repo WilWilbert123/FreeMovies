@@ -17,7 +17,11 @@ export default async function Home() {
     documentaries,
     sciFi,
     animation,
-    classics
+    classics,
+    anime,
+    kDramas,
+    mystery,
+    family
   ] = await Promise.all([
     fetchMovies(requests.fetchTrending),
     fetchMovies(requests.fetchNetflixOriginals),
@@ -30,6 +34,10 @@ export default async function Home() {
     fetchMovies(requests.fetchSciFi),
     fetchMovies(requests.fetchAnimation),
     fetchMovies(requests.fetchClassics),
+    fetchMovies(requests.fetchAnime),
+    fetchMovies(requests.fetchKDramas),
+    fetchMovies(requests.fetchMystery),
+    fetchMovies(requests.fetchFamily),
   ]);
 
   const allTrending = trending.results;
@@ -51,6 +59,10 @@ export default async function Home() {
         <MovieRow title="Romance" movies={romanceMovies.results} />
         <MovieRow title="Sci-Fi & Fantasy" movies={sciFi.results} />
         <MovieRow title="Animation" movies={animation.results} />
+        <MovieRow title="Anime" movies={anime.results} />
+        <MovieRow title="K-Dramas" movies={kDramas.results} />
+        <MovieRow title="Mystery" movies={mystery.results} />
+        <MovieRow title="Family" movies={family.results} />
         <MovieRow title="Classics" movies={classics.results} />
         <MovieRow title="Documentaries" movies={documentaries.results} />
       </div>
