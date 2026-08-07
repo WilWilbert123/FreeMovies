@@ -4,13 +4,48 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, Bell, User } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { fetchMovies, requests } from "@/lib/tmdb";
+import { Movie } from "@/types";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [notifications, setNotifications] = useState<Movie[]>([]);
   const pathname = usePathname();
+  const router = useRouter();
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+    };
+    fetchUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    // Fetch some real movies to use as notifications (e.g., Trending)
+    const getNotifications = async () => {
+      try {
+        const data = await fetchMovies(requests.fetchTrending);
+        // Just take the top 3 as notifications
+        setNotifications(data.results?.slice(0, 3) || []);
+      } catch (error) {
+        console.error("Failed to fetch notifications", error);
+      }
+    };
+    getNotifications();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,24 +109,50 @@ export default function Navbar() {
             onMouseEnter={() => setShowNotifications(true)}
             onMouseLeave={() => setShowNotifications(false)}
           >
-            <Bell className="w-5 h-5 cursor-pointer hover:text-gray-300 transition" />
+            <div className="relative">
+              <Bell className="w-5 h-5 cursor-pointer hover:text-gray-300 transition" />
+              {notifications.length > 0 && (
+                <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-600 rounded-full border-2 border-black flex items-center justify-center">
+                  <span className="text-[8px] font-bold text-white">{notifications.length}</span>
+                </div>
+              )}
+            </div>
             
             {showNotifications && (
-              <div className="absolute right-0 top-8 w-72 bg-black/95 border border-gray-800 rounded-md shadow-xl py-2 flex flex-col z-50">
-                <div className="px-4 py-3 text-sm font-bold text-white border-b border-gray-800">Notifications</div>
-                <div className="px-4 py-3 hover:bg-gray-800 cursor-pointer transition flex items-start gap-3">
-                  <div className="w-12 h-8 bg-red-600 rounded flex-shrink-0"></div>
-                  <div>
-                    <p className="text-sm text-gray-200 line-clamp-2">New Arrival: The Latest Action Thriller</p>
-                    <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
-                  </div>
+              <div className="absolute right-0 top-8 w-80 bg-black/95 border border-gray-800 rounded-md shadow-xl flex flex-col z-50 overflow-hidden">
+                <div className="px-4 py-3 text-sm font-bold text-white border-b border-gray-800 flex justify-between items-center">
+                  <span>Notifications</span>
+                  <span className="text-xs text-gray-400 font-normal cursor-pointer hover:text-white">Mark all as read</span>
                 </div>
-                <div className="px-4 py-3 hover:bg-gray-800 cursor-pointer transition flex items-start gap-3">
-                  <div className="w-12 h-8 bg-blue-600 rounded flex-shrink-0"></div>
-                  <div>
-                    <p className="text-sm text-gray-200 line-clamp-2">Top 10 Today: Check out what everyone is watching!</p>
-                    <p className="text-xs text-gray-500 mt-1">1 day ago</p>
-                  </div>
+                
+                <div className="max-h-96 overflow-y-auto scrollbar-hide">
+                  {notifications.length > 0 ? (
+                    notifications.map((movie, idx) => (
+                      <Link 
+                        href={`/watch/${movie.media_type || 'movie'}/${movie.id}`} 
+                        key={movie.id}
+                        className="px-4 py-3 hover:bg-gray-800 cursor-pointer transition flex items-start gap-3 border-b border-gray-800/50 last:border-0"
+                      >
+                        <img 
+                          src={`https://image.tmdb.org/t/p/w92${movie.backdrop_path || movie.poster_path}`} 
+                          alt={movie.title || movie.name}
+                          className="w-20 h-12 object-cover rounded flex-shrink-0"
+                        />
+                        <div className="flex flex-col justify-center">
+                          <p className="text-sm text-gray-200 line-clamp-2 font-medium">
+                            New Arrival: {movie.title || movie.name}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {idx === 0 ? 'Just now' : idx === 1 ? '2 hours ago' : '1 day ago'}
+                          </p>
+                        </div>
+                      </Link>
+                    ))
+                  ) : (
+                    <div className="px-4 py-8 text-center text-sm text-gray-500">
+                      No new notifications
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -102,22 +163,48 @@ export default function Navbar() {
             onMouseEnter={() => setShowAccountMenu(true)}
             onMouseLeave={() => setShowAccountMenu(false)}
           >
-            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
-              <User className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center overflow-hidden">
+              {user ? (
+                <div className="w-full h-full bg-netflix-red text-white flex items-center justify-center font-bold text-sm">
+                  {user.email?.charAt(0).toUpperCase()}
+                </div>
+              ) : (
+                <User className="w-5 h-5 text-white" />
+              )}
             </div>
             
             {showAccountMenu && (
               <div className="absolute right-0 top-10 w-48 bg-black/95 border border-gray-800 rounded-md shadow-xl py-2 flex flex-col z-50">
-                <div className="px-4 py-2 hover:underline flex items-center gap-3 transition">
-                  <div className="w-6 h-6 bg-green-500 rounded flex-shrink-0"></div>
-                  <span className="text-sm text-gray-300">Kids</span>
-                </div>
-                <Link href="/my-list" className="px-4 py-2 hover:underline text-sm text-gray-300 transition mt-1">Manage Profiles</Link>
-                <div className="h-px bg-gray-700 my-2"></div>
-                <Link href="#" className="px-4 py-2 hover:underline text-sm font-bold text-gray-300 transition">Account</Link>
-                <Link href="#" className="px-4 py-2 hover:underline text-sm text-gray-300 transition">Help Center</Link>
-                <div className="h-px bg-gray-700 my-2"></div>
-                <Link href="#" className="px-4 py-2 hover:underline text-sm text-center text-gray-300 transition">Sign out of FreeMovies</Link>
+                {user ? (
+                  <>
+                    <div className="px-4 py-2 truncate text-sm text-gray-300 font-bold border-b border-gray-700">
+                      {user.email}
+                    </div>
+                    <Link href="/my-list" className="px-4 py-2 hover:underline text-sm text-gray-300 transition mt-1">Manage Profiles</Link>
+                    <div className="h-px bg-gray-700 my-2"></div>
+                    <Link href="#" className="px-4 py-2 hover:underline text-sm font-bold text-gray-300 transition">Account</Link>
+                    <Link href="#" className="px-4 py-2 hover:underline text-sm text-gray-300 transition">Help Center</Link>
+                    <div className="h-px bg-gray-700 my-2"></div>
+                    <div 
+                      onClick={async () => {
+                        await supabase.auth.signOut();
+                        router.refresh();
+                      }}
+                      className="px-4 py-2 hover:underline text-sm text-center text-gray-300 transition cursor-pointer"
+                    >
+                      Sign out of FreeMovies
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login" className="px-4 py-2 hover:underline text-sm font-bold text-white transition text-center bg-netflix-red rounded mx-2 my-1">
+                      Sign In
+                    </Link>
+                    <Link href="/login" className="px-4 py-2 hover:underline text-sm text-gray-300 transition text-center">
+                      Sign Up
+                    </Link>
+                  </>
+                )}
               </div>
             )}
           </div>
