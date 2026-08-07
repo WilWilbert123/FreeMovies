@@ -48,7 +48,7 @@ export default function MovieRow({ title, movies }: MovieRowProps) {
         
         <div
           ref={rowRef}
-          className="flex items-center space-x-2 md:space-x-4 overflow-x-scroll scrollbar-hide px-4 md:px-12 pb-24 pt-12"
+          className="flex items-center space-x-2 md:space-x-4 overflow-x-scroll scrollbar-hide px-4 md:px-12 py-20 -my-16"
         >
           {movies.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />
