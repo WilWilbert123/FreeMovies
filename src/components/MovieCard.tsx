@@ -69,8 +69,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-0 left-0 z-50 bg-[#141414] rounded-md shadow-xl overflow-hidden shadow-black/50 origin-center"
-              style={{ width: '130%', left: '-15%', top: '-25%' }}
+              className="absolute top-[-10%] md:top-[-25%] left-[-5%] md:left-[-15%] w-[110%] md:w-[130%] z-50 bg-[#141414] rounded-md shadow-xl overflow-hidden shadow-black/50 origin-center"
             >
               <img
                 src={getImageUrl(movie.backdrop_path || movie.poster_path, 'w500')}
