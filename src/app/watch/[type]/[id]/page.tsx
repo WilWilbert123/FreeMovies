@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { fetchMovieDetails } from "@/lib/tmdb";
 import { MovieDetails } from "@/types";
 import { use } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 interface WatchPageProps {
   params: Promise<{
@@ -20,8 +21,25 @@ export default function WatchPage(props: WatchPageProps) {
   const { type, id } = params;
   
   const [details, setDetails] = useState<MovieDetails | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const supabase = createClient();
 
   useEffect(() => {
+    // Check if user is logged in before allowing them to watch
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push('/login');
+      } else {
+        setIsAuthenticated(true);
+      }
+    };
+    checkAuth();
+  }, [router]);
+
+  useEffect(() => {
+    if (!isAuthenticated) return; // Don't fetch if not logged in
+
     const getDetails = async () => {
       try {
         const data = await fetchMovieDetails(id, type as 'movie' | 'tv');
@@ -31,10 +49,13 @@ export default function WatchPage(props: WatchPageProps) {
       }
     };
     getDetails();
-  }, [id, type]);
+  }, [id, type, isAuthenticated]);
 
-  // We are going back to vidsrc.to because it has the content and is not blocked.
-  // HOWEVER, we are adding a 'sandbox' attribute to the iframe below to block popups!
+  if (isAuthenticated === null) {
+    return <div className="h-screen w-screen bg-black flex items-center justify-center text-white">Checking authentication...</div>;
+  }
+
+  // We are using vidsrc.to because it has the content and is not blocked.
   const videoUrl = `https://vidsrc.to/embed/${type}/${id}`;
 
   return (
@@ -56,7 +77,6 @@ export default function WatchPage(props: WatchPageProps) {
           className="w-full h-full border-none"
           allowFullScreen
           allow="autoplay; fullscreen"
-          sandbox="allow-same-origin allow-scripts allow-forms"
         ></iframe>
       </div>
     </div>
