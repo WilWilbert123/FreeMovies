@@ -37,31 +37,47 @@ export const requests = {
 };
 
 export const fetchMovies = async (endpoint: string, page: number = 1): Promise<TMDBResponse> => {
-  const { data } = await tmdb.get(endpoint, {
-    params: {
-      page,
-    }
-  });
-  return data;
+  try {
+    const { data } = await tmdb.get(endpoint, {
+      params: {
+        page,
+      }
+    });
+    return data;
+  } catch (error) {
+    console.error(`Failed to fetch movies from ${endpoint}:`, error);
+    return { page, results: [], total_pages: 0, total_results: 0 };
+  }
 };
 
 export const fetchMovieDetails = async (id: number | string, type: 'movie' | 'tv' = 'movie'): Promise<MovieDetails> => {
-  const { data } = await tmdb.get(`/${type}/${id}`, {
-    params: {
-      append_to_response: 'videos,credits,similar',
-    },
-  });
-  return data;
+  try {
+    const { data } = await tmdb.get(`/${type}/${id}`, {
+      params: {
+        append_to_response: 'videos,credits,similar',
+      },
+    });
+    return data;
+  } catch (error) {
+    console.error(`Failed to fetch details for ${type} ${id}:`, error);
+    // Return a minimal fallback object to avoid crashing the UI
+    return { id: Number(id), title: 'Not Found', overview: 'Data could not be loaded.' } as unknown as MovieDetails;
+  }
 };
 
 export const searchMovies = async (query: string): Promise<TMDBResponse> => {
-  const { data } = await tmdb.get(`/search/multi`, {
-    params: {
-      query,
-      include_adult: false,
-    },
-  });
-  return data;
+  try {
+    const { data } = await tmdb.get(`/search/multi`, {
+      params: {
+        query,
+        include_adult: false,
+      },
+    });
+    return data;
+  } catch (error) {
+    console.error(`Failed to search movies for query "${query}":`, error);
+    return { page: 1, results: [], total_pages: 0, total_results: 0 };
+  }
 };
 
 export function getImageUrl(path: string | null | undefined, size: 'w500' | 'original' = 'w500') {

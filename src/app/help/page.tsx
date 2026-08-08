@@ -10,24 +10,28 @@ export default function HelpCenterPage() {
 
   const faqs = [
     {
-      question: "How do I sign up for FreeMovies?",
-      answer: "Signing up is easy! Click on the 'Sign Up' button on the homepage, enter your email address, create a password, and follow the simple on-screen instructions to start watching your favorite movies and TV shows."
+      question: "Is FreeMovies really free?",
+      answer: "Yes! FreeMovies is 100% free. You do not need to enter a credit card or pay any subscription fees to enjoy our massive library of movies and TV shows."
     },
     {
-      question: "Why am I experiencing video buffering?",
-      answer: "Buffering is usually related to your internet connection speed. We recommend a minimum download speed of 3.0 Mbps for standard definition and 5.0 Mbps for HD. Try restarting your router or switching to a wired connection."
+      question: "Do I need to create an account to watch?",
+      answer: "No account is required to start watching! You can instantly stream any movie or show. However, your personalized 'My List' is saved locally to your current browser, so if you clear your browser data or switch devices, your saved items will not carry over."
     },
     {
-      question: "How can I change my email or password?",
-      answer: "You can update your email or password by navigating to your Account settings (from the profile menu in the top right). From there, select 'Update Email' or 'Update Password'."
+      question: "Why am I experiencing video buffering or playback issues?",
+      answer: "Buffering is usually caused by internet connection drops. We recommend a minimum speed of 5.0 Mbps for smooth HD playback. Try restarting your router, clearing your browser cache, or turning off any active VPNs that might be slowing down your connection."
+    },
+    {
+      question: "Why won't the video player load for me?",
+      answer: "If the video player is stuck loading or shows an error, it may be due to a strict Ad Blocker or browser privacy extension blocking the video source. Try temporarily disabling your ad blocker for our site and reloading the page."
     },
     {
       question: "Can I download movies to watch offline?",
-      answer: "Yes! If you are using our mobile or tablet apps, look for the 'Download' icon next to a movie or TV show episode to save it for offline viewing."
+      answer: "Currently, FreeMovies only supports online streaming. You will need an active internet connection to watch our content, as we do not offer a download feature for offline viewing at this time."
     },
     {
-      question: "How do I cancel my account?",
-      answer: "You can cancel your account at any time by going to your Account settings and clicking on the 'Cancel Membership' button. There are no cancellation fees, and you can easily restart your account anytime."
+      question: "How often are new movies and shows added?",
+      answer: "Our catalog is automatically updated daily! We constantly pull the latest trending movies, top-rated hits, and newly released TV shows so there is always something fresh to discover."
     }
   ];
 

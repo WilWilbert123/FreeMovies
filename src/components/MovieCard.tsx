@@ -24,6 +24,11 @@ export default function MovieCard({ movie, layout = 'row' }: MovieCardProps) {
   const isSaved = isInList(movie.id);
 
   const handleMouseEnter = () => {
+    // Only trigger hover effect on devices with a mouse
+    if (typeof window !== 'undefined' && window.matchMedia("(hover: none)").matches) {
+      return;
+    }
+    
     hoverTimeoutRef.current = setTimeout(() => {
       setIsHovered(true);
     }, 300); // 300ms delay before hover expansion
@@ -57,11 +62,12 @@ export default function MovieCard({ movie, layout = 'row' }: MovieCardProps) {
         className={cn(
           "relative group shrink-0 cursor-pointer transition-transform duration-200",
           layout === 'row' 
-            ? "w-[140px] sm:w-[180px] md:w-[220px] lg:w-[260px] h-[80px] sm:h-[100px] md:h-[120px] lg:h-[145px]" 
-            : "w-full aspect-video"
+            ? "w-[140px] sm:w-[180px] md:w-[220px] lg:w-[260px] aspect-square" 
+            : "w-full aspect-square"
         )}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClick={openModal}
       >
         <img
           src={getImageUrl(movie.backdrop_path || movie.poster_path, 'w500')}

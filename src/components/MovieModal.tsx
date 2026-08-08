@@ -71,111 +71,176 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 20 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="relative w-full h-full md:h-auto max-w-3xl md:max-h-[90vh] bg-[#181818] md:rounded-xl overflow-y-auto scrollbar-hide shadow-2xl z-10 flex flex-col"
+          className="relative w-full h-full md:h-auto max-w-3xl md:max-h-[90vh] bg-[#181818] md:rounded-xl overflow-hidden shadow-2xl z-10 flex flex-col"
         >
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-20 p-2 bg-[#181818]/70 hover:bg-[#181818] rounded-full transition"
+            className="absolute top-4 right-4 z-[60] p-2 bg-black/50 hover:bg-black/80 rounded-full transition text-white border border-white/20 shadow-lg backdrop-blur-md"
           >
-            <X className="w-6 h-6 text-white" />
+            <X className="w-5 h-5 md:w-6 md:h-6" />
           </button>
 
-          {/* Header Image / Trailer Fallback */}
-          <div className="relative w-full h-[40vh] sm:h-[50vh] shrink-0">
-            {details?.videos?.results && details.videos.results.length > 0 ? (
-              <iframe
-                className="w-full h-full pointer-events-none"
-                src={`https://www.youtube.com/embed/${details.videos.results[0].key}?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=${details.videos.results[0].key}`}
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-              />
-            ) : (
-              <img
-                src={getImageUrl(movie.backdrop_path || movie.poster_path, 'original')}
-                alt={movie.title || movie.name}
-                className="w-full h-full object-cover"
-              />
-            )}
-            
-            <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/40 to-transparent" />
-            
-            {/* Title, Rating & Controls */}
-            <div className="absolute bottom-6 left-6 flex flex-col gap-4 w-[90%] md:w-[70%]">
-              <div>
-                <h2 className="text-3xl md:text-4xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mb-2 line-clamp-2">
-                  {movie.title || movie.name}
-                </h2>
-                <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 md:w-5 md:h-5 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]" />
-                  <span className="text-white text-sm md:text-base font-bold tracking-wider drop-shadow-md">
-                    {movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
-                  </span>
+          {/* Scrollable Content */}
+          <div className="overflow-y-auto scrollbar-hide w-full h-full">
+            {/* Header Image / Trailer Fallback */}
+            <div className="relative w-full h-[40vh] sm:h-[50vh] shrink-0">
+              {details?.videos?.results && details.videos.results.length > 0 ? (
+                <iframe
+                  className="w-full h-full pointer-events-none"
+                  src={`https://www.youtube.com/embed/${details.videos.results[0].key}?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=${details.videos.results[0].key}`}
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                />
+              ) : (
+                <img
+                  src={getImageUrl(movie.backdrop_path || movie.poster_path, 'original')}
+                  alt={movie.title || movie.name}
+                  className="w-full h-full object-cover"
+                />
+              )}
+              
+              <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/40 to-transparent" />
+              
+              {/* Title, Rating & Controls */}
+              <div className="absolute bottom-6 left-6 flex flex-col gap-4 w-[90%] md:w-[70%]">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mb-2 line-clamp-2">
+                    {movie.title || movie.name}
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <Star className="w-4 h-4 md:w-5 md:h-5 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]" />
+                    <span className="text-white text-sm md:text-base font-bold tracking-wider drop-shadow-md">
+                      {movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <Link
+                    href={`/watch/${movie.media_type || 'movie'}/${movie.id}`}
+                    className="flex items-center gap-2 bg-white text-black px-6 py-2 rounded-md font-bold hover:bg-neutral-300 transition"
+                  >
+                    <Play className="w-6 h-6" fill="currentColor" />
+                    Play
+                  </Link>
+                  <button 
+                    onClick={toggleList}
+                    className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center hover:border-white bg-[#181818]/50 transition"
+                  >
+                    {isSaved ? (
+                      <Check className="w-5 h-5 text-white" />
+                    ) : (
+                      <Plus className="w-5 h-5 text-white" />
+                    )}
+                  </button>
+                  <button className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center hover:border-white bg-[#181818]/50 transition">
+                    <ThumbsUp className="w-5 h-5 text-white" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Movie Details */}
+            <div className="p-6 md:p-12 flex flex-col gap-10">
+              {/* Top Details (Overview & Genres) */}
+              <div className="flex flex-col md:flex-row gap-8">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-green-400 font-bold text-lg">
+                      {Math.round((movie.vote_average || 0) * 10)}% Match
+                    </span>
+                    <span className="text-gray-300 font-semibold">
+                      {new Date(movie.release_date || movie.first_air_date || '').getFullYear()}
+                    </span>
+                    {details?.runtime && (
+                      <span className="text-gray-300 font-semibold">
+                        {Math.floor(details.runtime / 60)}h {details.runtime % 60}m
+                      </span>
+                    )}
+                    <span className="border border-gray-500 px-1.5 py-0.5 rounded text-xs text-white font-bold">
+                      HD
+                    </span>
+                  </div>
+                  
+                  <p className="text-white text-base md:text-lg leading-relaxed">
+                    {movie.overview}
+                  </p>
+                </div>
+                
+                <div className="w-full md:w-1/3 flex flex-col gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-500">Genres: </span>
+                    <span className="text-white">
+                      {details?.genres?.map(g => g.name).join(', ') || 'Unknown'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Director: </span>
+                    <span className="text-white">
+                      {details?.credits?.crew?.find((c: any) => c.job === 'Director')?.name || 'Unknown'}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <Link
-                  href={`/watch/${movie.media_type || 'movie'}/${movie.id}`}
-                  className="flex items-center gap-2 bg-white text-black px-6 py-2 rounded-md font-bold hover:bg-neutral-300 transition"
-                >
-                <Play className="w-6 h-6" fill="currentColor" />
-                Play
-              </Link>
-              <button 
-                onClick={toggleList}
-                className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center hover:border-white bg-[#181818]/50 transition"
-              >
-                {isSaved ? (
-                  <Check className="w-5 h-5 text-white" />
-                ) : (
-                  <Plus className="w-5 h-5 text-white" />
-                )}
-              </button>
-              <button className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center hover:border-white bg-[#181818]/50 transition">
-                <ThumbsUp className="w-5 h-5 text-white" />
-              </button>
-            </div>
-          </div>
-        </div>
+              {/* Cast Slider */}
+              {details?.credits?.cast && details.credits.cast.length > 0 && (
+                <div>
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-6">Cast</h3>
+                  <div className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide pb-4 -mx-6 px-6 md:-mx-12 md:px-12 snap-x">
+                    {details.credits.cast.slice(0, 15).map((actor) => (
+                      <div key={actor.id} className="flex flex-col items-center flex-shrink-0 w-20 md:w-24 snap-start">
+                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-3 bg-[#222] shadow-lg border-2 border-transparent hover:border-white transition-all duration-300">
+                          <img 
+                            src={getImageUrl(actor.profile_path, 'w500')} 
+                            alt={actor.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <span className="text-white text-xs md:text-sm font-bold text-center line-clamp-1 w-full">{actor.name}</span>
+                        <span className="text-gray-400 text-[10px] md:text-xs text-center line-clamp-1 w-full">{actor.character}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-          {/* Movie Details */}
-          <div className="p-6 md:p-12 flex flex-col md:flex-row gap-8">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-green-400 font-semibold">
-                  {Math.round((movie.vote_average || 0) * 10)}% Match
-                </span>
-                <span className="text-gray-300">
-                  {new Date(movie.release_date || movie.first_air_date || '').getFullYear()}
-                </span>
-                {details?.runtime && (
-                  <span className="text-gray-300">
-                    {Math.floor(details.runtime / 60)}h {details.runtime % 60}m
-                  </span>
-                )}
-                <span className="border border-gray-500 px-1.5 py-0.5 rounded text-xs text-white">
-                  HD
-                </span>
-              </div>
-              
-              <p className="text-white text-base md:text-lg leading-relaxed">
-                {movie.overview}
-              </p>
-            </div>
-            
-            <div className="w-full md:w-1/3 flex flex-col gap-4 text-sm">
-              <div>
-                <span className="text-gray-500">Cast: </span>
-                <span className="text-gray-300">
-                  {details?.credits?.cast?.slice(0, 4).map(c => c.name).join(', ') || 'Unknown'}
-                </span>
-              </div>
-              <div>
-                <span className="text-gray-500">Genres: </span>
-                <span className="text-gray-300">
-                  {details?.genres?.map(g => g.name).join(', ') || 'Unknown'}
-                </span>
-              </div>
+              {/* Similar Movies */}
+              {details?.similar?.results && details.similar.results.length > 0 && (
+                <div>
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-6">More Like This</h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {details.similar.results.slice(0, 9).map((simMovie) => (
+                      <Link href={`/watch/${movie.media_type || 'movie'}/${simMovie.id}`} key={simMovie.id}>
+                        <div className="bg-[#2f2f2f] rounded-lg overflow-hidden hover:scale-[1.02] transition duration-300 cursor-pointer h-full flex flex-col shadow-lg">
+                          <div className="relative aspect-square">
+                            <img 
+                              src={getImageUrl(simMovie.backdrop_path || simMovie.poster_path, 'w500')}
+                              alt={simMovie.title || simMovie.name}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-1.5 py-0.5 rounded flex items-center gap-1 border border-white/10">
+                              <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                              <span className="text-white text-[10px] font-bold">
+                                {simMovie.vote_average ? simMovie.vote_average.toFixed(1) : "N/A"}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="p-4 flex-1 flex flex-col justify-between">
+                            <div className="mb-2">
+                              <h4 className="text-white text-sm md:text-base font-bold line-clamp-2">{simMovie.title || simMovie.name}</h4>
+                            </div>
+                            <div className="flex items-center justify-between mt-2">
+                              <span className="text-green-400 text-xs font-bold">{Math.round((simMovie.vote_average || 0) * 10)}% Match</span>
+                              <span className="text-gray-300 text-[10px] border border-gray-500 px-1.5 py-0.5 rounded">HD</span>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </motion.div>
