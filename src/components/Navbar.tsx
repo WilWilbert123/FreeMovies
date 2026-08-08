@@ -35,17 +35,29 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
+    
     // Fetch some real movies to use as notifications (e.g., Trending)
     const getNotifications = async () => {
       try {
         const data = await fetchMovies(requests.fetchTrending);
-        // Just take the top 3 as notifications
-        setNotifications(data.results?.slice(0, 3) || []);
-      } catch (error) {
+        if (isMounted) {
+          // Just take the top 3 as notifications
+          setNotifications(data.results?.slice(0, 3) || []);
+        }
+      } catch (error: any) {
+        if (error?.name === 'CanceledError' || error?.code === 'ERR_CANCELED' || error?.message?.includes('aborted')) {
+          // Ignore aborted requests during navigation or React StrictMode unmounts
+          return;
+        }
         console.error("Failed to fetch notifications", error);
       }
     };
     getNotifications();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -204,7 +216,10 @@ export default function Navbar() {
                     <Link href="/my-list" className="px-4 py-2 hover:underline text-sm text-gray-300 transition mt-1">Manage Profiles</Link>
                     <div className="h-px bg-gray-700 my-2"></div>
                     <Link href="#" className="px-4 py-2 hover:underline text-sm font-bold text-gray-300 transition">Account</Link>
-                    <Link href="#" className="px-4 py-2 hover:underline text-sm text-gray-300 transition">Help Center</Link>
+                    <Link href="/help" className="px-4 py-2 hover:underline text-sm text-gray-300 transition">Help Center</Link>
+                    {user.email === "johnwilbertgamis2022@gmail.com" && (
+                      <Link href="/dashboard" className="px-4 py-2 hover:underline text-sm text-netflix-red font-bold transition">Admin Dashboard</Link>
+                    )}
                     <div className="h-px bg-gray-700 my-2"></div>
                     <div
                       onClick={async () => {
@@ -315,6 +330,38 @@ export default function Navbar() {
               ))
             ) : (
               <div className="text-gray-500 text-sm">No new notifications</div>
+            )}
+          </div>
+
+          <div className="h-px bg-gray-800 w-full my-2"></div>
+          
+          <div className="flex flex-col gap-4 pb-8">
+            <h2 className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Account</h2>
+            {user ? (
+              <div className="flex flex-col gap-4">
+                <span className="text-gray-400 text-sm font-medium">{user.email}</span>
+                <Link href="/my-list" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Manage Profiles</Link>
+                <Link href="#" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300 font-bold">Account</Link>
+                <Link href="/help" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Help Center</Link>
+                {user.email === "johnwilbertgamis2022@gmail.com" && (
+                  <Link href="/dashboard" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors text-netflix-red font-bold">Admin Dashboard</Link>
+                )}
+                <button
+                  onClick={async () => {
+                    setShowMobileMenu(false);
+                    await supabase.auth.signOut();
+                    router.refresh();
+                  }}
+                  className="text-lg transition-colors hover:text-gray-300 text-gray-300 text-left mt-2"
+                >
+                  Sign out of FreeMovies
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                <Link href="/login" onClick={() => setShowMobileMenu(false)} className="text-lg font-bold text-white bg-netflix-red px-4 py-2 rounded-md text-center">Sign In</Link>
+                <Link href="/login" onClick={() => setShowMobileMenu(false)} className="text-lg text-gray-300 text-center">Sign Up</Link>
+              </div>
             )}
           </div>
         </div>

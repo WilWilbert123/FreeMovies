@@ -2,15 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
-import { Search as SearchIcon } from "lucide-react";
+import { Search as SearchIcon, X } from "lucide-react";
 import { searchMovies } from "@/lib/tmdb";
 import { Movie } from "@/types";
 import MovieCard from "@/components/MovieCard";
+import { useRouter } from "next/navigation";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -45,15 +47,27 @@ export default function SearchPage() {
       <Navbar />
       
       <div className="pt-24 px-4 md:px-12">
-        <div className="relative max-w-2xl mx-auto mb-12">
-          <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
+        <div className="relative max-w-2xl mx-auto mb-8 md:mb-12">
+          <SearchIcon className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 md:w-6 md:h-6" />
           <input
             type="text"
             placeholder="Search for movies, TV shows..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full bg-[#333] text-white pl-14 pr-4 py-4 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 text-lg"
+            className="w-full bg-[#333] text-white pl-10 md:pl-14 pr-10 md:pr-12 py-3 md:py-4 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 text-sm md:text-lg"
           />
+          <button 
+            onClick={() => {
+              if (query) {
+                setQuery('');
+              } else {
+                router.back();
+              }
+            }}
+            className="absolute right-3 md:right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+          >
+            <X className="w-5 h-5 md:w-6 md:h-6" />
+          </button>
         </div>
 
         {loading && (

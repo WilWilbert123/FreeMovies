@@ -52,8 +52,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     <main className="min-h-screen bg-netflix-dark text-white pb-20">
       <Navbar />
       <div className="pt-24 px-4 md:px-12">
-        <h2 className="text-2xl md:text-3xl font-semibold mb-6">{title}</h2>
-        <MovieGrid initialMovies={movies} endpoint={endpoint} />
+        <MovieGrid initialMovies={movies} endpoint={endpoint} title={title} />
       </div>
     </main>
   );
