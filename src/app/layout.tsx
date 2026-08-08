@@ -7,6 +7,7 @@ export const metadata: Metadata = {
 };
 
 import Link from "next/link";
+import LiveChat from "@/components/LiveChat";
 
 export default function RootLayout({
   children,
@@ -36,6 +37,7 @@ export default function RootLayout({
             </Link>
           </div>
         </footer>
+        <LiveChat />
       </body>
     </html>
   );
