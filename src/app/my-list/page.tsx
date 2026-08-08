@@ -20,7 +20,7 @@ export default function MyListPage() {
       <Navbar />
       
       <div className="pt-24 px-4 md:px-12 pb-20">
-        <h1 className="text-2xl md:text-3xl font-bold mb-8">My List</h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-8">Favorites</h1>
         
         {myList.length === 0 ? (
           <div className="flex flex-col items-center justify-center mt-20 text-gray-400">

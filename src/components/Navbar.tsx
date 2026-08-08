@@ -8,6 +8,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { fetchMovies, requests } from "@/lib/tmdb";
 import { Movie } from "@/types";
+import { useUserStore } from "@/store/useUserStore";
+import ShinyText from "./ShinyText/ShinyText";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -24,15 +26,33 @@ export default function Navbar() {
     const fetchUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user || null);
+      if (session?.user) {
+        useUserStore.getState().fetchProfiles();
+      }
     };
     fetchUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user || null);
+      if (session?.user) {
+        useUserStore.getState().fetchProfiles();
+      } else {
+        useUserStore.getState().setActiveProfile(null);
+        useUserStore.getState().setList([]);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const { activeProfile } = useUserStore();
+
+  useEffect(() => {
+    // If user is logged in, but no active profile, and not already on the profiles page
+    if (user && !activeProfile && pathname !== "/profiles") {
+      router.push("/profiles");
+    }
+  }, [user, activeProfile, pathname, router]);
 
   useEffect(() => {
     let isMounted = true;
@@ -78,7 +98,7 @@ export default function Navbar() {
     { name: "TV Shows", href: "/tv" },
     { name: "Movies", href: "/movies" },
     { name: "New & Popular", href: "/new-popular" },
-    { name: "My List", href: "/my-list" },
+    { name: "Favorites", href: "/my-list" },
   ];
 
   return (
@@ -97,9 +117,14 @@ export default function Navbar() {
             <Menu className="w-6 h-6" />
           </button>
           <Link href="/">
-            <h1 className="text-netflix-red text-2xl md:text-3xl font-bold tracking-wider cursor-pointer">
-              FREEMOVIES
-            </h1>
+            <ShinyText 
+              text="FREEMOVIES" 
+              speed={3} 
+              className="text-3xl md:text-4xl font-bold tracking-wider cursor-pointer z-50 relative font-bebas" 
+              color="#e50914" 
+              shineColor="#ffffff" 
+              spread={120} 
+            />
           </Link>
           <ul className="hidden md:flex gap-5 text-sm font-medium items-center">
             {navLinks.map((link) => (
@@ -196,8 +221,16 @@ export default function Navbar() {
             onMouseEnter={() => setShowAccountMenu(true)}
             onMouseLeave={() => setShowAccountMenu(false)}
           >
-            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center overflow-hidden">
-              {user ? (
+            <div className="w-8 h-8 rounded flex items-center justify-center overflow-hidden bg-gray-800 border border-gray-700">
+              {activeProfile ? (
+                activeProfile.avatar_url ? (
+                  <img src={activeProfile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-netflix-red text-white flex items-center justify-center font-bold text-sm">
+                    {activeProfile.name.charAt(0).toUpperCase()}
+                  </div>
+                )
+              ) : user ? (
                 <div className="w-full h-full bg-netflix-red text-white flex items-center justify-center font-bold text-sm">
                   {user.email?.charAt(0).toUpperCase()}
                 </div>
@@ -213,7 +246,7 @@ export default function Navbar() {
                     <div className="px-4 py-2 truncate text-sm text-gray-300 font-bold border-b border-gray-700">
                       {user.email}
                     </div>
-                    <Link href="/my-list" className="px-4 py-2 hover:underline text-sm text-gray-300 transition mt-1">Manage Profiles</Link>
+                    <Link href="/profiles" className="px-4 py-2 hover:underline text-sm text-gray-300 transition mt-1">Manage Profiles</Link>
                     <div className="h-px bg-gray-700 my-2"></div>
                     <Link href="#" className="px-4 py-2 hover:underline text-sm font-bold text-gray-300 transition">Account</Link>
                     <Link href="/help" className="px-4 py-2 hover:underline text-sm text-gray-300 transition">Help Center</Link>
@@ -228,7 +261,7 @@ export default function Navbar() {
                       }}
                       className="px-4 py-2 hover:underline text-sm text-center text-gray-300 transition cursor-pointer"
                     >
-                      Sign out of FreeMovies
+                      Sign out
                     </div>
                   </>
                 ) : (
@@ -255,9 +288,16 @@ export default function Navbar() {
         )}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-800">
-          <h1 className="text-netflix-red text-2xl font-bold tracking-wider">
-            FREEMOVIES
-          </h1>
+          <Link href="/">
+            <ShinyText 
+              text="FREEMOVIES" 
+              speed={3} 
+              className="text-3xl md:text-4xl font-bold tracking-wider cursor-pointer font-bebas" 
+              color="#e50914" 
+              shineColor="#ffffff" 
+              spread={120} 
+            />
+          </Link>
           <button 
             onClick={() => setShowMobileMenu(false)}
             className="p-2 text-white hover:text-gray-300 transition bg-gray-900 rounded-full"
@@ -340,7 +380,7 @@ export default function Navbar() {
             {user ? (
               <div className="flex flex-col gap-4">
                 <span className="text-gray-400 text-sm font-medium">{user.email}</span>
-                <Link href="/my-list" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Manage Profiles</Link>
+                <Link href="/profiles" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Manage Profiles</Link>
                 <Link href="#" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300 font-bold">Account</Link>
                 <Link href="/help" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Help Center</Link>
                 {user.email === "johnwilbertgamis2022@gmail.com" && (
@@ -354,7 +394,7 @@ export default function Navbar() {
                   }}
                   className="text-lg transition-colors hover:text-gray-300 text-gray-300 text-left mt-2"
                 >
-                  Sign out of FreeMovies
+                  Sign out
                 </button>
               </div>
             ) : (

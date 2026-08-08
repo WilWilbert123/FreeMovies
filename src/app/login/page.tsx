@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ShinyText from "@/components/ShinyText/ShinyText";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -36,7 +37,7 @@ export default function LoginPage() {
           password,
         });
         if (error) throw error;
-        router.push("/");
+        router.push("/profiles");
         router.refresh(); // Refresh to update navbar state
       }
     } catch (err: any) {
@@ -55,9 +56,14 @@ export default function LoginPage() {
 
       <div className="px-4 py-4 md:px-12 flex justify-between items-center z-50">
         <Link href="/">
-          <h1 className="text-netflix-red text-3xl font-bold tracking-wider cursor-pointer z-50">
-            FREEMOVIES
-          </h1>
+          <ShinyText 
+            text="FREEMOVIES" 
+            speed={3} 
+            className="text-4xl md:text-5xl font-bold tracking-wider cursor-pointer z-50 relative font-bebas" 
+            color="#e50914" 
+            shineColor="#ffffff" 
+            spread={120} 
+          />
         </Link>
       </div>
 
