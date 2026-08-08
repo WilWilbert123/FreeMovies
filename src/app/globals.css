@@ -5,6 +5,7 @@
   --color-netflix-dark: #141414;
   --color-netflix-light: #e5e5e5;
   --font-sans: 'Inter', system-ui, sans-serif;
+  --font-bebas: var(--font-bebas), sans-serif;
 }
 
 :root {

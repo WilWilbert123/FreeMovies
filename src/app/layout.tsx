@@ -1,4 +1,11 @@
 import type { Metadata } from "next";
+import { Bebas_Neue } from "next/font/google";
+
+const bebasNeue = Bebas_Neue({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-bebas",
+});
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full antialiased dark">
+    <html lang="en" className={`h-full antialiased dark ${bebasNeue.variable}`}>
       <body className="min-h-full bg-[#141414] text-white flex flex-col">
         <div className="flex-grow">
           {children}

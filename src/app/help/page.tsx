@@ -14,8 +14,8 @@ export default function HelpCenterPage() {
       answer: "Yes! FreeMovies is 100% free. You do not need to enter a credit card or pay any subscription fees to enjoy our massive library of movies and TV shows."
     },
     {
-      question: "Do I need to create an account to watch?",
-      answer: "No account is required to start watching! You can instantly stream any movie or show. However, your personalized 'My List' is saved locally to your current browser, so if you clear your browser data or switch devices, your saved items will not carry over."
+      question: "Do I need an account to watch?",
+      answer: "No account is required to start watching! You can instantly stream any movie or show. However, creating a free account allows you to save movies to your 'Favorites' and access them across all your devices."
     },
     {
       question: "Why am I experiencing video buffering or playback issues?",
