@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Mail, X } from "lucide-react";
 import ShinyText from "@/components/ShinyText/ShinyText";
 
 export default function LoginPage() {
@@ -12,6 +13,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   
   const router = useRouter();
   const supabase = createClient();
@@ -28,8 +30,8 @@ export default function LoginPage() {
           password,
         });
         if (error) throw error;
-        // Auto sign in after sign up is configured in Supabase by default unless email verification is required
-        alert("Sign up successful! You can now log in.");
+        // Show the beautiful modal instead of alert
+        setShowConfirmModal(true);
         setIsSignUp(false);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -100,9 +102,13 @@ export default function LoginPage() {
             <button 
               type="submit" 
               disabled={isLoading}
-              className="bg-netflix-red text-white py-3 rounded-md font-bold mt-4 hover:bg-red-700 transition"
+              className="bg-netflix-red text-white py-3 rounded-md font-bold mt-4 hover:bg-red-700 transition flex justify-center items-center"
             >
-              {isLoading ? "Please wait..." : (isSignUp ? "Sign Up" : "Sign In")}
+              {isLoading ? (
+                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                isSignUp ? "Sign Up" : "Sign In"
+              )}
             </button>
           </form>
 
@@ -129,6 +135,37 @@ export default function LoginPage() {
           </p>
         </div>
       </div>
+
+      {/* Email Confirmation Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-[#141414] border border-gray-800 rounded-xl max-w-md w-full p-8 relative flex flex-col items-center text-center shadow-2xl scale-in-center">
+            <button 
+              onClick={() => setShowConfirmModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition bg-gray-800/50 hover:bg-gray-700 p-2 rounded-full"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6 ring-4 ring-gray-800/50">
+              <Mail className="w-10 h-10 text-netflix-red" />
+            </div>
+            
+            <h2 className="text-2xl font-bold text-white mb-3">Check your email</h2>
+            <p className="text-gray-400 mb-8 leading-relaxed">
+              We've sent a confirmation link to <span className="text-white font-medium">{email}</span>. 
+              Please verify your email address to complete your registration and start watching FreeMovies!
+            </p>
+            
+            <button 
+              onClick={() => setShowConfirmModal(false)}
+              className="w-full bg-white text-black font-bold py-3.5 rounded-md hover:bg-gray-200 transition text-lg"
+            >
+              Back to Login
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
