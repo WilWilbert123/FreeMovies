@@ -4,6 +4,7 @@ export interface Movie {
   name?: string;
   original_title?: string;
   original_name?: string;
+  original_language?: string;
   overview: string;
   poster_path: string;
   backdrop_path: string;
