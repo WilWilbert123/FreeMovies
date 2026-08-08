@@ -49,6 +49,12 @@ export interface MovieDetails extends Movie {
       profile_path: string | null;
       character: string;
     }[];
+    crew?: {
+      id: number;
+      name: string;
+      job: string;
+      department: string;
+    }[];
   };
   similar?: TMDBResponse;
 }
