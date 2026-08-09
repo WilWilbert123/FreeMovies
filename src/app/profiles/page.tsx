@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useUserStore } from "@/store/useUserStore";
 import { PlusCircle } from "lucide-react";
 import ShinyText from "@/components/ShinyText/ShinyText";
+import ShinyImage from "@/components/ShinyText/ShinyImage";
 
 export default function ProfilesPage() {
   const router = useRouter();
@@ -69,10 +70,24 @@ export default function ProfilesPage() {
 
   return (
     <div className="min-h-screen bg-[#141414] flex flex-col items-center justify-center text-white">
-      <div className="absolute top-4 md:top-8 left-4 md:left-12 cursor-pointer z-50" onClick={() => router.push('/')}>
+      <div className="absolute top-4 md:top-8 left-4 md:left-12 cursor-pointer z-50 flex items-center gap-1 group" onClick={() => router.push('/')}>
+        <ShinyImage 
+          src="/logofm2.png" 
+          alt="FreeMovies Logo" 
+          className="h-10 md:h-12 w-auto cursor-pointer z-50 relative group-hover:scale-105 transition-transform duration-300" 
+          speed={1.5} 
+          delay={1.5} 
+          offset={0} 
+          direction="left" 
+          shineColor="#ffffff" 
+          spread={120} 
+        />
         <ShinyText 
-          text="FREEMOVIES" 
-          speed={3} 
+          text="REEMOVIES" 
+          speed={1.5}
+          delay={1.5}
+          offset={1.5}
+          direction="left"
           className="text-4xl md:text-5xl font-bold tracking-wider relative font-bebas" 
           color="#e50914" 
           shineColor="#ffffff" 
