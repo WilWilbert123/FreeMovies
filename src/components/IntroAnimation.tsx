@@ -10,6 +10,11 @@ export default function IntroAnimation() {
 
   useEffect(() => {
     setIsIntroPlaying(true);
+    
+    // Play intro sound
+    const audio = new Audio('/soundintro.mp3');
+    audio.play().catch(e => console.log('Audio autoplay blocked by browser:', e));
+
     // For testing purposes, we can clear this to see it every load.
     // Uncomment this to make it play only once per session:
     // if (sessionStorage.getItem("introPlayed") === "true") {
@@ -23,7 +28,11 @@ export default function IntroAnimation() {
       // sessionStorage.setItem("introPlayed", "true");
     }, 6000); // Sequence takes about 6 seconds
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      audio.pause();
+      audio.currentTime = 0;
+    };
   }, []);
 
   if (!showIntro) return null;
