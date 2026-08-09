@@ -75,6 +75,16 @@ export const fetchMovieDetails = async (id: number | string, type: 'movie' | 'tv
   }
 };
 
+export const fetchTVSeason = async (tvId: string | number, seasonNumber: number): Promise<any> => {
+  try {
+    const { data } = await tmdb.get(`/tv/${tvId}/season/${seasonNumber}`);
+    return data;
+  } catch (error) {
+    console.error(`Failed to fetch season ${seasonNumber} for tv ${tvId}:`, error);
+    return null;
+  }
+};
+
 export const searchMovies = async (query: string): Promise<TMDBResponse> => {
   try {
     const { data } = await tmdb.get(`/search/multi`, {
