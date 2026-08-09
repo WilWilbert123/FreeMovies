@@ -40,7 +40,7 @@ export default function Navbar() {
     };
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // Detect iOS
+    // Detect OS
     const userAgent = window.navigator.userAgent.toLowerCase();
     if (/iphone|ipad|ipod/.test(userAgent) && !(window.navigator as any).standalone) {
       setIsIOS(true);
