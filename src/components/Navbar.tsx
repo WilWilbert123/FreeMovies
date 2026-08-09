@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, Bell, User, Menu, X, ChevronDown } from "lucide-react";
+import { Search, Bell, User, Menu, X, ChevronDown, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -10,17 +10,60 @@ import { fetchMovies, requests } from "@/lib/tmdb";
 import { Movie } from "@/types";
 import { useUserStore } from "@/store/useUserStore";
 import ShinyText from "./ShinyText/ShinyText";
+import ShinyImage from "./ShinyText/ShinyImage";
+import { useIntroStore } from "@/store/useIntroStore";
+import { SERVERS } from "@/lib/servers";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showAllServers, setShowAllServers] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [notifications, setNotifications] = useState<Movie[]>([]);
+  
+  // PWA Install states
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isIOS, setIsIOS] = useState(false);
+  const [showIOSPrompt, setShowIOSPrompt] = useState(false);
+
+  const isIntroPlaying = useIntroStore((state) => state.isIntroPlaying);
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    // Detect iOS
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    if (/iphone|ipad|ipod/.test(userAgent) && !(window.navigator as any).standalone) {
+      setIsIOS(true);
+    }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    } else if (isIOS) {
+      setShowIOSPrompt(true);
+    } else {
+      alert("App is already installed or not supported on this browser.");
+    }
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -45,7 +88,7 @@ export default function Navbar() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const { activeProfile } = useUserStore();
+  const { activeProfile, activeServer, setActiveServer } = useUserStore();
 
   useEffect(() => {
     // If user is logged in, but no active profile, and not already on the profiles page
@@ -116,11 +159,19 @@ export default function Navbar() {
           >
             <Menu className="w-6 h-6" />
           </button>
-          <Link href="/">
+          <Link href="/" className="flex items-center gap-1 group">
+            <div className="h-10 w-10 relative">
+              {!isIntroPlaying && (
+                <ShinyImage layoutId="main-logo" transition={{ type: "tween", duration: 1.5, ease: "easeInOut" }} src="/logofm2.png" alt="FreeMovies Logo" className="h-10 w-auto cursor-pointer z-50 relative group-hover:scale-105 absolute inset-0" speed={1.5} delay={1.5} offset={0} direction="left" shineColor="#ffffff" spread={120} />
+              )}
+            </div>
             <ShinyText 
-              text="FREEMOVIES" 
-              speed={3} 
-              className="text-3xl md:text-4xl font-bold tracking-wider cursor-pointer z-50 relative font-bebas" 
+              text="REEMOVIES" 
+              speed={1.5} 
+              delay={1.5} 
+              offset={1.5} 
+              direction="left" 
+              className="text-4xl font-bold tracking-wider cursor-pointer z-50 relative font-bebas" 
               color="#e50914" 
               shineColor="#ffffff" 
               spread={120} 
@@ -158,7 +209,15 @@ export default function Navbar() {
           </ul>
         </div>
 
-        <div className="flex items-center gap-6 text-white">
+        <div className="flex items-center gap-4 md:gap-6 text-white">
+          <button 
+            onClick={handleInstallClick}
+            className="flex items-center justify-center bg-gray-800/80 hover:bg-gray-700/80 text-white p-1.5 md:px-3 md:py-1.5 rounded-full transition border border-gray-700"
+            title="Install App"
+          >
+            <Download className="w-4 h-4 md:w-3.5 md:h-3.5" />
+            <span className="hidden md:inline md:ml-2 text-xs font-medium">Install App</span>
+          </button>
           <Link href="/search">
             <Search className="w-5 h-5 cursor-pointer hover:text-gray-300 transition" />
           </Link>
@@ -248,8 +307,12 @@ export default function Navbar() {
                     </div>
                     <Link href="/profiles" className="px-4 py-2 hover:underline text-sm text-gray-300 transition mt-1">Manage Profiles</Link>
                     <div className="h-px bg-gray-700 my-2"></div>
-                    <Link href="#" className="px-4 py-2 hover:underline text-sm font-bold text-gray-300 transition">Account</Link>
-                    <Link href="/help" className="px-4 py-2 hover:underline text-sm text-gray-300 transition">Help Center</Link>
+                    {user?.email !== "johnwilbertgamis2022@gmail.com" && (
+                      <Link href="/help" className="px-4 py-2 hover:underline text-sm text-gray-300 transition">Help Center</Link>
+                    )}
+                    
+
+
                     {user.email === "johnwilbertgamis2022@gmail.com" && (
                       <Link href="/dashboard" className="px-4 py-2 hover:underline text-sm text-netflix-red font-bold transition">Admin Dashboard</Link>
                     )}
@@ -288,11 +351,19 @@ export default function Navbar() {
         )}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-800">
-          <Link href="/">
+          <Link href="/" className="flex items-center gap-1 group">
+            <div className="h-10 w-10 relative">
+              {!isIntroPlaying && (
+                <ShinyImage layoutId="mobile-drawer-logo" transition={{ type: "tween", duration: 1.5, ease: "easeInOut" }} src="/logofm2.png" alt="FreeMovies Logo" className="h-10 w-auto cursor-pointer z-50 relative group-hover:scale-105 absolute inset-0" speed={1.5} delay={1.5} offset={0} direction="left" shineColor="#ffffff" spread={120} />
+              )}
+            </div>
             <ShinyText 
-              text="FREEMOVIES" 
-              speed={3} 
-              className="text-3xl md:text-4xl font-bold tracking-wider cursor-pointer font-bebas" 
+              text="REEMOVIES" 
+              speed={1.5} 
+              delay={1.5} 
+              offset={1.5} 
+              direction="left" 
+              className="text-4xl font-bold tracking-wider cursor-pointer z-50 relative font-bebas" 
               color="#e50914" 
               shineColor="#ffffff" 
               spread={120} 
@@ -381,8 +452,11 @@ export default function Navbar() {
               <div className="flex flex-col gap-4">
                 <span className="text-gray-400 text-sm font-medium">{user.email}</span>
                 <Link href="/profiles" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Manage Profiles</Link>
-                <Link href="#" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300 font-bold">Account</Link>
-                <Link href="/help" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Help Center</Link>
+                {user?.email !== "johnwilbertgamis2022@gmail.com" && (
+                  <Link href="/help" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Help Center</Link>
+                )}
+                
+
                 {user.email === "johnwilbertgamis2022@gmail.com" && (
                   <Link href="/dashboard" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors text-netflix-red font-bold">Admin Dashboard</Link>
                 )}
@@ -406,6 +480,43 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* iOS Install Prompt Modal */}
+      {showIOSPrompt && (
+        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-[#141414] border border-gray-800 rounded-xl max-w-sm w-full p-6 relative flex flex-col items-center text-center shadow-2xl">
+            <button 
+              onClick={() => setShowIOSPrompt(false)}
+              className="absolute top-3 right-3 text-gray-400 hover:text-white transition bg-gray-800/50 hover:bg-gray-700 p-1.5 rounded-full"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="w-16 h-16 bg-gray-800 rounded-2xl flex items-center justify-center mb-4 ring-4 ring-gray-800/50 overflow-hidden">
+              <img src="/logofm2.png" alt="FreeMovies Logo" className="w-full h-full object-cover" />
+            </div>
+            <h2 className="text-xl font-bold text-white mb-2">Install FreeMovies</h2>
+            <p className="text-sm text-gray-400 mb-6 leading-relaxed">
+              Install this app on your iPhone or iPad for the best experience.
+            </p>
+            <div className="bg-gray-800/50 rounded-lg p-4 w-full text-left flex flex-col gap-3 mb-6">
+              <div className="flex items-center gap-3">
+                <div className="bg-gray-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
+                <p className="text-sm text-gray-300">Tap the <span className="text-blue-400 font-bold">Share</span> icon at the bottom of Safari.</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="bg-gray-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
+                <p className="text-sm text-gray-300">Scroll down and tap <span className="text-white font-bold">"Add to Home Screen"</span>.</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setShowIOSPrompt(false)}
+              className="w-full bg-netflix-red text-white font-bold py-3 rounded-md hover:bg-red-700 transition"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }

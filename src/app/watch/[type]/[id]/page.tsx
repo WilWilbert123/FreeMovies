@@ -1,12 +1,13 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Server } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { fetchMovieDetails } from "@/lib/tmdb";
 import { MovieDetails } from "@/types";
-import { use } from "react";
 import { createClient } from "@/lib/supabase/client";
+
+import { useUserStore } from "@/store/useUserStore";
 
 interface WatchPageProps {
   params: Promise<{
@@ -19,9 +20,10 @@ export default function WatchPage(props: WatchPageProps) {
   const router = useRouter();
   const params = use(props.params);
   const { type, id } = params;
-  
+
   const [details, setDetails] = useState<MovieDetails | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const activeServer = useUserStore((state) => state.activeServer);
   const supabase = createClient();
 
   useEffect(() => {
@@ -38,7 +40,7 @@ export default function WatchPage(props: WatchPageProps) {
   }, [router]);
 
   useEffect(() => {
-    if (!isAuthenticated) return; // Don't fetch if not logged in
+    if (!isAuthenticated) return;
 
     const getDetails = async () => {
       try {
@@ -55,25 +57,24 @@ export default function WatchPage(props: WatchPageProps) {
     return <div className="h-screen w-screen bg-black flex items-center justify-center text-white">Checking authentication...</div>;
   }
 
-  // We are using vidsrc.to because it has the content and is not blocked.
-  const videoUrl = `https://vidsrc.to/embed/${type}/${id}`;
-
   return (
-    <div className="h-screen w-screen bg-black">
-      <nav className="fixed w-full p-4 z-10 flex flex-row items-center gap-8 bg-black/40 hover:bg-black/80 transition-colors duration-300">
-        <ArrowLeft
-          onClick={() => router.back()}
-          className="text-white cursor-pointer w-8 h-8 hover:opacity-80 transition"
-        />
-        <p className="text-white text-1xl md:text-3xl font-bold">
-          <span className="font-light text-gray-300 mr-2">Watching:</span>
-          {details?.title || details?.name || "Loading..."}
-        </p>
+    <div className="h-screen w-screen bg-black flex flex-col">
+      <nav className="w-full p-4 z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#141414] border-b border-white/10 shrink-0">
+        <div className="flex items-center gap-4">
+          <ArrowLeft
+            onClick={() => router.back()}
+            className="text-white cursor-pointer w-6 h-6 hover:opacity-80 transition"
+          />
+          <p className="text-white text-lg md:text-xl font-bold truncate max-w-[200px] md:max-w-[400px]">
+            <span className="font-light text-gray-400 mr-2">Watching:</span>
+            {details?.title || details?.name || "Loading..."}
+          </p>
+        </div>
       </nav>
 
-      <div className="w-full h-full pt-16 md:pt-0">
+      <div className="w-full flex-1 bg-black">
         <iframe
-          src={videoUrl}
+          src={activeServer?.url ? activeServer.url(type, id) : `https://vidlink.pro/${type}/${id}`}
           className="w-full h-full border-none"
           allowFullScreen
           allow="autoplay; fullscreen"

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { MessageCircle, X, Send, User } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 type Message = {
   id: string;
@@ -14,14 +15,24 @@ type Message = {
 };
 
 export default function LiveChat() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [chatId, setChatId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const isOpenRef = useRef(isOpen);
   const supabase = createClient();
+
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+    if (isOpen) {
+      setUnreadCount(0);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -34,11 +45,17 @@ export default function LiveChat() {
       setUser(session?.user || null);
     });
 
-    return () => subscription.unsubscribe();
+    const handleOpenChat = () => setIsOpen(true);
+    window.addEventListener('open-live-chat', handleOpenChat);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener('open-live-chat', handleOpenChat);
+    };
   }, []);
 
   useEffect(() => {
-    if (!user || !isOpen) return;
+    if (!user) return;
 
     let isMounted = true;
 
@@ -69,7 +86,7 @@ export default function LiveChat() {
     loadChat();
 
     return () => { isMounted = false; };
-  }, [user, isOpen]);
+  }, [user]);
 
   useEffect(() => {
     if (!chatId) return;
@@ -91,6 +108,10 @@ export default function LiveChat() {
             if (prev.find((m) => m.id === newMsg.id)) return prev;
             return [...prev, newMsg];
           });
+
+          if (!isOpenRef.current && newMsg.sender_role !== "user") {
+            setUnreadCount((prev) => prev + 1);
+          }
         }
       )
       .subscribe();
@@ -154,6 +175,9 @@ export default function LiveChat() {
 
   if (!user && !isOpen) return null; // Only render button if not logged in if they open it
 
+  // Hide LiveChat on watch pages so it doesn't obstruct the video player
+  if (pathname?.startsWith("/watch")) return null;
+
   // Do not show the support chat widget to the admin
   if (user?.email === "johnwilbertgamis2022@gmail.com") {
     return null;
@@ -164,9 +188,14 @@ export default function LiveChat() {
       {!isOpen ? (
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-netflix-red text-white p-4 rounded-full shadow-lg hover:bg-red-700 transition-colors flex items-center justify-center"
+          className="relative bg-netflix-red text-white p-4 rounded-full shadow-lg hover:bg-red-700 transition-colors flex items-center justify-center"
         >
           <MessageCircle className="w-6 h-6" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-white text-netflix-red text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-md">
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
         </button>
       ) : (
         <div className="bg-[#141414] border border-gray-700 rounded-lg shadow-2xl w-[350px] max-w-[calc(100vw-48px)] flex flex-col h-[500px] max-h-[80vh]">

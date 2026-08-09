@@ -11,10 +11,21 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "FreeMovies - Watch TV Shows & Movies",
   description: "High-performance streaming platform for free movies and TV shows.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "FreeMovies",
+  },
+};
+
+export const viewport = {
+  themeColor: "#141414",
 };
 
 import Link from "next/link";
-import LiveChat from "@/components/LiveChat";
+import IntroAnimation from "@/components/IntroAnimation";
+import ShinyText from "@/components/ShinyText/ShinyText";
 
 export default function RootLayout({
   children,
@@ -24,17 +35,18 @@ export default function RootLayout({
   return (
     <html lang="en" className={`h-full antialiased dark ${bebasNeue.variable}`}>
       <body className="min-h-full bg-[#141414] text-white flex flex-col">
+        <IntroAnimation />
         <div className="flex-grow">
           {children}
         </div>
         <footer className="w-full bg-[#141414] border-t border-gray-800 py-6 mt-12">
           <div className="container mx-auto px-4 flex flex-col items-center justify-center gap-4">
-            <p className="text-gray-400 text-sm font-medium">
-              Created by John Wilbert Gamis &copy; 2026
-            </p>
-            <Link 
-              href="https://github.com/WilWilbert123/FreeMovies" 
-              target="_blank" 
+            <div className="text-gray-400 text-sm font-medium flex items-center justify-center gap-1">
+              Created by <ShinyText text="John Wilbert Gamis" speed={5} className="text-sm font-bold" /> &copy; 2026
+            </div>
+            <Link
+              href="https://github.com/WilWilbert123/FreeMovies"
+              target="_blank"
               className="text-gray-400 hover:text-white transition-colors duration-300 flex items-center gap-2"
             >
               <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
@@ -44,7 +56,6 @@ export default function RootLayout({
             </Link>
           </div>
         </footer>
-        <LiveChat />
       </body>
     </html>
   );

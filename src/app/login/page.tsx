@@ -4,8 +4,9 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Mail, X } from "lucide-react";
+import { Mail, X, Eye, EyeOff } from "lucide-react";
 import ShinyText from "@/components/ShinyText/ShinyText";
+import ShinyImage from "@/components/ShinyText/ShinyImage";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   
   const router = useRouter();
@@ -57,10 +59,24 @@ export default function LoginPage() {
       ></div>
 
       <div className="px-4 py-4 md:px-12 flex justify-between items-center z-50">
-        <Link href="/">
+        <Link href="/" className="flex items-center gap-1 group">
+          <ShinyImage 
+            src="/logofm2.png" 
+            alt="FreeMovies Logo" 
+            className="h-10 md:h-12 w-auto cursor-pointer z-50 relative group-hover:scale-105 transition-transform duration-300" 
+            speed={1.5} 
+            delay={1.5} 
+            offset={0} 
+            direction="left" 
+            shineColor="#ffffff" 
+            spread={120} 
+          />
           <ShinyText 
-            text="FREEMOVIES" 
-            speed={3} 
+            text="REEMOVIES" 
+            speed={1.5}
+            delay={1.5}
+            offset={1.5}
+            direction="left"
             className="text-4xl md:text-5xl font-bold tracking-wider cursor-pointer z-50 relative font-bebas" 
             color="#e50914" 
             shineColor="#ffffff" 
@@ -84,20 +100,29 @@ export default function LoginPage() {
           <form onSubmit={handleAuth} className="flex flex-col gap-4">
             <input 
               type="email"
-              placeholder="Email or phone number"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
               required
             />
-            <input 
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
-              required
-            />
+            <div className="relative">
+              <input 
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500 pr-12"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
             
             <button 
               type="submit" 
@@ -117,22 +142,18 @@ export default function LoginPage() {
               <input type="checkbox" id="remember" className="w-4 h-4 bg-gray-500" />
               <label htmlFor="remember">Remember me</label>
             </div>
-            <a href="#" className="hover:underline">Need help?</a>
+            <Link href="/help" className="hover:underline">Need help?</Link>
           </div>
 
           <div className="text-gray-400 mt-10">
-            {isSignUp ? "Already subscribed to FreeMovies? " : "New to FreeMovies? "}
+            {isSignUp ? "Already have an account? " : "New to FreeMovies? "}
             <span 
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-white hover:underline cursor-pointer"
+              className="text-red-600 hover:underline cursor-pointer font-medium"
             >
               {isSignUp ? "Sign in now." : "Sign up now."}
             </span>
           </div>
-          
-          <p className="text-gray-500 text-xs mt-2">
-            This page is protected by Google reCAPTCHA to ensure you're not a bot. <a href="#" className="text-blue-500 hover:underline">Learn more.</a>
-          </p>
         </div>
       </div>
 
