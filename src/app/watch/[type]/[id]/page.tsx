@@ -74,7 +74,7 @@ export default function WatchPage(props: WatchPageProps) {
 
       <div className="w-full flex-1 bg-black">
         <iframe
-          src={activeServer?.url ? activeServer.url(type, id) : `https://vidlink.pro/${type}/${id}`}
+          src={activeServer?.url ? activeServer.url(type, id) : `https://vidlink.pro/${type}/${id}?autoplay=1`}
           className="w-full h-full border-none"
           allowFullScreen
           allow="autoplay; fullscreen"
