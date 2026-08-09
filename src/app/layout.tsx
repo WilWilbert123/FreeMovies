@@ -26,6 +26,7 @@ export const viewport = {
 import Link from "next/link";
 import IntroAnimation from "@/components/IntroAnimation";
 import ShinyText from "@/components/ShinyText/ShinyText";
+import PresenceTracker from "@/components/PresenceTracker";
 
 export default function RootLayout({
   children,
@@ -35,6 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`h-full antialiased dark ${bebasNeue.variable}`}>
       <body className="min-h-full bg-[#141414] text-white flex flex-col">
+        <PresenceTracker />
         <IntroAnimation />
         <div className="flex-grow">
           {children}
