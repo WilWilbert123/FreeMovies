@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import { Search, CreditCard, Key, Settings, Users, ChevronDown, ChevronUp, MessageCircle } from "lucide-react";
+import LiveChat from "@/components/LiveChat";
 
 export default function HelpCenterPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,8 +36,8 @@ export default function HelpCenterPage() {
     }
   ];
 
-  const filteredFaqs = faqs.filter(faq => 
-    faq.question.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const filteredFaqs = faqs.filter(faq =>
+    faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
     faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -47,7 +48,7 @@ export default function HelpCenterPage() {
   return (
     <main className="min-h-screen bg-netflix-dark text-white pb-20">
       <Navbar />
-      
+
       {/* Hero Search Section */}
       <div className="pt-32 pb-16 px-4 md:px-12 bg-gradient-to-b from-gray-900 to-netflix-dark">
         <div className="max-w-3xl mx-auto text-center">
@@ -71,7 +72,7 @@ export default function HelpCenterPage() {
           <h2 className="text-2xl font-semibold mb-6">
             {searchQuery ? "Search Results" : "Popular Articles"}
           </h2>
-          
+
           <div className="bg-[#141414] border border-gray-800 rounded-lg overflow-hidden">
             {filteredFaqs.length > 0 ? (
               filteredFaqs.map((faq, idx) => (
@@ -109,11 +110,15 @@ export default function HelpCenterPage() {
           <p className="text-gray-400 mb-6 max-w-lg">
             If you couldn't find the answer to your question in our articles, our support team is available 24/7 to assist you.
           </p>
-          <button className="px-8 py-3 bg-white text-black font-bold rounded hover:bg-gray-200 transition-colors">
+          <button 
+            onClick={() => window.dispatchEvent(new Event('open-live-chat'))}
+            className="px-8 py-3 bg-white text-black font-bold rounded hover:bg-gray-200 transition-colors"
+          >
             Start Live Chat
           </button>
         </div>
       </div>
+      <LiveChat />
     </main>
   );
 }

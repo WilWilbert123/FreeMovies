@@ -1,11 +1,15 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { Movie, Profile } from '@/types';
 import { createClient } from '@/lib/supabase/client';
+import { Server, SERVERS } from '@/lib/servers';
 
 interface UserState {
   myList: Movie[];
   profiles: Profile[];
   activeProfile: Profile | null;
+  activeServer: Server;
+  setActiveServer: (server: Server) => void;
   addToList: (movie: Movie) => Promise<void>;
   removeFromList: (id: number) => Promise<void>;
   isInList: (id: number) => boolean;
@@ -15,10 +19,15 @@ interface UserState {
   setActiveProfile: (profile: Profile | null) => void;
 }
 
-export const useUserStore = create<UserState>()((set, get) => ({
-  myList: [],
-  profiles: [],
-  activeProfile: null,
+export const useUserStore = create<UserState>()(
+  persist(
+    (set, get) => ({
+      myList: [],
+      profiles: [],
+      activeProfile: null,
+      activeServer: SERVERS[0],
+
+  setActiveServer: (server) => set({ activeServer: server }),
 
   setList: (movies) => set({ myList: movies }),
 
@@ -122,4 +131,4 @@ export const useUserStore = create<UserState>()((set, get) => ({
   isInList: (id) => {
     return get().myList.some((m) => m.id === id);
   },
-}));
+}), { name: 'freemovies-user-store' }));

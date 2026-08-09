@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useAnimationFrame, useTransform } from 'motion/react';
 import './ShinyText.css';
@@ -13,7 +15,8 @@ const ShinyText = ({
     yoyo = false,
     pauseOnHover = false,
     direction = 'left',
-    delay = 0
+    delay = 0,
+    offset = 0
 }) => {
     const [isPaused, setIsPaused] = useState(false);
     const progress = useMotionValue(0);
@@ -43,7 +46,8 @@ const ShinyText = ({
         if (yoyo) {
             const cycleDuration = animationDuration + delayDuration;
             const fullCycle = cycleDuration * 2;
-            const cycleTime = elapsedRef.current % fullCycle;
+            const adjustedElapsed = elapsedRef.current + (offset * 1000);
+            const cycleTime = adjustedElapsed % fullCycle;
 
             if (cycleTime < animationDuration) {
                 // Forward animation: 0 -> 100
@@ -63,7 +67,8 @@ const ShinyText = ({
             }
         } else {
             const cycleDuration = animationDuration + delayDuration;
-            const cycleTime = elapsedRef.current % cycleDuration;
+            const adjustedElapsed = elapsedRef.current + (offset * 1000);
+            const cycleTime = adjustedElapsed % cycleDuration;
 
             if (cycleTime < animationDuration) {
                 // Animation phase: 0 -> 100

@@ -43,6 +43,16 @@ export const fetchMovies = async (endpoint: string, page: number = 1): Promise<T
         page,
       }
     });
+    const isTV = endpoint.includes('/tv');
+    const isMovie = endpoint.includes('/movie');
+
+    if (data && data.results) {
+      data.results = data.results.map((item: any) => ({
+        ...item,
+        media_type: item.media_type || (isTV ? 'tv' : isMovie ? 'movie' : 'movie')
+      }));
+    }
+
     return data;
   } catch (error) {
     console.error(`Failed to fetch movies from ${endpoint}:`, error);

@@ -62,18 +62,27 @@ export default function MovieCard({ movie, layout = 'row' }: MovieCardProps) {
         className={cn(
           "relative group shrink-0 cursor-pointer transition-transform duration-200",
           layout === 'row' 
-            ? "w-[140px] sm:w-[180px] md:w-[220px] lg:w-[260px] aspect-square" 
-            : "w-full aspect-square"
+            ? "w-[100px] sm:w-[160px] md:w-[220px] lg:w-[260px] aspect-[2/3]" 
+            : "w-full aspect-[2/3]"
         )}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={openModal}
       >
         <img
-          src={getImageUrl(movie.backdrop_path || movie.poster_path, 'w500')}
+          src={getImageUrl(movie.poster_path || movie.backdrop_path, 'w500')}
           alt={movie.title || movie.name}
           className="w-full h-full object-cover rounded-md"
         />
+
+          {/* Top Left Year Badge */}
+          {(movie.release_date || movie.first_air_date) && (
+            <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2 bg-netflix-red/90 backdrop-blur-md px-1.5 py-0.5 md:px-2 md:py-1 rounded flex items-center pointer-events-none border border-red-500/50 shadow-lg">
+              <span className="text-white text-[9px] md:text-[11px] font-bold tracking-wider">
+                {(movie.release_date || movie.first_air_date)?.split('-')[0]}
+              </span>
+            </div>
+          )}
 
         {/* Top Right Rating Badge */}
         <div className="absolute top-1.5 right-1.5 md:top-2 md:right-2 bg-black/50 backdrop-blur-md px-1.5 py-0.5 md:px-2 md:py-1 rounded-md flex items-center gap-1 pointer-events-none border border-white/10 shadow-lg">
@@ -81,13 +90,6 @@ export default function MovieCard({ movie, layout = 'row' }: MovieCardProps) {
           <span className="text-white text-[9px] md:text-[11px] font-bold tracking-wider">
             {movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"}
           </span>
-        </div>
-
-        {/* Glassmorphism Title Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-md rounded-b-md border-t border-white/10 p-2 sm:p-3 opacity-100 transition-all duration-300 pointer-events-none flex flex-col justify-end">
-          <div className="text-white text-xs md:text-sm font-bold truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-wide">
-            {movie.title || movie.name}
-          </div>
         </div>
 
         <AnimatePresence>

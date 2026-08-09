@@ -4,14 +4,16 @@ import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Movie } from "@/types";
 import MovieCard from "./MovieCard";
+import FeaturedMovieCard from "./FeaturedMovieCard";
 import { cn } from "@/lib/utils";
 
 interface MovieRowProps {
   title: string;
   movies: Movie[];
+  featuredFirst?: boolean;
 }
 
-export default function MovieRow({ title, movies }: MovieRowProps) {
+export default function MovieRow({ title, movies, featuredFirst }: MovieRowProps) {
   const rowRef = useRef<HTMLDivElement>(null);
   const [isMoved, setIsMoved] = useState(false);
 
@@ -50,8 +52,12 @@ export default function MovieRow({ title, movies }: MovieRowProps) {
           ref={rowRef}
           className="flex items-center space-x-2 md:space-x-4 overflow-x-scroll scrollbar-hide px-4 md:px-12 py-16 -my-12 md:py-32 md:-my-28"
         >
-          {movies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
+          {movies.map((movie, index) => (
+            featuredFirst && index === 0 ? (
+              <FeaturedMovieCard key={movie.id} movie={movie} />
+            ) : (
+              <MovieCard key={movie.id} movie={movie} />
+            )
           ))}
         </div>
         
