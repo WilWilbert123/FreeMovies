@@ -27,6 +27,7 @@ export default function Navbar() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
   const [showIOSPrompt, setShowIOSPrompt] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   const isIntroPlaying = useIntroStore((state) => state.isIntroPlaying);
   const pathname = usePathname();
@@ -40,9 +41,12 @@ export default function Navbar() {
     };
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // Detect OS
+    // Detect OS & Standalone
+    const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+    setIsStandalone(isStandaloneMode);
+
     const userAgent = window.navigator.userAgent.toLowerCase();
-    if (/iphone|ipad|ipod/.test(userAgent) && !(window.navigator as any).standalone) {
+    if (/iphone|ipad|ipod/.test(userAgent) && !isStandaloneMode) {
       setIsIOS(true);
     }
 
@@ -210,14 +214,16 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 md:gap-6 text-white">
-          <button
-            onClick={handleInstallClick}
-            className="flex items-center justify-center bg-gray-800/80 hover:bg-gray-700/80 text-white p-1.5 md:px-3 md:py-1.5 rounded-full transition border border-gray-700"
-            title="Install App"
-          >
-            <Download className="w-4 h-4 md:w-3.5 md:h-3.5" />
-            <span className="hidden md:inline md:ml-2 text-xs font-medium">Install App</span>
-          </button>
+          {!isStandalone && (
+            <button
+              onClick={handleInstallClick}
+              className="flex items-center justify-center bg-gray-800/80 hover:bg-gray-700/80 text-white p-1.5 md:px-3 md:py-1.5 rounded-full transition border border-gray-700"
+              title="Install App"
+            >
+              <Download className="w-4 h-4 md:w-3.5 md:h-3.5" />
+              <span className="hidden md:inline md:ml-2 text-xs font-medium">Install App</span>
+            </button>
+          )}
           <Link href="/search">
             <Search className="w-5 h-5 cursor-pointer hover:text-gray-300 transition" />
           </Link>
