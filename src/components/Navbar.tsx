@@ -22,7 +22,7 @@ export default function Navbar() {
   const [showAllServers, setShowAllServers] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [notifications, setNotifications] = useState<Movie[]>([]);
-  
+
   // PWA Install states
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
@@ -99,7 +99,7 @@ export default function Navbar() {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     // Fetch some real movies to use as notifications (e.g., Trending)
     const getNotifications = async () => {
       try {
@@ -152,8 +152,8 @@ export default function Navbar() {
       )}
     >
       <div className="flex items-center justify-between px-4 md:px-12 py-4">
-        <div className="flex items-center gap-4 md:gap-8">
-          <button 
+        <div className="flex items-center gap-2 md:gap-8">
+          <button
             className="md:hidden text-white hover:text-gray-300 transition"
             onClick={() => setShowMobileMenu(true)}
           >
@@ -165,16 +165,16 @@ export default function Navbar() {
                 <ShinyImage layoutId="main-logo" transition={{ type: "tween", duration: 1.5, ease: "easeInOut" }} src="/logofm2.png" alt="FreeMovies Logo" className="h-10 w-auto cursor-pointer z-50 relative group-hover:scale-105 absolute inset-0" speed={1.5} delay={1.5} offset={0} direction="left" shineColor="#ffffff" spread={120} />
               )}
             </div>
-            <ShinyText 
-              text="REEMOVIES" 
-              speed={1.5} 
-              delay={1.5} 
-              offset={1.5} 
-              direction="left" 
-              className="text-4xl font-bold tracking-wider cursor-pointer z-50 relative font-bebas" 
-              color="#e50914" 
-              shineColor="#ffffff" 
-              spread={120} 
+            <ShinyText
+              text="REEMOVIES"
+              speed={1.5}
+              delay={1.5}
+              offset={1.5}
+              direction="left"
+              className="text-4xl font-bold tracking-wider cursor-pointer z-50 relative font-bebas"
+              color="#e50914"
+              shineColor="#ffffff"
+              spread={120}
             />
           </Link>
           <ul className="hidden md:flex gap-5 text-sm font-medium items-center">
@@ -191,7 +191,7 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
-            
+
             {/* Categories Dropdown */}
             <li className="relative group cursor-pointer">
               <span className="text-gray-200 transition-colors hover:text-gray-300 flex items-center gap-1">
@@ -209,8 +209,8 @@ export default function Navbar() {
           </ul>
         </div>
 
-        <div className="flex items-center gap-4 md:gap-6 text-white">
-          <button 
+        <div className="flex items-center gap-2 md:gap-6 text-white">
+          <button
             onClick={handleInstallClick}
             className="flex items-center justify-center bg-gray-800/80 hover:bg-gray-700/80 text-white p-1.5 md:px-3 md:py-1.5 rounded-full transition border border-gray-700"
             title="Install App"
@@ -310,7 +310,7 @@ export default function Navbar() {
                     {user?.email !== "johnwilbertgamis2022@gmail.com" && (
                       <Link href="/help" className="px-4 py-2 hover:underline text-sm text-gray-300 transition">Help Center</Link>
                     )}
-                    
+
 
 
                     {user.email === "johnwilbertgamis2022@gmail.com" && (
@@ -344,7 +344,7 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Drawer Menu */}
-      <div 
+      <div
         className={cn(
           "fixed inset-0 bg-black/95 z-[100] md:hidden transition-transform duration-300 ease-in-out flex flex-col",
           showMobileMenu ? "translate-x-0" : "-translate-x-full"
@@ -357,26 +357,26 @@ export default function Navbar() {
                 <ShinyImage layoutId="mobile-drawer-logo" transition={{ type: "tween", duration: 1.5, ease: "easeInOut" }} src="/logofm2.png" alt="FreeMovies Logo" className="h-10 w-auto cursor-pointer z-50 relative group-hover:scale-105 absolute inset-0" speed={1.5} delay={1.5} offset={0} direction="left" shineColor="#ffffff" spread={120} />
               )}
             </div>
-            <ShinyText 
-              text="REEMOVIES" 
-              speed={1.5} 
-              delay={1.5} 
-              offset={1.5} 
-              direction="left" 
-              className="text-4xl font-bold tracking-wider cursor-pointer z-50 relative font-bebas" 
-              color="#e50914" 
-              shineColor="#ffffff" 
-              spread={120} 
+            <ShinyText
+              text="REEMOVIES"
+              speed={1.5}
+              delay={1.5}
+              offset={1.5}
+              direction="left"
+              className="text-4xl font-bold tracking-wider cursor-pointer z-50 relative font-bebas"
+              color="#e50914"
+              shineColor="#ffffff"
+              spread={120}
             />
           </Link>
-          <button 
+          <button
             onClick={() => setShowMobileMenu(false)}
             className="p-2 text-white hover:text-gray-300 transition bg-gray-900 rounded-full"
           >
             <X className="w-6 h-6" />
           </button>
         </div>
-        
+
         <div className="flex-1 overflow-y-auto py-4 px-6 flex flex-col gap-6">
           <div className="flex flex-col gap-4">
             <h2 className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Browse</h2>
@@ -397,7 +397,7 @@ export default function Navbar() {
               ))}
             </ul>
           </div>
-          
+
           <div className="h-px bg-gray-800 w-full my-2"></div>
 
           <div className="flex flex-col gap-4">
@@ -411,21 +411,21 @@ export default function Navbar() {
               <Link href="/category/comedy" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Comedy</Link>
             </div>
           </div>
-          
+
           <div className="h-px bg-gray-800 w-full my-2"></div>
-          
+
           <div className="flex flex-col gap-4">
             <h2 className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Notifications</h2>
             {notifications.length > 0 ? (
               notifications.map((movie) => (
-                <Link 
-                  href={`/watch/${movie.media_type || 'movie'}/${movie.id}`} 
+                <Link
+                  href={`/watch/${movie.media_type || 'movie'}/${movie.id}`}
                   key={movie.id}
                   onClick={() => setShowMobileMenu(false)}
                   className="flex items-center gap-4 hover:bg-gray-800 p-2 rounded-md transition"
                 >
-                  <img 
-                    src={`https://image.tmdb.org/t/p/w92${movie.backdrop_path || movie.poster_path}`} 
+                  <img
+                    src={`https://image.tmdb.org/t/p/w92${movie.backdrop_path || movie.poster_path}`}
                     alt={movie.title || movie.name}
                     className="w-24 h-14 object-cover rounded-md flex-shrink-0"
                   />
@@ -445,7 +445,7 @@ export default function Navbar() {
           </div>
 
           <div className="h-px bg-gray-800 w-full my-2"></div>
-          
+
           <div className="flex flex-col gap-4 pb-8">
             <h2 className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Account</h2>
             {user ? (
@@ -455,7 +455,7 @@ export default function Navbar() {
                 {user?.email !== "johnwilbertgamis2022@gmail.com" && (
                   <Link href="/help" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Help Center</Link>
                 )}
-                
+
 
                 {user.email === "johnwilbertgamis2022@gmail.com" && (
                   <Link href="/dashboard" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors text-netflix-red font-bold">Admin Dashboard</Link>
@@ -485,7 +485,7 @@ export default function Navbar() {
       {showIOSPrompt && (
         <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
           <div className="bg-[#141414] border border-gray-800 rounded-xl max-w-sm w-full p-6 relative flex flex-col items-center text-center shadow-2xl">
-            <button 
+            <button
               onClick={() => setShowIOSPrompt(false)}
               className="absolute top-3 right-3 text-gray-400 hover:text-white transition bg-gray-800/50 hover:bg-gray-700 p-1.5 rounded-full"
             >
@@ -508,7 +508,7 @@ export default function Navbar() {
                 <p className="text-sm text-gray-300">Scroll down and tap <span className="text-white font-bold">"Add to Home Screen"</span>.</p>
               </div>
             </div>
-            <button 
+            <button
               onClick={() => setShowIOSPrompt(false)}
               className="w-full bg-netflix-red text-white font-bold py-3 rounded-md hover:bg-red-700 transition"
             >
