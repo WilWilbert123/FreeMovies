@@ -57,6 +57,31 @@ export interface MovieDetails extends Movie {
     }[];
   };
   similar?: TMDBResponse;
+  seasons?: {
+    id: number;
+    season_number: number;
+    name: string;
+    episode_count: number;
+    poster_path: string | null;
+  }[];
+}
+
+export interface TVEpisode {
+  id: number;
+  name: string;
+  overview: string;
+  episode_number: number;
+  season_number: number;
+  still_path: string | null;
+  runtime: number;
+  air_date: string;
+}
+
+export interface TVSeason {
+  id: number;
+  name: string;
+  season_number: number;
+  episodes: TVEpisode[];
 }
 
 export interface Profile {
