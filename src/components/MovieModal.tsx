@@ -84,20 +84,11 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
           <div className="overflow-y-auto scrollbar-hide w-full h-full">
             {/* Header Image / Trailer Fallback */}
             <div className="relative w-full h-[40vh] sm:h-[50vh] shrink-0">
-              {details?.videos?.results && details.videos.results.length > 0 ? (
-                <iframe
-                  className="w-full h-full pointer-events-none"
-                  src={`https://www.youtube.com/embed/${details.videos.results[0].key}?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=${details.videos.results[0].key}`}
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
-                />
-              ) : (
-                <img
-                  src={getImageUrl(movie.backdrop_path || movie.poster_path, 'original')}
-                  alt={movie.title || movie.name}
-                  className="w-full h-full object-cover"
-                />
-              )}
+              <img
+                src={getImageUrl(movie.backdrop_path || movie.poster_path, 'original')}
+                alt={movie.title || movie.name}
+                className="w-full h-full object-cover"
+              />
               
               <div className="absolute inset-0 bg-gradient-to-t from-[#181818] via-[#181818]/40 to-transparent" />
               
