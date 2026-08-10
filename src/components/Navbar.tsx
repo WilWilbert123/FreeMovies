@@ -12,6 +12,7 @@ import { useUserStore } from "@/store/useUserStore";
 import ShinyText from "./ShinyText/ShinyText";
 import ShinyImage from "./ShinyText/ShinyImage";
 import { useIntroStore } from "@/store/useIntroStore";
+import { useRegionStore } from "@/store/useRegionStore";
 import { SERVERS } from "@/lib/servers";
 
 export default function Navbar() {
@@ -30,9 +31,25 @@ export default function Navbar() {
   const [isStandalone, setIsStandalone] = useState(false);
 
   const isIntroPlaying = useIntroStore((state) => state.isIntroPlaying);
+  const { selectedRegion, setRegion } = useRegionStore();
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
+
+  const regions: Record<string, string> = {
+    ALL: 'All Regions',
+    PH: 'Philippines',
+    KR: 'South Korea',
+    IN: 'India',
+    US: 'United States',
+    JP: 'Japan',
+    GB: 'United Kingdom'
+  };
+
+  const handleRegionChange = (r: string) => {
+    setRegion(r);
+    router.push(`${pathname}?region=${r}`);
+  };
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: any) => {
@@ -208,6 +225,24 @@ export default function Navbar() {
                 <Link href="/category/family" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Family</Link>
                 <Link href="/category/action" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Action</Link>
                 <Link href="/category/comedy" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Comedy</Link>
+              </div>
+            </li>
+
+            {/* Region Dropdown */}
+            <li className="relative group cursor-pointer">
+              <span className="text-gray-200 transition-colors hover:text-gray-300 flex items-center gap-1">
+                {regions[selectedRegion] || selectedRegion} <ChevronDown className="w-4 h-4 transition group-hover:rotate-180" />
+              </span>
+              <div className="absolute left-0 top-6 hidden w-48 bg-black/95 border border-gray-800 rounded-md shadow-xl py-2 group-hover:flex flex-col z-50">
+                {Object.entries(regions).map(([key, value]) => (
+                  <button 
+                    key={key} 
+                    onClick={() => handleRegionChange(key)} 
+                    className="text-left px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition"
+                  >
+                    {value}
+                  </button>
+                ))}
               </div>
             </li>
           </ul>
@@ -415,6 +450,29 @@ export default function Navbar() {
               <Link href="/category/family" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Family</Link>
               <Link href="/category/action" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Action</Link>
               <Link href="/category/comedy" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Comedy</Link>
+            </div>
+          </div>
+
+          <div className="h-px bg-gray-800 w-full my-2"></div>
+
+          <div className="flex flex-col gap-4">
+            <h2 className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Region</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {Object.entries(regions).map(([key, value]) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    handleRegionChange(key);
+                    setShowMobileMenu(false);
+                  }}
+                  className={cn(
+                    "text-lg transition-colors hover:text-gray-300 text-left",
+                    selectedRegion === key ? "text-white font-bold" : "text-gray-300"
+                  )}
+                >
+                  {value}
+                </button>
+              ))}
             </div>
           </div>
 

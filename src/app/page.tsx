@@ -5,7 +5,14 @@ import { fetchMovies, requests } from "@/lib/tmdb";
 
 export const revalidate = 3600; // Revalidate every hour
 
-export default async function Home() {
+type Props = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function Home(props: Props) {
+  const searchParams = await props.searchParams;
+  const region = typeof searchParams?.region === 'string' ? searchParams.region : 'ALL';
+
   const [
     trending,
     netflixOriginals,
@@ -23,21 +30,21 @@ export default async function Home() {
     mystery,
     family
   ] = await Promise.all([
-    fetchMovies(requests.fetchTrending),
-    fetchMovies(requests.fetchNetflixOriginals),
-    fetchMovies(requests.fetchTopRated),
-    fetchMovies(requests.fetchActionMovies),
-    fetchMovies(requests.fetchComedyMovies),
-    fetchMovies(requests.fetchHorrorMovies),
-    fetchMovies(requests.fetchRomanceMovies),
-    fetchMovies(requests.fetchDocumentaries),
-    fetchMovies(requests.fetchSciFi),
-    fetchMovies(requests.fetchAnimation),
-    fetchMovies(requests.fetchClassics),
-    fetchMovies(requests.fetchAnime),
-    fetchMovies(requests.fetchKDramas),
-    fetchMovies(requests.fetchMystery),
-    fetchMovies(requests.fetchFamily),
+    fetchMovies(requests.fetchTrending, 1, region),
+    fetchMovies(requests.fetchNetflixOriginals, 1, region),
+    fetchMovies(requests.fetchTopRated, 1, region),
+    fetchMovies(requests.fetchActionMovies, 1, region),
+    fetchMovies(requests.fetchComedyMovies, 1, region),
+    fetchMovies(requests.fetchHorrorMovies, 1, region),
+    fetchMovies(requests.fetchRomanceMovies, 1, region),
+    fetchMovies(requests.fetchDocumentaries, 1, region),
+    fetchMovies(requests.fetchSciFi, 1, region),
+    fetchMovies(requests.fetchAnimation, 1, region),
+    fetchMovies(requests.fetchClassics, 1, region),
+    fetchMovies(requests.fetchAnime, 1, region),
+    fetchMovies(requests.fetchKDramas, 1, region),
+    fetchMovies(requests.fetchMystery, 1, region),
+    fetchMovies(requests.fetchFamily, 1, region),
   ]);
 
   const allTrending = trending.results;

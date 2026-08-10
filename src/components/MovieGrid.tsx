@@ -10,9 +10,10 @@ interface MovieGridProps {
   initialMovies: Movie[];
   endpoint: string;
   title?: string;
+  region?: string;
 }
 
-export default function MovieGrid({ initialMovies, endpoint, title }: MovieGridProps) {
+export default function MovieGrid({ initialMovies, endpoint, title, region = 'ALL' }: MovieGridProps) {
   const [movies, setMovies] = useState<Movie[]>(initialMovies);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ export default function MovieGrid({ initialMovies, endpoint, title }: MovieGridP
     const nextPage = page + 1;
     
     try {
-      const data = await fetchMovies(endpoint, nextPage);
+      const data = await fetchMovies(endpoint, nextPage, region);
       if (data.results && data.results.length > 0) {
         setMovies((prev) => {
           // Prevent duplicates just in case

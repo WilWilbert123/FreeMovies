@@ -2,8 +2,11 @@ import Navbar from "@/components/Navbar";
 import { fetchMovies, requests } from "@/lib/tmdb";
 import MovieGrid from "@/components/MovieGrid";
 
-export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CategoryPage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const { slug } = await params;
+  const resolvedSearchParams = await searchParams;
+  const region = typeof resolvedSearchParams?.region === 'string' ? resolvedSearchParams.region : 'ALL';
+  
   let endpoint = "";
   let title = "";
 
@@ -45,14 +48,14 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       title = 'Trending';
   }
 
-  const data = await fetchMovies(endpoint);
+  const data = await fetchMovies(endpoint, 1, region);
   const movies = data.results || [];
 
   return (
     <main className="min-h-screen bg-netflix-dark text-white pb-20">
       <Navbar />
       <div className="pt-24 px-4 md:px-12">
-        <MovieGrid initialMovies={movies} endpoint={endpoint} title={title} />
+        <MovieGrid initialMovies={movies} endpoint={endpoint} title={title} region={region} />
       </div>
     </main>
   );

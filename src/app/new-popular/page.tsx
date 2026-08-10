@@ -5,17 +5,24 @@ import { fetchMovies, requests } from "@/lib/tmdb";
 
 export const revalidate = 3600;
 
-export default async function NewAndPopular() {
+type Props = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function NewAndPopular(props: Props) {
+  const searchParams = await props.searchParams;
+  const region = typeof searchParams?.region === 'string' ? searchParams.region : 'ALL';
+
   const [
     trending,
     trendingMovies,
     trendingTV,
     upcomingMovies
   ] = await Promise.all([
-    fetchMovies(requests.fetchTrending),
-    fetchMovies(requests.fetchTrendingMovies),
-    fetchMovies(requests.fetchTrendingTV),
-    fetchMovies(requests.fetchUpcomingMovies),
+    fetchMovies(requests.fetchTrending, 1, region),
+    fetchMovies(requests.fetchTrendingMovies, 1, region),
+    fetchMovies(requests.fetchTrendingTV, 1, region),
+    fetchMovies(requests.fetchUpcomingMovies, 1, region),
   ]);
 
   const allTrending = trending.results;

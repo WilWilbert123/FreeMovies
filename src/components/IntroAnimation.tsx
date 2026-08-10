@@ -12,7 +12,7 @@ export default function IntroAnimation() {
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
     setIsIntroPlaying(true);
-    
+
     // Play intro sound
     const audio = new Audio('/soundintro.mp3');
     audio.play().catch(e => console.log('Audio autoplay blocked by browser:', e));
@@ -57,70 +57,70 @@ export default function IntroAnimation() {
         >
           {/* Main container to center everything */}
           <div className="relative flex items-center justify-center h-20 w-auto">
-          {/* The Logo (F) Container */}
-          <motion.div layoutId="main-logo" className="relative h-16 w-auto z-20 flex items-center justify-center">
-            {/* Base Image */}
-            <motion.img
-              src="/logofm2.png"
-              alt="Logo"
-              className="h-16 w-auto relative z-20"
-              initial={{ opacity: 0 }}
-              animate={{
-                opacity: [0, 1, 1, 1, 1, 1],
-              }}
-              transition={{
-                times: [0, 0.16, 0.33, 0.66, 0.83, 1],
-                duration: 6,
-                ease: "easeInOut",
-              }}
-            />
-            
-            {/* Shiny Overlay for the Image */}
-            <motion.div
-              className="absolute inset-0 pointer-events-none z-30"
-              style={{
-                backgroundImage: `linear-gradient(120deg, transparent 0%, transparent 35%, #ffffff 50%, transparent 65%, transparent 100%)`,
-                backgroundSize: '200% auto',
-                WebkitMaskImage: `url('/logofm2.png')`,
-                WebkitMaskSize: 'contain',
-                WebkitMaskRepeat: 'no-repeat',
-                WebkitMaskPosition: 'center',
-              }}
-              initial={{ backgroundPosition: "150% center", opacity: 0 }}
-              animate={{
-                backgroundPosition: ["150% center", "150% center", "150% center", "-50% center", "-50% center"],
-                opacity: [0, 1, 1, 1, 1, 1],
-              }}
-              transition={{
-                backgroundPosition: { times: [0, 0.3, 0.4, 0.6, 1], duration: 6, ease: "linear" },
-                opacity: { times: [0, 0.16, 0.33, 0.66, 0.83, 1], duration: 6, ease: "easeInOut" },
-              }}
-            />
-          </motion.div>
+            {/* The Logo (F) Container */}
+            <motion.div layoutId="main-logo" className="relative h-16 w-auto z-20 flex items-center justify-center">
+              {/* Base Image */}
+              <motion.img
+                src="/logofm2.png"
+                alt="Logo"
+                className="h-16 w-auto relative z-20"
+                initial={{ opacity: 0 }}
+                animate={{
+                  opacity: [0, 1, 1, 1, 1, 1],
+                }}
+                transition={{
+                  times: [0, 0.16, 0.33, 0.66, 0.83, 1],
+                  duration: 6,
+                  ease: "easeInOut",
+                }}
+              />
 
-          {/* The Text (ILIFLIX) */}
-          <motion.div
-            className="font-bebas text-5xl md:text-6xl font-bold tracking-wider overflow-hidden whitespace-nowrap z-10 flex items-center h-full pt-1"
-            style={{ 
-              backgroundImage: `linear-gradient(120deg, #e50914 0%, #e50914 35%, #ffffff 50%, #e50914 65%, #e50914 100%)`,
-              backgroundSize: '200% auto',
-              WebkitBackgroundClip: 'text',
-              backgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-            initial={{ width: 0, opacity: 0, backgroundPosition: "150% center" }}
-            animate={{
-              width: [0, 0, isMobile ? 120 : 160, isMobile ? 120 : 160, 0, 0], // adjust target width based on screen size
-              opacity: [0, 0, 1, 1, 0, 0],
-              backgroundPosition: ["150% center", "150% center", "150% center", "-50% center", "-50% center"],
-            }}
-            transition={{
-              width: { times: [0, 0.16, 0.33, 0.66, 0.83, 1], duration: 6, ease: "easeInOut" },
-              opacity: { times: [0, 0.16, 0.33, 0.66, 0.83, 1], duration: 6, ease: "easeInOut" },
-              backgroundPosition: { times: [0, 0.3, 0.4, 0.6, 1], duration: 6, ease: "linear" },
-            }}
-          >
-            LIFLIX
+              {/* Shiny Overlay for the Image */}
+              <motion.div
+                className="absolute inset-0 pointer-events-none z-30"
+                style={{
+                  backgroundImage: `linear-gradient(120deg, transparent 0%, transparent 35%, #ffffff 50%, transparent 65%, transparent 100%)`,
+                  backgroundSize: '200% auto',
+                  WebkitMaskImage: `url('/logofm2.png')`,
+                  WebkitMaskSize: 'contain',
+                  WebkitMaskRepeat: 'no-repeat',
+                  WebkitMaskPosition: 'center',
+                }}
+                initial={{ backgroundPosition: "150% center", opacity: 0 }}
+                animate={{
+                  backgroundPosition: ["150% center", "150% center", "150% center", "-50% center", "-50% center"],
+                  opacity: [0, 1, 1, 1, 1, 1],
+                }}
+                transition={{
+                  backgroundPosition: { times: [0, 0.3, 0.4, 0.6, 1], duration: 6, ease: "linear" },
+                  opacity: { times: [0, 0.16, 0.33, 0.66, 0.83, 1], duration: 6, ease: "easeInOut" },
+                }}
+              />
+            </motion.div>
+
+            {/* The Text (ILIFLIX) */}
+            <motion.div
+              className="font-bebas text-5xl md:text-6xl font-bold tracking-wider overflow-hidden whitespace-nowrap z-10 flex items-center h-full pt-1"
+              style={{
+                backgroundImage: `linear-gradient(120deg, #e50914 0%, #e50914 35%, #ffffff 50%, #e50914 65%, #e50914 100%)`,
+                backgroundSize: '200% auto',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+              initial={{ width: 0, opacity: 0, backgroundPosition: "150% center" }}
+              animate={{
+                width: [0, 0, isMobile ? 120 : 160, isMobile ? 120 : 160, 0, 0], // adjust target width based on screen size
+                opacity: [0, 0, 1, 1, 0, 0],
+                backgroundPosition: ["150% center", "150% center", "150% center", "-50% center", "-50% center"],
+              }}
+              transition={{
+                width: { times: [0, 0.16, 0.33, 0.66, 0.83, 1], duration: 6, ease: "easeInOut" },
+                opacity: { times: [0, 0.16, 0.33, 0.66, 0.83, 1], duration: 6, ease: "easeInOut" },
+                backgroundPosition: { times: [0, 0.3, 0.4, 0.6, 1], duration: 6, ease: "linear" },
+              }}
+            >
+              ILIFLIX
             </motion.div>
 
           </div>

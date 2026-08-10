@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Server, ListVideo, X, Play, ChevronDown } from "lucide-react";
+import { Play, ArrowLeft, ListVideo, X, ChevronDown, Server as ServerIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
 import { fetchMovieDetails, fetchTVSeason, getImageUrl } from "@/lib/tmdb";
@@ -24,7 +24,13 @@ export default function WatchPage(props: WatchPageProps) {
 
   const [details, setDetails] = useState<MovieDetails | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const activeServer = useUserStore((state) => state.activeServer);
+  const globalActiveServer = useUserStore((state) => state.activeServer);
+  const setGlobalActiveServer = useUserStore((state) => state.setActiveServer);
+  
+  // Safely map the stored server back to the actual SERVER object with the url function, or fallback to default
+  const mappedServer = SERVERS.find(s => s.id === globalActiveServer?.id) || SERVERS[0];
+  const [activeServer, setActiveServer] = useState<Server>(mappedServer);
+  
   const supabase = createClient();
 
   // TV Show State
@@ -34,6 +40,7 @@ export default function WatchPage(props: WatchPageProps) {
   const [hasSelectedEpisode, setHasSelectedEpisode] = useState<boolean>(type === 'movie');
   const [showEpisodeSidebar, setShowEpisodeSidebar] = useState(false);
   const [isSeasonDropdownOpen, setIsSeasonDropdownOpen] = useState(false);
+  const [isServerDropdownOpen, setIsServerDropdownOpen] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in before allowing them to watch
@@ -54,13 +61,45 @@ export default function WatchPage(props: WatchPageProps) {
     const getDetails = async () => {
       try {
         const data = await fetchMovieDetails(id, type as 'movie' | 'tv');
+        
+        // If the URL has the wrong type, redirect to the correct one
+        if (data && data.media_type && data.media_type !== type) {
+          router.replace(`/watch/${data.media_type}/${id}`);
+          return;
+        }
+
         setDetails(data);
       } catch (error) {
         console.error("Failed to fetch details", error);
       }
     };
     getDetails();
-  }, [id, type, isAuthenticated]);
+  }, [id, type, isAuthenticated, router]);
+
+  // Keep activeServer in sync if global server changes or if anime/filipino content is detected
+  useEffect(() => {
+    if (!details) return;
+    const isAnime = 
+      details.original_language === 'ja' && 
+      details.genres?.some(g => g.name === 'Animation' || g.id === 16);
+      
+    const isFilipino = 
+      details.original_language === 'tl' || 
+      details.origin_country?.includes('PH');
+
+    let currentMapped = SERVERS.find(s => s.id === globalActiveServer?.id) || SERVERS[0];
+    
+    // Auto-switch based on content type if they are using a conflicting server
+    if (isAnime && currentMapped.id === 'vidlink') {
+      // Use FiliAnime for Anime
+      currentMapped = SERVERS.find(s => s.id === 'multiembed') || SERVERS[0];
+    } else if (isFilipino && currentMapped.id === 'multiembed') {
+      // Use FiliFilipo Server for Filipino movies
+      currentMapped = SERVERS.find(s => s.id === 'vidlink') || SERVERS[0];
+    }
+    
+    setActiveServer(currentMapped);
+  }, [globalActiveServer, details]);
 
   // Fetch episodes when selectedSeason changes
   useEffect(() => {
@@ -92,32 +131,69 @@ export default function WatchPage(props: WatchPageProps) {
 
   return (
     <div className="h-screen w-screen bg-black flex flex-col overflow-hidden">
-      <nav className="w-full p-4 z-20 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#141414] border-b border-white/10 shrink-0">
-        <div className="flex items-center gap-4">
+      <nav className="w-full p-3 sm:p-4 z-20 flex flex-row items-center justify-between gap-2 sm:gap-4 bg-[#141414] border-b border-white/10 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-4 overflow-hidden">
           <ArrowLeft
             onClick={() => router.back()}
-            className="text-white cursor-pointer w-6 h-6 hover:opacity-80 transition"
+            className="text-white cursor-pointer w-5 h-5 sm:w-6 sm:h-6 shrink-0 hover:opacity-80 transition"
           />
-          <div className="flex flex-col">
-            <p className="text-white text-lg md:text-xl font-bold truncate max-w-[200px] md:max-w-[400px]">
-              <span className="font-light text-gray-400 mr-2">Watching:</span>
+          <div className="flex flex-col overflow-hidden">
+            <p className="text-white text-sm sm:text-lg md:text-xl font-bold truncate">
+              <span className="hidden sm:inline font-light text-gray-400 mr-2">Watching:</span>
               {details?.title || details?.name || "Loading..."}
             </p>
             {type === 'tv' && hasSelectedEpisode && (
-              <p className="text-sm text-gray-400">Season {selectedSeason} • Episode {selectedEpisode}</p>
+              <p className="text-xs sm:text-sm text-gray-400 truncate">S{selectedSeason} • Ep {selectedEpisode}</p>
             )}
           </div>
         </div>
 
-        {type === 'tv' && (
-          <button
-            onClick={() => setShowEpisodeSidebar(!showEpisodeSidebar)}
-            className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition"
-          >
-            <ListVideo className="w-5 h-5" />
-            <span>Episodes</span>
-          </button>
-        )}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Server Selector */}
+          <div className="relative">
+            <button
+              onClick={() => SERVERS.length > 1 && setIsServerDropdownOpen(!isServerDropdownOpen)}
+              className={`flex items-center gap-1 sm:gap-2 bg-gray-800 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-md transition border border-gray-700 ${SERVERS.length > 1 ? 'hover:bg-gray-700 cursor-pointer' : 'cursor-default'}`}
+            >
+              <ServerIcon className="w-5 h-5 text-gray-400" />
+              <span className="hidden sm:inline text-sm font-bold max-w-[150px] truncate">{activeServer?.name?.replace('Server', '').trim() || "Server"}</span>
+              {SERVERS.length > 1 && <ChevronDown className="w-4 h-4 text-gray-400" />}
+            </button>
+
+            {isServerDropdownOpen && SERVERS.length > 1 && (
+              <div className="absolute top-full right-0 mt-2 w-64 bg-gray-900 border border-gray-700 rounded-md shadow-2xl overflow-hidden z-50">
+                <div className="p-2 border-b border-gray-800 bg-black">
+                  <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Change Server</p>
+                </div>
+                <div className="max-h-60 overflow-y-auto custom-scrollbar">
+                  {SERVERS.map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={() => {
+                        setActiveServer(s);
+                        setGlobalActiveServer(s);
+                        setIsServerDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-3 hover:bg-gray-800 transition border-b border-gray-800/50 last:border-0 ${activeServer?.id === s.id ? 'text-white font-bold bg-gray-800/80 border-l-2 border-l-red-600' : 'text-gray-400'}`}
+                    >
+                      {s.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {type === 'tv' && (
+            <button
+              onClick={() => setShowEpisodeSidebar(!showEpisodeSidebar)}
+              className="flex items-center gap-1 sm:gap-2 bg-gray-800 hover:bg-gray-700 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-md transition border border-gray-700"
+            >
+              <ListVideo className="w-5 h-5" />
+              <span className="hidden sm:inline text-sm font-bold">Episodes</span>
+            </button>
+          )}
+        </div>
       </nav>
 
       <div className="w-full flex-1 bg-black relative flex">
@@ -146,9 +222,9 @@ export default function WatchPage(props: WatchPageProps) {
                 <div className="relative mb-8 z-10">
                   <button
                     onClick={() => setIsSeasonDropdownOpen(!isSeasonDropdownOpen)}
-                    className="flex items-center gap-2 bg-gray-800 text-white px-6 py-3 rounded-md text-lg font-bold hover:bg-gray-700 transition"
+                    className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-md text-sm sm:text-lg font-bold hover:bg-gray-700 transition"
                   >
-                    Season {selectedSeason} <ChevronDown className="w-5 h-5" />
+                    Season {selectedSeason} <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
 
                   {isSeasonDropdownOpen && (
@@ -207,10 +283,10 @@ export default function WatchPage(props: WatchPageProps) {
             </div>
           ) : (
             <iframe
-              src={activeServer?.url ? activeServer.url(type, id, selectedSeason, selectedEpisode) : SERVERS[0].url(type, id, selectedSeason, selectedEpisode)}
-              className="w-full h-full border-none"
+              src={activeServer?.url ? activeServer.url(type, id, selectedSeason, selectedEpisode, details?.title || details?.name) : SERVERS[0].url(type, id, selectedSeason, selectedEpisode, details?.title || details?.name)}
+              className="absolute inset-0 w-full h-full border-0 rounded-lg shadow-2xl"
               allowFullScreen
-              allow="autoplay; fullscreen"
+              allow="autoplay; encrypted-media"
             ></iframe>
           )}
         </div>

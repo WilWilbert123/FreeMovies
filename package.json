@@ -23,6 +23,7 @@
     "recharts": "^3.10.1",
     "tailwind-merge": "^3.6.0",
     "tailwind-scrollbar-hide": "^4.0.0",
+    "yt-search": "^2.13.1",
     "zustand": "^5.0.14"
   },
   "devDependencies": {

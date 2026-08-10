@@ -36,15 +36,34 @@ export const requests = {
   fetchFamily: '/discover/movie?with_genres=10751',
 };
 
-export const fetchMovies = async (endpoint: string, page: number = 1): Promise<TMDBResponse> => {
+export const fetchMovies = async (endpoint: string, page: number = 1, region: string = 'ALL'): Promise<TMDBResponse> => {
   try {
-    const { data } = await tmdb.get(endpoint, {
-      params: {
-        page,
+    let finalEndpoint = endpoint;
+    const params: any = { page };
+
+    if (region && region !== 'ALL') {
+      if (endpoint.includes('/trending/movie')) {
+        finalEndpoint = '/discover/movie';
+        params.sort_by = 'popularity.desc';
+      } else if (endpoint.includes('/trending/tv') || endpoint.includes('/trending/all')) {
+        finalEndpoint = '/discover/tv';
+        params.sort_by = 'popularity.desc';
+      } else if (endpoint.includes('/movie/top_rated')) {
+        finalEndpoint = '/discover/movie';
+        params.sort_by = 'vote_average.desc';
+        params.without_genres = '99,10755';
+        params['vote_count.gte'] = 200;
+      } else if (endpoint.includes('/tv/top_rated')) {
+        finalEndpoint = '/discover/tv';
+        params.sort_by = 'vote_average.desc';
+        params['vote_count.gte'] = 200;
       }
-    });
-    const isTV = endpoint.includes('/tv');
-    const isMovie = endpoint.includes('/movie');
+      params.with_origin_country = region;
+    }
+
+    const { data } = await tmdb.get(finalEndpoint, { params });
+    const isTV = finalEndpoint.includes('/tv');
+    const isMovie = finalEndpoint.includes('/movie');
 
     if (data && data.results) {
       data.results = data.results.map((item: any) => ({
@@ -67,9 +86,23 @@ export const fetchMovieDetails = async (id: number | string, type: 'movie' | 'tv
         append_to_response: 'videos,credits,similar',
       },
     });
-    return data;
-  } catch (error) {
-    console.error(`Failed to fetch details for ${type} ${id}:`, error);
+    return { ...data, media_type: type };
+  } catch (error: any) {
+    if (error.response && error.response.status === 404) {
+      const otherType = type === 'movie' ? 'tv' : 'movie';
+      try {
+        const { data: fallbackData } = await tmdb.get(`/${otherType}/${id}`, {
+          params: {
+            append_to_response: 'videos,credits,similar',
+          },
+        });
+        return { ...fallbackData, media_type: otherType };
+      } catch (fallbackError) {
+        console.error(`Failed to fetch details for both types for id ${id}`);
+      }
+    } else {
+      console.error(`Failed to fetch details for ${type} ${id}:`, error);
+    }
     // Return a minimal fallback object to avoid crashing the UI
     return { id: Number(id), title: 'Not Found', overview: 'Data could not be loaded.' } as unknown as MovieDetails;
   }
