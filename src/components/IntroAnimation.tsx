@@ -122,7 +122,7 @@ export default function IntroAnimation() {
               backgroundPosition: { times: [0, 0.3, 0.4, 0.6, 1], duration: 6, ease: "linear" },
             }}
           >
-            REEMOVIES
+            ILIFLIX
             </motion.div>
 
           </div>

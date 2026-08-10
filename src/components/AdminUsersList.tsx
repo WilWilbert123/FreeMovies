@@ -68,7 +68,7 @@ export default function AdminUsersList() {
             Registered Users
           </h2>
           <p className="text-sm text-gray-400 mt-1">
-            Overview of all users signed up on FreeMovies.
+            Overview of all users signed up on FiliFlix.
           </p>
         </div>
         <div className="bg-gray-800 px-6 py-3 rounded-lg flex flex-col items-center border border-gray-700 shadow-md">

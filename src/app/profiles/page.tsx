@@ -73,7 +73,7 @@ export default function ProfilesPage() {
       <div className="absolute top-4 md:top-8 left-4 md:left-12 cursor-pointer z-50 flex items-center gap-1 group" onClick={() => router.push('/')}>
         <ShinyImage 
           src="/logofm2.png" 
-          alt="FreeMovies Logo" 
+          alt="FiliFlix Logo" 
           className="h-10 md:h-12 w-auto cursor-pointer z-50 relative group-hover:scale-105 transition-transform duration-300" 
           speed={1.5} 
           delay={1.5} 
@@ -83,7 +83,7 @@ export default function ProfilesPage() {
           spread={120} 
         />
         <ShinyText 
-          text="REEMOVIES" 
+          text="ILIFLIX" 
           speed={1.5}
           delay={1.5}
           offset={1.5}
@@ -136,7 +136,7 @@ export default function ProfilesPage() {
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 px-4">
           <div className="bg-[#141414] p-8 rounded-md w-full max-w-lg border border-gray-800">
             <h2 className="text-3xl font-medium mb-6">Add Profile</h2>
-            <p className="text-gray-400 mb-6">Add a profile for another person watching FreeMovies.</p>
+            <p className="text-gray-400 mb-6">Add a profile for another person watching FiliFlix.</p>
             
             <form onSubmit={handleAddProfile}>
               <div className="flex items-center gap-4 mb-8">

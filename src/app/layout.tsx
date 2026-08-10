@@ -9,13 +9,13 @@ const bebasNeue = Bebas_Neue({
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "FreeMovies - Watch TV Shows & Movies",
+  title: "FiliFlix - Watch TV Shows & Movies",
   description: "High-performance streaming platform for free movies and TV shows.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "FreeMovies",
+    title: "FiliFlix",
   },
 };
 
