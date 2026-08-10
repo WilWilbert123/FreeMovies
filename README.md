@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./asset/logofm2.png" alt="FiliFlix Logo" width="200"/>
+  <img src="./asset/FreeMovies.png" alt="FiliFlix Logo" width="200"/>
   <h1>FiliFlix</h1>
   <p>A premium, high-performance streaming platform built with Next.js 15, Tailwind CSS, and Supabase.</p>
 </div>
