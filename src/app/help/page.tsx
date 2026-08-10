@@ -11,16 +11,20 @@ export default function HelpCenterPage() {
 
   const faqs = [
     {
-      question: "Is FreeMovies really free?",
-      answer: "Yes! FreeMovies is 100% free. You do not need to enter a credit card or pay any subscription fees to enjoy our massive library of movies and TV shows."
+      question: "Is FiliFlix really free?",
+      answer: "Yes! FiliFlix is 100% free. You do not need to enter a credit card or pay any subscription fees to enjoy our massive library of movies and TV shows."
     },
     {
-      question: "Do I need an account to watch?",
-      answer: "No account is required to start watching! You can instantly stream any movie or show. However, creating a free account allows you to save movies to your 'Favorites' and access them across all your devices."
+      question: "Do I need to create an account?",
+      answer: "Creating an account is optional but highly recommended. With an account, you can create multiple profiles, save your favorite movies and shows to your list, and pick up watching where you left off."
     },
     {
-      question: "Why am I experiencing video buffering or playback issues?",
-      answer: "Buffering is usually caused by internet connection drops. We recommend a minimum speed of 5.0 Mbps for smooth HD playback. Try restarting your router, clearing your browser cache, or turning off any active VPNs that might be slowing down your connection."
+      question: "How do I add a movie to my list?",
+      answer: "When browsing movies or viewing a movie's details, look for the '+' or 'Add to List' button. Clicking this will save the title to 'My List' for easy access later."
+    },
+    {
+      question: "Can I download movies to watch offline?",
+      answer: "Currently, FiliFlix only supports online streaming. You will need an active internet connection to watch our content, as we do not offer a download feature for offline viewing at this time."
     },
     {
       question: "Why won't the video player load for me?",

@@ -166,11 +166,11 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-1 group">
             <div className="h-10 w-10 relative">
               {!isIntroPlaying && (
-                <ShinyImage layoutId="main-logo" transition={{ type: "tween", duration: 1.5, ease: "easeInOut" }} src="/logofm2.png" alt="FreeMovies Logo" className="h-10 w-auto cursor-pointer z-50 relative group-hover:scale-105 absolute inset-0" speed={1.5} delay={1.5} offset={0} direction="left" shineColor="#ffffff" spread={120} />
+                <ShinyImage layoutId="main-logo" transition={{ type: "tween", duration: 1.5, ease: "easeInOut" }} src="/logofm2.png" alt="FiliFlix Logo" className="h-10 w-auto cursor-pointer z-50 relative group-hover:scale-105 absolute inset-0" speed={1.5} delay={1.5} offset={0} direction="left" shineColor="#ffffff" spread={120} />
               )}
             </div>
             <ShinyText
-              text="REEMOVIES"
+              text="ILIFLIX"
               speed={1.5}
               delay={1.5}
               offset={1.5}
@@ -360,11 +360,11 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-1 group">
             <div className="h-10 w-10 relative">
               {!isIntroPlaying && (
-                <ShinyImage layoutId="mobile-drawer-logo" transition={{ type: "tween", duration: 1.5, ease: "easeInOut" }} src="/logofm2.png" alt="FreeMovies Logo" className="h-10 w-auto cursor-pointer z-50 relative group-hover:scale-105 absolute inset-0" speed={1.5} delay={1.5} offset={0} direction="left" shineColor="#ffffff" spread={120} />
+                <ShinyImage layoutId="mobile-drawer-logo" transition={{ type: "tween", duration: 1.5, ease: "easeInOut" }} src="/logofm2.png" alt="FiliFlix Logo" className="h-10 w-auto cursor-pointer z-50 relative group-hover:scale-105 absolute inset-0" speed={1.5} delay={1.5} offset={0} direction="left" shineColor="#ffffff" spread={120} />
               )}
             </div>
             <ShinyText
-              text="REEMOVIES"
+              text="ILIFLIX"
               speed={1.5}
               delay={1.5}
               offset={1.5}
@@ -498,9 +498,9 @@ export default function Navbar() {
               <X className="w-5 h-5" />
             </button>
             <div className="w-16 h-16 bg-gray-800 rounded-2xl flex items-center justify-center mb-4 ring-4 ring-gray-800/50 overflow-hidden">
-              <img src="/logofm2.png" alt="FreeMovies Logo" className="w-full h-full object-cover" />
+              <img src="/logofm2.png" alt="FiliFlix Logo" className="w-full h-full object-cover" />
             </div>
-            <h2 className="text-xl font-bold text-white mb-2">Install FreeMovies</h2>
+            <h2 className="text-xl font-bold text-white mb-2">Install FiliFlix</h2>
             <p className="text-sm text-gray-400 mb-6 leading-relaxed">
               Install this app on your iPhone or iPad for the best experience.
             </p>

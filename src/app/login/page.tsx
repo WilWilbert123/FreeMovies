@@ -62,7 +62,7 @@ export default function LoginPage() {
         <Link href="/" className="flex items-center gap-1 group">
           <ShinyImage 
             src="/logofm2.png" 
-            alt="FreeMovies Logo" 
+            alt="FiliFlix Logo" 
             className="h-10 md:h-12 w-auto cursor-pointer z-50 relative group-hover:scale-105 transition-transform duration-300" 
             speed={1.5} 
             delay={1.5} 
@@ -72,7 +72,7 @@ export default function LoginPage() {
             spread={120} 
           />
           <ShinyText 
-            text="REEMOVIES" 
+            text="ILIFLIX" 
             speed={1.5}
             delay={1.5}
             offset={1.5}
@@ -146,7 +146,7 @@ export default function LoginPage() {
           </div>
 
           <div className="text-gray-400 mt-10">
-            {isSignUp ? "Already have an account? " : "New to FreeMovies? "}
+            {isSignUp ? "Already have an account? " : "New to FiliFlix? "}
             <span 
               onClick={() => setIsSignUp(!isSignUp)}
               className="text-red-600 hover:underline cursor-pointer font-medium"
