@@ -18,7 +18,7 @@ interface MovieModalProps {
 export default function MovieModal({ movie, onClose }: MovieModalProps) {
   const [details, setDetails] = useState<MovieDetails | null>(null);
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
-  const { addToList, removeFromList, isInList } = useUserStore();
+  const { addToList, removeFromList, isInList, toggleLike, isLiked } = useUserStore();
   
   // TV Show specific state
   const [selectedSeason, setSelectedSeason] = useState<number>(1);
@@ -28,6 +28,7 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
   const [showAllEpisodes, setShowAllEpisodes] = useState(false);
 
   const isSaved = isInList(movie.id);
+  const isMovieLiked = isLiked(movie.id);
 
   useEffect(() => {
     const getDetails = async () => {
@@ -167,8 +168,11 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
                       setIsDownloadModalOpen(true);
                     }}
                   />
-                  <button className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center hover:border-white bg-[#181818]/50 transition">
-                    <ThumbsUp className="w-5 h-5 text-white" />
+                  <button 
+                    onClick={() => toggleLike(movie)}
+                    className={`w-10 h-10 border-2 rounded-full flex items-center justify-center transition ${isMovieLiked ? 'bg-white border-white' : 'border-gray-400 hover:border-white bg-[#181818]/50'}`}
+                  >
+                    <ThumbsUp className={`w-5 h-5 ${isMovieLiked ? 'text-black fill-black' : 'text-white'}`} />
                   </button>
                 </div>
               </div>

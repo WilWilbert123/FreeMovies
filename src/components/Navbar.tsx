@@ -18,6 +18,8 @@ import { SERVERS } from "@/lib/servers";
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showAllNotifications, setShowAllNotifications] = useState(false);
+  const [hasViewedNotifications, setHasViewedNotifications] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showAllServers, setShowAllServers] = useState(false);
@@ -126,8 +128,8 @@ export default function Navbar() {
       try {
         const data = await fetchMovies(requests.fetchTrending);
         if (isMounted) {
-          // Just take the top 3 as notifications
-          setNotifications(data.results?.slice(0, 3) || []);
+          // Just take the top 10 as notifications
+          setNotifications(data.results?.slice(0, 10) || []);
         }
       } catch (error: any) {
         if (error?.name === 'CanceledError' || error?.code === 'ERR_CANCELED' || error?.message?.includes('aborted')) {
@@ -264,12 +266,15 @@ export default function Navbar() {
           </Link>
           <div
             className="relative hidden sm:block"
-            onMouseEnter={() => setShowNotifications(true)}
+            onMouseEnter={() => {
+              setShowNotifications(true);
+              setHasViewedNotifications(true);
+            }}
             onMouseLeave={() => setShowNotifications(false)}
           >
             <div className="relative">
               <Bell className="w-5 h-5 cursor-pointer hover:text-gray-300 transition" />
-              {notifications.length > 0 && (
+              {notifications.length > 0 && !hasViewedNotifications && (
                 <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-600 rounded-full border-2 border-black flex items-center justify-center">
                   <span className="text-[8px] font-bold text-white">{notifications.length}</span>
                 </div>
@@ -280,32 +285,41 @@ export default function Navbar() {
               <div className="absolute right-0 top-8 w-80 bg-black/95 border border-gray-800 rounded-md shadow-xl flex flex-col z-50 overflow-hidden">
                 <div className="px-4 py-3 text-sm font-bold text-white border-b border-gray-800 flex justify-between items-center">
                   <span>Notifications</span>
-                  <span className="text-xs text-gray-400 font-normal cursor-pointer hover:text-white">Mark all as read</span>
                 </div>
 
-                <div className="max-h-96 overflow-y-auto scrollbar-hide">
+                <div className="max-h-[32rem] overflow-y-auto scrollbar-hide">
                   {notifications.length > 0 ? (
-                    notifications.map((movie, idx) => (
-                      <Link
-                        href={`/watch/${movie.media_type || 'movie'}/${movie.id}`}
-                        key={movie.id}
-                        className="px-4 py-3 hover:bg-gray-800 cursor-pointer transition flex items-start gap-3 border-b border-gray-800/50 last:border-0"
-                      >
-                        <img
-                          src={`https://image.tmdb.org/t/p/w92${movie.backdrop_path || movie.poster_path}`}
-                          alt={movie.title || movie.name}
-                          className="w-20 h-12 object-cover rounded flex-shrink-0"
-                        />
-                        <div className="flex flex-col justify-center">
-                          <p className="text-sm text-gray-200 line-clamp-2 font-medium">
-                            New Arrival: {movie.title || movie.name}
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {idx === 0 ? 'Just now' : idx === 1 ? '2 hours ago' : '1 day ago'}
-                          </p>
-                        </div>
-                      </Link>
-                    ))
+                    <>
+                      {(showAllNotifications ? notifications : notifications.slice(0, 5)).map((movie, idx) => (
+                        <Link
+                          href={`/watch/${movie.media_type || 'movie'}/${movie.id}`}
+                          key={movie.id}
+                          className="px-4 py-3 hover:bg-gray-800 cursor-pointer transition flex items-start gap-3 border-b border-gray-800/50 last:border-0"
+                        >
+                          <img
+                            src={`https://image.tmdb.org/t/p/w92${movie.backdrop_path || movie.poster_path}`}
+                            alt={movie.title || movie.name}
+                            className="w-20 h-12 object-cover rounded flex-shrink-0"
+                          />
+                          <div className="flex flex-col justify-center">
+                            <p className="text-sm text-gray-200 line-clamp-2 font-medium">
+                              New Arrival: {movie.title || movie.name}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {idx === 0 ? 'Just now' : idx === 1 ? '2 hours ago' : '1 day ago'}
+                            </p>
+                          </div>
+                        </Link>
+                      ))}
+                      {notifications.length > 5 && (
+                        <button
+                          onClick={() => setShowAllNotifications(!showAllNotifications)}
+                          className="w-full py-3 text-sm text-gray-400 hover:text-white hover:bg-gray-800 transition border-t border-gray-800 font-medium"
+                        >
+                          {showAllNotifications ? 'Show Less' : 'Show All'}
+                        </button>
+                      )}
+                    </>
                   ) : (
                     <div className="px-4 py-8 text-center text-sm text-gray-500">
                       No new notifications
@@ -481,28 +495,38 @@ export default function Navbar() {
           <div className="flex flex-col gap-4">
             <h2 className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Notifications</h2>
             {notifications.length > 0 ? (
-              notifications.map((movie) => (
-                <Link
-                  href={`/watch/${movie.media_type || 'movie'}/${movie.id}`}
-                  key={movie.id}
-                  onClick={() => setShowMobileMenu(false)}
-                  className="flex items-center gap-4 hover:bg-gray-800 p-2 rounded-md transition"
-                >
-                  <img
-                    src={`https://image.tmdb.org/t/p/w92${movie.backdrop_path || movie.poster_path}`}
-                    alt={movie.title || movie.name}
-                    className="w-24 h-14 object-cover rounded-md flex-shrink-0"
-                  />
-                  <div className="flex flex-col">
-                    <span className="text-sm font-bold text-white truncate max-w-[200px]">
-                      {movie.title || movie.name}
-                    </span>
-                    <span className="text-xs text-gray-400">
-                      New Arrival
-                    </span>
-                  </div>
-                </Link>
-              ))
+              <>
+                {(showAllNotifications ? notifications : notifications.slice(0, 5)).map((movie) => (
+                  <Link
+                    href={`/watch/${movie.media_type || 'movie'}/${movie.id}`}
+                    key={movie.id}
+                    onClick={() => setShowMobileMenu(false)}
+                    className="flex items-center gap-4 hover:bg-gray-800 p-2 rounded-md transition"
+                  >
+                    <img
+                      src={`https://image.tmdb.org/t/p/w92${movie.backdrop_path || movie.poster_path}`}
+                      alt={movie.title || movie.name}
+                      className="w-24 h-14 object-cover rounded-md flex-shrink-0"
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold text-white truncate max-w-[200px]">
+                        {movie.title || movie.name}
+                      </span>
+                      <span className="text-xs text-gray-400">
+                        New Arrival
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+                {notifications.length > 5 && (
+                  <button
+                    onClick={() => setShowAllNotifications(!showAllNotifications)}
+                    className="w-full py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition font-medium"
+                  >
+                    {showAllNotifications ? 'Show Less' : 'Show All'}
+                  </button>
+                )}
+              </>
             ) : (
               <div className="text-gray-500 text-sm">No new notifications</div>
             )}
