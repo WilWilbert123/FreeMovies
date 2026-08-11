@@ -97,12 +97,9 @@ export const TorrentDownloadModal: React.FC<TorrentDownloadModalProps> = ({
 
     const fetchTorrents = async () => {
       try {
-        let url = `/api/torrents?tmdbId=${tmdbId}`;
-        
+        let url = `/api/torrents?tmdbId=${tmdbId}&title=${encodeURIComponent(title)}&type=${type}`;
         if (type === 'tv' || type === 'episode') {
-          // Format query like "Breaking Bad S01E01"
-          const query = `${title} S${selectedSeason.toString().padStart(2, '0')}E${selectedEpisode.toString().padStart(2, '0')}`;
-          url = `/api/torrents?query=${encodeURIComponent(query)}`;
+          url += `&season=${selectedSeason}&episode=${selectedEpisode}`;
         }
 
         const res = await fetch(url);
@@ -212,7 +209,7 @@ export const TorrentDownloadModal: React.FC<TorrentDownloadModalProps> = ({
                 >
                   <div className="flex flex-col">
                     <span className="text-white font-semibold group-hover:text-green-400 transition">
-                      {torrent.quality} {torrent.type.toUpperCase()}
+                      {torrent.quality === '2160p' ? '4K' : torrent.quality === '1080p' ? '1080p HD' : torrent.quality === '720p' ? '720p HD' : torrent.quality}{torrent.type.toLowerCase() === 'magnet' ? '' : ` ${torrent.type.toUpperCase()}`}
                     </span>
                     <span className="text-gray-400 text-xs mt-1">
                       {torrent.size} • S: {torrent.seeds} / P: {torrent.peers}

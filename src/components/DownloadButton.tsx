@@ -25,16 +25,16 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({ title, type, url
   const existing = downloads.find((d) => d.id === id || d.title === title);
 
   const handleClick = async () => {
-    if (onClick) {
-      onClick();
-      return;
-    }
-    
     const supabase = createClient();
     const { data: { session } } = await supabase.auth.getSession();
     
     if (!session) {
       router.push('/login');
+      return;
+    }
+
+    if (onClick) {
+      onClick();
       return;
     }
     

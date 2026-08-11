@@ -48,9 +48,9 @@ export default function WatchPage(props: WatchPageProps) {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         router.push('/login');
-      } else {
-        setIsAuthenticated(true);
+        return;
       }
+      setIsAuthenticated(true);
     };
     checkAuth();
   }, [router]);

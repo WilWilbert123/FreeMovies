@@ -3,14 +3,18 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
   const tmdbId = searchParams.get('tmdbId');
-  const query = searchParams.get('query');
+  const title = searchParams.get('title');
+  const type = searchParams.get('type');
+  const season = searchParams.get('season');
+  const episode = searchParams.get('episode');
 
-  if (!tmdbId && !query) {
-    return NextResponse.json({ error: 'Missing tmdbId or query' }, { status: 400 });
+  if (!tmdbId && !title) {
+    return NextResponse.json({ error: 'Missing tmdbId or title' }, { status: 400 });
   }
 
   try {
     let imdbId = null;
+    let movieTitle = null;
 
     if (tmdbId) {
       const TMDB_API_KEY = "623dda0cc4da081a282aa7705c4994cb";
@@ -19,6 +23,7 @@ export async function GET(req: NextRequest) {
       if (tmdbRes.ok) {
         const tmdbData = await tmdbRes.json();
         imdbId = tmdbData.imdb_id;
+        movieTitle = tmdbData.title || tmdbData.original_title;
       }
     }
 
@@ -57,9 +62,29 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    // FALLBACK: If YTS is completely blocked or down, fallback to APIBay (The Pirate Bay)
-    const apibayQuery = query ? encodeURIComponent(query) : imdbId;
-    if (apibayQuery) {
+    // FALLBACK: If YTS is completely blocked, down, or missing movie, fallback to APIBay (The Pirate Bay)
+    const baseTitle = title || movieTitle;
+    const cleanTitle = baseTitle ? baseTitle.replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim() : null;
+    
+    const queriesToTry: string[] = [];
+    
+    if (type === 'tv' || type === 'episode') {
+      const s = season ? season.toString().padStart(2, '0') : '01';
+      const e = episode ? episode.toString().padStart(2, '0') : '01';
+      if (cleanTitle) {
+        queriesToTry.push(`${cleanTitle} S${s}E${e}`);
+        queriesToTry.push(`${cleanTitle} S${s}`);
+        queriesToTry.push(cleanTitle);
+      }
+    } else {
+      if (imdbId) queriesToTry.push(imdbId);
+      if (cleanTitle) queriesToTry.push(cleanTitle);
+    }
+
+    for (const q of queriesToTry) {
+      if (!q) continue;
+      
+      const apibayQuery = encodeURIComponent(q);
       try {
         const apibayRes = await fetch(`https://apibay.org/q.php?q=${apibayQuery}`);
         if (apibayRes.ok) {
@@ -67,12 +92,12 @@ export async function GET(req: NextRequest) {
           
           if (Array.isArray(apibayData) && apibayData[0].id !== "0") {
             let mappedTorrents = apibayData
-              .filter((t: any) => t.name.toLowerCase().includes('1080p') || t.name.toLowerCase().includes('720p') || t.name.toLowerCase().includes('2160p') || t.name.toLowerCase().includes('yify') || t.name.toLowerCase().includes('hdtv'))
               .map((t: any) => {
-                let quality = "HD";
+                let quality = "SD";
                 if (t.name.toLowerCase().includes('2160p') || t.name.toLowerCase().includes('4k')) quality = "2160p";
                 else if (t.name.toLowerCase().includes('1080p')) quality = "1080p";
                 else if (t.name.toLowerCase().includes('720p')) quality = "720p";
+                else if (t.name.toLowerCase().includes('hdtv') || t.name.toLowerCase().includes('web')) quality = "HD";
 
                 const bytes = parseInt(t.size);
                 const sizeStr = bytes > 1024 * 1024 * 1024 
@@ -106,7 +131,7 @@ export async function GET(req: NextRequest) {
           }
         }
       } catch (err) {
-        console.error("APIBay fallback failed:", err);
+        console.error(`APIBay fallback failed for query ${q}:`, err);
       }
     }
 
