@@ -59,6 +59,7 @@ Make sure you have Node.js installed on your machine.
    NEXT_PUBLIC_TMDB_API_KEY=your_tmdb_api_key
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   SCRAPER_API_KEY=your_scraper_api_key(Required to bypass Cloudflare for torrents in production)
    ```
 4. **Run the Development Server**
    ```sh
