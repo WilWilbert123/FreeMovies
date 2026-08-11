@@ -17,118 +17,135 @@ interface UserState {
   setList: (movies: Movie[]) => void;
   fetchProfiles: () => Promise<void>;
   setActiveProfile: (profile: Profile | null) => void;
+  likedMovies: Movie[];
+  toggleLike: (movie: Movie) => void;
+  isLiked: (id: number) => boolean;
 }
 
 export const useUserStore = create<UserState>()(
   persist(
     (set, get) => ({
       myList: [],
+      likedMovies: [],
       profiles: [],
       activeProfile: null,
       activeServer: SERVERS[0],
 
-  setActiveServer: (server) => set({ activeServer: server }),
+      toggleLike: (movie) => {
+        const currentLiked = get().likedMovies || [];
+        if (currentLiked.find((m) => m.id === movie.id)) {
+          set({ likedMovies: currentLiked.filter((m) => m.id !== movie.id) });
+        } else {
+          set({ likedMovies: [...currentLiked, movie] });
+        }
+      },
 
-  setList: (movies) => set({ myList: movies }),
+      isLiked: (id) => {
+        return (get().likedMovies || []).some((m) => m.id === id);
+      },
 
-  setActiveProfile: (profile) => {
-    set({ activeProfile: profile });
-    if (profile) {
-      get().fetchUserList();
-    } else {
-      set({ myList: [] });
-    }
-  },
+      setActiveServer: (server) => set({ activeServer: server }),
 
-  fetchProfiles: async () => {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+      setList: (movies) => set({ myList: movies }),
 
-    if (user) {
-      const { data, error } = await supabase
-        .from('viewing_profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: true });
+      setActiveProfile: (profile) => {
+        set({ activeProfile: profile });
+        if (profile) {
+          get().fetchUserList();
+        } else {
+          set({ myList: [] });
+        }
+      },
 
-      if (!error && data) {
-        set({ profiles: data as Profile[] });
-      }
-    }
-  },
+      fetchProfiles: async () => {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
 
-  fetchUserList: async () => {
-    const activeProfile = get().activeProfile;
-    if (!activeProfile) return;
+        if (user) {
+          const { data, error } = await supabase
+            .from('viewing_profiles')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: true });
 
-    const supabase = createClient();
-    const { data, error } = await supabase
-      .from('profile_my_list')
-      .select('movie_data')
-      .eq('profile_id', activeProfile.id);
+          if (!error && data) {
+            set({ profiles: data as Profile[] });
+          }
+        }
+      },
 
-    if (!error && data) {
-      // Extract the movie_data JSON objects back into an array of Movies
-      const movies = data.map(row => row.movie_data as Movie);
-      set({ myList: movies });
-    }
-  },
+      fetchUserList: async () => {
+        const activeProfile = get().activeProfile;
+        if (!activeProfile) return;
 
-  addToList: async (movie) => {
-    const activeProfile = get().activeProfile;
-    if (!activeProfile) {
-      alert("Please select a profile to save movies to your list.");
-      return;
-    }
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from('profile_my_list')
+          .select('movie_data')
+          .eq('profile_id', activeProfile.id);
 
-    const currentList = get().myList;
-    if (!currentList.find((m) => m.id === movie.id)) {
-      // Optimistic update
-      set({ myList: [...currentList, movie] });
+        if (!error && data) {
+          // Extract the movie_data JSON objects back into an array of Movies
+          const movies = data.map(row => row.movie_data as Movie);
+          set({ myList: movies });
+        }
+      },
 
-      const supabase = createClient();
-      const { error } = await supabase
-        .from('profile_my_list')
-        .insert({
-          profile_id: activeProfile.id,
-          movie_id: movie.id,
-          movie_data: movie,
-        });
+      addToList: async (movie) => {
+        const activeProfile = get().activeProfile;
+        if (!activeProfile) {
+          alert("Please select a profile to save movies to your list.");
+          return;
+        }
 
-      if (error) {
-        console.error("Error saving movie to list:", error);
-        // Rollback
-        set({ myList: get().myList.filter((m) => m.id !== movie.id) });
-      }
-    }
-  },
+        const currentList = get().myList;
+        if (!currentList.find((m) => m.id === movie.id)) {
+          // Optimistic update
+          set({ myList: [...currentList, movie] });
 
-  removeFromList: async (id) => {
-    const activeProfile = get().activeProfile;
-    if (!activeProfile) {
-      alert("Please select a profile to manage your list.");
-      return;
-    }
+          const supabase = createClient();
+          const { error } = await supabase
+            .from('profile_my_list')
+            .insert({
+              profile_id: activeProfile.id,
+              movie_id: movie.id,
+              movie_data: movie,
+            });
 
-    // Optimistic update
-    const previousList = get().myList;
-    set({ myList: previousList.filter((m) => m.id !== id) });
+          if (error) {
+            console.error("Error saving movie to list:", error);
+            // Rollback
+            set({ myList: get().myList.filter((m) => m.id !== movie.id) });
+          }
+        }
+      },
 
-    const supabase = createClient();
-    const { error } = await supabase
-      .from('profile_my_list')
-      .delete()
-      .eq('profile_id', activeProfile.id)
-      .eq('movie_id', id);
+      removeFromList: async (id) => {
+        const activeProfile = get().activeProfile;
+        if (!activeProfile) {
+          alert("Please select a profile to manage your list.");
+          return;
+        }
 
-    if (error) {
-      console.error("Error removing movie from list:", error);
-      // Rollback
-      set({ myList: previousList });
-    }
-  },
+        // Optimistic update
+        const previousList = get().myList;
+        set({ myList: previousList.filter((m) => m.id !== id) });
 
-  isInList: (id) => {
-    return get().myList.some((m) => m.id === id);
-  },
-}), { name: 'freemovies-user-store' }));
+        const supabase = createClient();
+        const { error } = await supabase
+          .from('profile_my_list')
+          .delete()
+          .eq('profile_id', activeProfile.id)
+          .eq('movie_id', id);
+
+        if (error) {
+          console.error("Error removing movie from list:", error);
+          // Rollback
+          set({ myList: previousList });
+        }
+      },
+
+      isInList: (id) => {
+        return get().myList.some((m) => m.id === id);
+      },
+    }), { name: 'freemovies-user-store' }));
