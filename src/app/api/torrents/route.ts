@@ -12,6 +12,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Missing tmdbId or title' }, { status: 400 });
   }
 
+  // Use ScraperAPI if the key is configured to bypass Cloudflare on Vercel
+  const SCRAPER_API_KEY = process.env.SCRAPER_API_KEY;
+
+  async function fetchWithScraper(url: string, options: any = {}) {
+    if (SCRAPER_API_KEY && (url.includes('apibay.org') || url.includes('yts.'))) {
+      const scraperUrl = `http://api.scraperapi.com?api_key=${SCRAPER_API_KEY}&url=${encodeURIComponent(url)}`;
+      console.log(`[ScraperAPI] Fetching: ${url}`);
+      return fetch(scraperUrl, options);
+    }
+    return fetch(url, options);
+  }
+
   try {
     let imdbId = null;
     let movieTitle = null;
@@ -39,7 +51,7 @@ export async function GET(req: NextRequest) {
 
       for (const mirror of mirrors) {
         try {
-          const ytsRes = await fetch(mirror, {
+          const ytsRes = await fetchWithScraper(mirror, {
             headers: {
               'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
             }
@@ -52,7 +64,7 @@ export async function GET(req: NextRequest) {
             }
           }
         } catch (err) {
-          // Ignore and try next mirror
+          console.error(`YTS fetch error for mirror ${mirror}:`, err);
           continue;
         }
       }
@@ -86,7 +98,7 @@ export async function GET(req: NextRequest) {
       
       const apibayQuery = encodeURIComponent(q);
       try {
-        const apibayRes = await fetch(`https://apibay.org/q.php?q=${apibayQuery}`);
+        const apibayRes = await fetchWithScraper(`https://apibay.org/q.php?q=${apibayQuery}`);
         if (apibayRes.ok) {
           const apibayData = await apibayRes.json();
           
