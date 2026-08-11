@@ -6,7 +6,7 @@ import { useEffect, useState, use } from "react";
 import { fetchMovieDetails, fetchTVSeason, getImageUrl } from "@/lib/tmdb";
 import { MovieDetails, TVEpisode } from "@/types";
 import { createClient } from "@/lib/supabase/client";
-import { SERVERS } from "@/lib/servers";
+import { SERVERS, Server } from "@/lib/servers";
 
 import { useUserStore } from "@/store/useUserStore";
 
@@ -85,7 +85,7 @@ export default function WatchPage(props: WatchPageProps) {
       
     const isFilipino = 
       details.original_language === 'tl' || 
-      details.origin_country?.includes('PH');
+      (details as any).origin_country?.includes('PH');
 
     let currentMapped = SERVERS.find(s => s.id === globalActiveServer?.id) || SERVERS[0];
     

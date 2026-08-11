@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Play, Plus, Check, ThumbsUp, Star } from "lucide-react";
+import { DownloadButton } from "./DownloadButton";
+import { TorrentDownloadModal } from "./TorrentDownloadModal";
 import { Movie, MovieDetails } from "@/types";
-import { fetchMovieDetails, getImageUrl } from "@/lib/tmdb";
+import { fetchMovieDetails, fetchTVSeason, getImageUrl } from "@/lib/tmdb";
 import { useUserStore } from "@/store/useUserStore";
 import Link from "next/link";
 
@@ -15,8 +17,16 @@ interface MovieModalProps {
 
 export default function MovieModal({ movie, onClose }: MovieModalProps) {
   const [details, setDetails] = useState<MovieDetails | null>(null);
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
   const { addToList, removeFromList, isInList } = useUserStore();
   
+  // TV Show specific state
+  const [selectedSeason, setSelectedSeason] = useState<number>(1);
+  const [episodes, setEpisodes] = useState<any[]>([]);
+  const [episodesLoading, setEpisodesLoading] = useState(false);
+  const [downloadEpisode, setDownloadEpisode] = useState<{season: number, episode: number} | null>(null);
+  const [showAllEpisodes, setShowAllEpisodes] = useState(false);
+
   const isSaved = isInList(movie.id);
 
   useEffect(() => {
@@ -24,6 +34,12 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
       try {
         const data = await fetchMovieDetails(movie.id, (movie.media_type as any) || 'movie');
         setDetails(data);
+        if (movie.media_type === 'tv' && data.seasons && data.seasons.length > 0) {
+          const validSeasons = data.seasons.filter((s: any) => s.season_number > 0);
+          if (validSeasons.length > 0) {
+            setSelectedSeason(validSeasons[0].season_number);
+          }
+        }
       } catch (error) {
         console.error("Error fetching details", error);
       }
@@ -36,6 +52,24 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
       document.body.style.overflow = "auto";
     };
   }, [movie.id, movie.media_type]);
+
+  useEffect(() => {
+    if (movie.media_type !== 'tv' || !selectedSeason) return;
+    
+    const getEpisodes = async () => {
+      setEpisodesLoading(true);
+      try {
+        const seasonData = await fetchTVSeason(movie.id, selectedSeason);
+        setEpisodes(seasonData.episodes || []);
+      } catch (error) {
+        console.error("Error fetching season episodes", error);
+      } finally {
+        setEpisodesLoading(false);
+      }
+    };
+
+    getEpisodes();
+  }, [movie.id, selectedSeason, movie.media_type]);
 
   const toggleList = () => {
     if (isSaved) {
@@ -124,6 +158,15 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
                       <Plus className="w-5 h-5 text-white" />
                     )}
                   </button>
+                  <DownloadButton
+                    title={movie.title || movie.name || 'Movie'}
+                    type={movie.media_type === 'tv' ? 'episode' : 'movie'}
+                    id={movie.id.toString()}
+                    onClick={() => {
+                      setDownloadEpisode(null);
+                      setIsDownloadModalOpen(true);
+                    }}
+                  />
                   <button className="w-10 h-10 border-2 border-gray-400 rounded-full flex items-center justify-center hover:border-white bg-[#181818]/50 transition">
                     <ThumbsUp className="w-5 h-5 text-white" />
                   </button>
@@ -173,6 +216,85 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
                   </div>
                 </div>
               </div>
+
+              {/* TV Show Episodes Section */}
+              {movie.media_type === 'tv' && details?.seasons && (
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-xl md:text-2xl font-bold text-white">Episodes</h3>
+                    <select
+                      className="bg-[#222] text-white border border-gray-700 rounded p-2 text-sm focus:outline-none focus:border-green-500 transition cursor-pointer"
+                      value={selectedSeason}
+                      onChange={(e) => {
+                        setSelectedSeason(Number(e.target.value));
+                        setShowAllEpisodes(false); // Reset to 3 episodes on season change
+                      }}
+                    >
+                      {details.seasons.filter((s: any) => s.season_number > 0).map((s: any) => (
+                        <option key={s.season_number} value={s.season_number}>
+                          Season {s.season_number}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div className="flex flex-col gap-3">
+                    {episodesLoading ? (
+                      <div className="flex justify-center py-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                      </div>
+                    ) : episodes.length > 0 ? (
+                      <>
+                        {(showAllEpisodes ? episodes : episodes.slice(0, 3)).map((ep: any) => (
+                          <div key={ep.id} className="flex gap-4 p-4 bg-[#222] rounded-lg border border-gray-800 hover:bg-[#2a2a2a] transition relative group">
+                            {/* Top right download button */}
+                            <div className="absolute top-4 right-4 z-10 md:opacity-0 md:group-hover:opacity-100 transition duration-200">
+                              <DownloadButton
+                                title={ep.name}
+                                type="episode"
+                                id={ep.id.toString()}
+                                onClick={() => {
+                                  setDownloadEpisode({ season: selectedSeason, episode: ep.episode_number });
+                                  setIsDownloadModalOpen(true);
+                                }}
+                              />
+                            </div>
+
+                            <div className="w-32 md:w-40 shrink-0 aspect-video rounded overflow-hidden bg-black flex-shrink-0 relative">
+                              {ep.still_path ? (
+                                <img src={getImageUrl(ep.still_path, 'w500')} alt={ep.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No Image</div>
+                              )}
+                              <div className="absolute bottom-1 left-1 bg-black/80 px-1 rounded text-[10px] text-white font-bold">
+                                E{ep.episode_number}
+                              </div>
+                            </div>
+                            
+                            <div className="flex-1 flex flex-col justify-center pr-12 md:pr-16">
+                              <h4 className="text-white font-bold text-sm md:text-base line-clamp-1">{ep.name}</h4>
+                              <p className="text-gray-400 text-xs md:text-sm mt-1 line-clamp-2 md:line-clamp-3">
+                                {ep.overview || "No description available."}
+                              </p>
+                              <span className="text-gray-500 text-xs mt-2">{ep.runtime ? `${ep.runtime}m` : ''}</span>
+                            </div>
+                          </div>
+                        ))}
+                        {episodes.length > 3 && (
+                          <button
+                            onClick={() => setShowAllEpisodes(!showAllEpisodes)}
+                            className="w-full py-3 mt-2 rounded-lg border border-gray-700 bg-[#222] hover:bg-[#2a2a2a] text-white font-semibold transition shadow-md"
+                          >
+                            {showAllEpisodes ? "Show Less" : "Show All"}
+                          </button>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-gray-500 py-4">No episodes found for this season.</p>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Cast Slider */}
               {details?.credits?.cast && details.credits.cast.length > 0 && (
@@ -235,6 +357,17 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
             </div>
           </div>
         </motion.div>
+        <TorrentDownloadModal
+          isOpen={isDownloadModalOpen}
+          onClose={() => setIsDownloadModalOpen(false)}
+          tmdbId={movie.id}
+          title={movie.title || movie.name || 'Movie'}
+          type={movie.media_type === 'tv' ? 'episode' : 'movie'}
+          year={new Date(movie.release_date || movie.first_air_date || '').getFullYear().toString()}
+          defaultSeason={downloadEpisode?.season}
+          defaultEpisode={downloadEpisode?.episode}
+          hideSelectors={!!downloadEpisode}
+        />
       </div>
     </AnimatePresence>
   );

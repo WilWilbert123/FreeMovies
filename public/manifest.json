@@ -1,6 +1,6 @@
 {
-  "name": "FreeMovies",
-  "short_name": "FreeMovies",
+  "name": "FiliFlix",
+  "short_name": "FiliFlix",
   "description": "High-performance streaming platform for free movies and TV shows.",
   "start_url": "/",
   "display": "standalone",

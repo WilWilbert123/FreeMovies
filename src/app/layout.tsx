@@ -27,6 +27,7 @@ import Link from "next/link";
 import IntroAnimation from "@/components/IntroAnimation";
 import ShinyText from "@/components/ShinyText/ShinyText";
 import PresenceTracker from "@/components/PresenceTracker";
+import { DownloadProvider } from "@/context/DownloadContext";
 
 export default function RootLayout({
   children,
@@ -38,14 +39,22 @@ export default function RootLayout({
       <body className="min-h-full bg-[#141414] text-white flex flex-col">
         <PresenceTracker />
         <IntroAnimation />
-        <div className="flex-grow">
-          {children}
-        </div>
-        <footer className="w-full bg-[#141414] border-t border-gray-800 py-6 mt-12">
-          <div className="container mx-auto px-4 flex flex-col items-center justify-center gap-4">
-            <div className="text-gray-400 text-sm font-medium flex items-center justify-center gap-1">
-              Created by <ShinyText text="John Wilbert Gamis" speed={5} className="text-sm font-bold" /> &copy; 2026
+        <DownloadProvider>
+          <div className="flex-grow">
+            {children}
+          </div>
+        </DownloadProvider>
+        <footer className="w-full bg-[#141414] border-t border-gray-800 py-4 mt-12">
+          <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center gap-2 lg:gap-3 text-xs text-gray-500 text-center flex-wrap">
+            <div className="flex items-center gap-1">
+              Created by <ShinyText text="John Wilbert Gamis" speed={5} className="font-bold" />
             </div>
+            <span className="hidden lg:inline">|</span>
+            <span>&copy; {new Date().getFullYear()} All rights reserved.</span>
+            <span className="hidden lg:inline">|</span>
+            <span>This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
+            <span className="hidden lg:inline">|</span>
+            <span>Movie posters and metadata are provided by TMDB for informational purposes only.</span>
           </div>
         </footer>
       </body>
