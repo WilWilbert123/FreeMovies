@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h2>YTS CORS Test</h2>
+  <pre id="out">Testing YTS...</pre>
+  <script>
+    fetch("https://yts.mx/api/v2/movie_details.json?imdb_id=tt0111161")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("out").innerText = "SUCCESS! YTS allows CORS from the browser.\n\n" + JSON.stringify(data).substring(0, 100);
+      })
+      .catch(err => {
+        document.getElementById("out").innerText = "ERROR: " + err.message;
+      });
+  </script>
+</body>
+</html>
