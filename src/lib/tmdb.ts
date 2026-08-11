@@ -1,17 +1,37 @@
 import axios from 'axios';
 import { MovieDetails, TMDBResponse } from '@/types';
 
-const BASE_URL = 'https://api.themoviedb.org/3';
-// It's a demo, if the user doesn't provide an API key, we might have issues.
-// But we will use the environment variable.
+const BASE_URL = 'https://api.tmdb.org/3';
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
 const tmdb = axios.create({
   baseURL: BASE_URL,
+  timeout: 10000,
   params: {
     api_key: API_KEY,
   },
 });
+
+// Retry helper for handling transient socket disconnects (ECONNRESET, ENOTFOUND, ETIMEDOUT)
+const getWithRetry = async (url: string, config: any = {}, retries = 3): Promise<any> => {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await tmdb.get(url, config);
+    } catch (err: any) {
+      const isNetworkError =
+        err.code === 'ECONNRESET' ||
+        err.code === 'ENOTFOUND' ||
+        err.code === 'ETIMEDOUT' ||
+        !err.response;
+
+      if (isNetworkError && i < retries - 1) {
+        await new Promise((res) => setTimeout(res, 300 * (i + 1)));
+        continue;
+      }
+      throw err;
+    }
+  }
+};
 
 export const requests = {
   fetchTrending: '/trending/all/week',
@@ -61,7 +81,7 @@ export const fetchMovies = async (endpoint: string, page: number = 1, region: st
       params.with_origin_country = region;
     }
 
-    const { data } = await tmdb.get(finalEndpoint, { params });
+    const { data } = await getWithRetry(finalEndpoint, { params });
     const isTV = finalEndpoint.includes('/tv');
     const isMovie = finalEndpoint.includes('/movie');
 
@@ -81,7 +101,7 @@ export const fetchMovies = async (endpoint: string, page: number = 1, region: st
 
 export const fetchMovieDetails = async (id: number | string, type: 'movie' | 'tv' = 'movie'): Promise<MovieDetails> => {
   try {
-    const { data } = await tmdb.get(`/${type}/${id}`, {
+    const { data } = await getWithRetry(`/${type}/${id}`, {
       params: {
         append_to_response: 'videos,credits,similar',
       },
@@ -91,7 +111,7 @@ export const fetchMovieDetails = async (id: number | string, type: 'movie' | 'tv
     if (error.response && error.response.status === 404) {
       const otherType = type === 'movie' ? 'tv' : 'movie';
       try {
-        const { data: fallbackData } = await tmdb.get(`/${otherType}/${id}`, {
+        const { data: fallbackData } = await getWithRetry(`/${otherType}/${id}`, {
           params: {
             append_to_response: 'videos,credits,similar',
           },
@@ -103,14 +123,13 @@ export const fetchMovieDetails = async (id: number | string, type: 'movie' | 'tv
     } else {
       console.error(`Failed to fetch details for ${type} ${id}:`, error);
     }
-    // Return a minimal fallback object to avoid crashing the UI
     return { id: Number(id), title: 'Not Found', overview: 'Data could not be loaded.' } as unknown as MovieDetails;
   }
 };
 
 export const fetchTVSeason = async (tvId: string | number, seasonNumber: number): Promise<any> => {
   try {
-    const { data } = await tmdb.get(`/tv/${tvId}/season/${seasonNumber}`);
+    const { data } = await getWithRetry(`/tv/${tvId}/season/${seasonNumber}`);
     return data;
   } catch (error) {
     console.error(`Failed to fetch season ${seasonNumber} for tv ${tvId}:`, error);
@@ -120,7 +139,7 @@ export const fetchTVSeason = async (tvId: string | number, seasonNumber: number)
 
 export const searchMovies = async (query: string): Promise<TMDBResponse> => {
   try {
-    const { data } = await tmdb.get(`/search/multi`, {
+    const { data } = await getWithRetry(`/search/multi`, {
       params: {
         query,
         include_adult: false,
@@ -134,6 +153,6 @@ export const searchMovies = async (query: string): Promise<TMDBResponse> => {
 };
 
 export function getImageUrl(path: string | null | undefined, size: 'w500' | 'original' = 'w500') {
-  if (!path) return '/placeholder.png'; // Fallback image if needed
+  if (!path) return 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="500" height="750" fill="%23222"%3E%3Crect width="500" height="750"/%3E%3Ctext x="250" y="375" text-anchor="middle" fill="%23555" font-size="24"%3ENo Image%3C/text%3E%3C/svg%3E';
   return `https://image.tmdb.org/t/p/${size}${path}`;
 }

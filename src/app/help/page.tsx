@@ -32,7 +32,7 @@ export default function HelpCenterPage() {
     },
     {
       question: "Can I download movies to watch offline?",
-      answer: "Currently, FreeMovies only supports online streaming. You will need an active internet connection to watch our content, as we do not offer a download feature for offline viewing at this time."
+      answer: "Currently, FiliFlix only supports online streaming. You will need an active internet connection to watch our content, as we do not offer a download feature for offline viewing at this time."
     },
     {
       question: "How often are new movies and shows added?",
