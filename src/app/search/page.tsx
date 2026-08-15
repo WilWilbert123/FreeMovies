@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
-import { Search as SearchIcon, X } from "lucide-react";
+import { Search as SearchIcon, X, Clock } from "lucide-react";
 import { searchMovies } from "@/lib/tmdb";
 import { Movie } from "@/types";
 import MovieCard from "@/components/MovieCard";
@@ -12,7 +12,68 @@ export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(false);
+  
+  const [history, setHistory] = useState<string[]>([]);
+  const [showAllHistory, setShowAllHistory] = useState(false);
+  
   const router = useRouter();
+
+  useEffect(() => {
+    const stored = localStorage.getItem('searchHistory');
+    if (stored) {
+      try {
+        setHistory(JSON.parse(stored));
+      } catch (e) {
+        console.error("Failed to parse search history", e);
+      }
+    }
+  }, []);
+
+  const addToHistory = (term: string) => {
+    if (!term.trim()) return;
+    
+    setHistory(prev => {
+      let newHistory = [...prev];
+      const existingIndex = newHistory.indexOf(term);
+      
+      if (existingIndex !== -1) {
+        newHistory.splice(existingIndex, 1);
+      } else if (newHistory.length > 0) {
+        const lastTerm = newHistory[0].toLowerCase();
+        const currentTerm = term.toLowerCase();
+        // Replace previous partial queries (like "bat" with "batman")
+        if (currentTerm.startsWith(lastTerm) || lastTerm.startsWith(currentTerm)) {
+          newHistory.shift();
+        }
+      }
+      
+      newHistory.unshift(term);
+      if (newHistory.length > 50) newHistory.pop(); // keep limit reasonable
+      
+      localStorage.setItem('searchHistory', JSON.stringify(newHistory));
+      return newHistory;
+    });
+  };
+
+  const removeFromHistory = (term: string) => {
+    setHistory(prev => {
+      const newHistory = prev.filter(t => t !== term);
+      localStorage.setItem('searchHistory', JSON.stringify(newHistory));
+      return newHistory;
+    });
+  };
+
+  const clearHistory = () => {
+    setHistory([]);
+    localStorage.removeItem('searchHistory');
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      addToHistory(query.trim());
+    }
+  };
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -25,6 +86,9 @@ export default function SearchPage() {
             (item) => (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path
           );
           setResults(filtered);
+          if (filtered.length > 0) {
+            addToHistory(query.trim());
+          }
         } catch (error) {
           console.error("Search failed", error);
         } finally {
@@ -47,7 +111,7 @@ export default function SearchPage() {
       <Navbar />
       
       <div className="pt-24 px-4 md:px-12">
-        <div className="relative max-w-2xl mx-auto mb-8 md:mb-12">
+        <form onSubmit={handleSearchSubmit} className="relative max-w-2xl mx-auto mb-8 md:mb-12">
           <SearchIcon className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 md:w-6 md:h-6" />
           <input
             type="text"
@@ -57,6 +121,7 @@ export default function SearchPage() {
             className="w-full bg-[#333] text-white pl-10 md:pl-14 pr-10 md:pr-12 py-3 md:py-4 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400 text-sm md:text-lg"
           />
           <button 
+            type="button"
             onClick={() => {
               if (query) {
                 setQuery('');
@@ -68,7 +133,61 @@ export default function SearchPage() {
           >
             <X className="w-5 h-5 md:w-6 md:h-6" />
           </button>
-        </div>
+        </form>
+
+        {!loading && query.trim().length === 0 && history.length > 0 && (
+          <div className="max-w-2xl mx-auto mb-12">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-gray-300">Search History</h2>
+              <button 
+                type="button"
+                onClick={clearHistory}
+                className="text-sm text-gray-400 hover:text-white transition"
+              >
+                Clear all
+              </button>
+            </div>
+            <div className="flex flex-col gap-2">
+              {(showAllHistory ? history : history.slice(0, 5)).map((term, index) => (
+                <div 
+                  key={index} 
+                  className="flex items-center justify-between p-3 bg-[#333] rounded-md hover:bg-gray-700 transition cursor-pointer" 
+                  onClick={() => {
+                    setQuery(term);
+                    addToHistory(term);
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <Clock className="w-4 h-4 text-gray-400" />
+                    <span>{term}</span>
+                  </div>
+                  <button 
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeFromHistory(term);
+                    }}
+                    className="p-2 -mr-2 text-gray-400 hover:text-white transition rounded-full hover:bg-gray-600"
+                    title="Remove from history"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            {history.length > 5 && (
+              <div className="mt-4 flex justify-center">
+                <button 
+                  type="button"
+                  onClick={() => setShowAllHistory(!showAllHistory)}
+                  className="text-sm text-netflix-red hover:text-red-400 transition font-medium"
+                >
+                  {showAllHistory ? "Show Less" : "See All Searches"}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {loading && (
           <div className="flex justify-center mt-20">
