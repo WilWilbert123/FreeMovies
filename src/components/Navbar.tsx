@@ -237,9 +237,9 @@ export default function Navbar() {
               </span>
               <div className="absolute left-0 top-6 hidden w-48 bg-black/95 border border-gray-800 rounded-md shadow-xl py-2 group-hover:flex flex-col z-50">
                 {Object.entries(regions).map(([key, value]) => (
-                  <button 
-                    key={key} 
-                    onClick={() => handleRegionChange(key)} 
+                  <button
+                    key={key}
+                    onClick={() => handleRegionChange(key)}
                     className="text-left px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition"
                   >
                     {value}
@@ -387,7 +387,7 @@ export default function Navbar() {
                     <Link href="/login" className="px-4 py-2 hover:underline text-sm font-bold text-white transition text-center bg-netflix-red rounded mx-2 my-1">
                       Sign In
                     </Link>
-                    <Link href="/login" className="px-4 py-2 hover:underline text-sm text-gray-300 transition text-center">
+                    <Link href="/login?mode=signup" className="px-4 py-2 hover:underline text-sm text-gray-300 transition text-center">
                       Sign Up
                     </Link>
                   </>
@@ -562,7 +562,7 @@ export default function Navbar() {
             ) : (
               <div className="flex flex-col gap-4">
                 <Link href="/login" onClick={() => setShowMobileMenu(false)} className="text-lg font-bold text-white bg-netflix-red px-4 py-2 rounded-md text-center">Sign In</Link>
-                <Link href="/login" onClick={() => setShowMobileMenu(false)} className="text-lg text-gray-300 text-center">Sign Up</Link>
+                <Link href="/login?mode=signup" onClick={() => setShowMobileMenu(false)} className="text-lg text-gray-300 text-center">Sign Up</Link>
               </div>
             )}
           </div>
