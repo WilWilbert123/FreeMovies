@@ -85,13 +85,23 @@ export default function AdminUsersList() {
             Overview of all users signed up on FiliFlix.
           </p>
         </div>
-        <div className="bg-gray-800 px-6 py-3 rounded-lg flex flex-col items-center border border-gray-700 shadow-md">
-          <span className="text-3xl font-bold text-netflix-red">
-            {loading ? "-" : users.length}
-          </span>
-          <span className="text-xs text-gray-400 uppercase font-semibold tracking-wider">
-            Total Users
-          </span>
+        <div className="flex gap-3 w-full md:w-auto">
+          <div className="bg-gray-800 flex-1 md:flex-none px-4 md:px-6 py-3 rounded-lg flex flex-col items-center border border-gray-700 shadow-md">
+            <span className="text-2xl md:text-3xl font-bold text-netflix-red">
+              {loading ? "-" : users.length}
+            </span>
+            <span className="text-[10px] md:text-xs text-gray-400 uppercase font-semibold tracking-wider text-center">
+              Total Users
+            </span>
+          </div>
+          <div className="bg-gray-800 flex-1 md:flex-none px-4 md:px-6 py-3 rounded-lg flex flex-col items-center border border-gray-700 shadow-md">
+            <span className="text-2xl md:text-3xl font-bold text-green-500">
+              {loading ? "-" : onlineUsersArray.length}
+            </span>
+            <span className="text-[10px] md:text-xs text-gray-400 uppercase font-semibold tracking-wider text-center">
+              Total Online
+            </span>
+          </div>
         </div>
       </div>
 
