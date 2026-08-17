@@ -26,11 +26,11 @@ export default function WatchPage(props: WatchPageProps) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const globalActiveServer = useUserStore((state) => state.activeServer);
   const setGlobalActiveServer = useUserStore((state) => state.setActiveServer);
-  
+
   // Safely map the stored server back to the actual SERVER object with the url function, or fallback to default
   const mappedServer = SERVERS.find(s => s.id === globalActiveServer?.id) || SERVERS[0];
   const [activeServer, setActiveServer] = useState<Server>(mappedServer);
-  
+
   const supabase = createClient();
 
   // TV Show State
@@ -61,7 +61,7 @@ export default function WatchPage(props: WatchPageProps) {
     const getDetails = async () => {
       try {
         const data = await fetchMovieDetails(id, type as 'movie' | 'tv');
-        
+
         // If the URL has the wrong type, redirect to the correct one
         if (data && data.media_type && data.media_type !== type) {
           router.replace(`/watch/${data.media_type}/${id}`);
@@ -79,16 +79,16 @@ export default function WatchPage(props: WatchPageProps) {
   // Keep activeServer in sync if global server changes or if anime/filipino content is detected
   useEffect(() => {
     if (!details) return;
-    const isAnime = 
-      details.original_language === 'ja' && 
+    const isAnime =
+      details.original_language === 'ja' &&
       details.genres?.some(g => g.name === 'Animation' || g.id === 16);
-      
-    const isFilipino = 
-      details.original_language === 'tl' || 
+
+    const isFilipino =
+      details.original_language === 'tl' ||
       (details as any).origin_country?.includes('PH');
 
     let currentMapped = SERVERS.find(s => s.id === globalActiveServer?.id) || SERVERS[0];
-    
+
     // Auto-switch based on content type if they are using a conflicting server
     if (isAnime && currentMapped.id === 'vidlink') {
       // Use FiliAnime for Anime
@@ -97,7 +97,7 @@ export default function WatchPage(props: WatchPageProps) {
       // Use FiliFilipo Server for Filipino movies
       currentMapped = SERVERS.find(s => s.id === 'vidlink') || SERVERS[0];
     }
-    
+
     setActiveServer(currentMapped);
   }, [globalActiveServer, details]);
 
@@ -205,7 +205,7 @@ export default function WatchPage(props: WatchPageProps) {
               {details?.backdrop_path && (
                 <div className="absolute top-0 left-0 w-full h-[70vh] md:h-[90vh] z-0">
                   <img
-                    src={getImageUrl(details.backdrop_path, 'original')}
+                    src={getImageUrl(details.backdrop_path, 'original', details.title || details.name)}
                     alt="Background"
                     className="w-full h-full object-cover object-top"
                   />
@@ -253,15 +253,11 @@ export default function WatchPage(props: WatchPageProps) {
                       className="group cursor-pointer bg-gray-900 md:bg-gray-900/50 rounded-lg overflow-hidden border border-gray-800 hover:border-white/40 hover:scale-[1.02] transition-all flex flex-row md:flex-col items-stretch"
                     >
                       <div className="relative w-32 sm:w-40 md:w-full shrink-0 aspect-video bg-gray-800">
-                        {ep.still_path ? (
-                          <img
-                            src={getImageUrl(ep.still_path, 'w500')}
-                            alt={ep.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">No Image</div>
-                        )}
+                        <img
+                          src={getImageUrl(ep.still_path, 'w500', ep.name)}
+                          alt={ep.name}
+                          className="w-full h-full object-cover"
+                        />
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
                           <Play className="w-8 h-8 md:w-12 md:h-12 text-white" fill="white" />
                         </div>
@@ -282,12 +278,19 @@ export default function WatchPage(props: WatchPageProps) {
               </div>
             </div>
           ) : (
-            <iframe
-              src={activeServer?.url ? activeServer.url(type, id, selectedSeason, selectedEpisode, details?.title || details?.name) : SERVERS[0].url(type, id, selectedSeason, selectedEpisode, details?.title || details?.name)}
-              className="absolute inset-0 w-full h-full border-0 rounded-lg shadow-2xl"
-              allowFullScreen
-              allow="autoplay; encrypted-media"
-            ></iframe>
+            <div className="absolute inset-0 w-full h-full flex flex-col">
+              <div className="bg-red-950/80 text-red-200 text-center text-xs sm:text-sm py-2 px-4 flex-shrink-0 flex items-center justify-center gap-2 border-b border-red-900 shadow-sm z-10 backdrop-blur-sm">
+                <strong className="text-white">Please change your server in the TOP RIGHT CORNER.</strong>
+              </div>
+              <div className="flex-1 w-full relative bg-black">
+                <iframe
+                  src={activeServer?.url ? activeServer.url(type, id, selectedSeason, selectedEpisode, details?.title || details?.name) : SERVERS[0].url(type, id, selectedSeason, selectedEpisode, details?.title || details?.name)}
+                  className="absolute inset-0 w-full h-full border-0 shadow-2xl"
+                  allowFullScreen
+                  allow="autoplay; encrypted-media"
+                ></iframe>
+              </div>
+            </div>
           )}
         </div>
 
@@ -326,9 +329,7 @@ export default function WatchPage(props: WatchPageProps) {
                     className={`flex gap-3 p-2 rounded-md cursor-pointer transition ${isActive ? 'bg-gray-800' : 'hover:bg-gray-800/50'}`}
                   >
                     <div className="w-32 shrink-0 aspect-video bg-gray-900 relative rounded overflow-hidden">
-                      {ep.still_path ? (
-                        <img src={getImageUrl(ep.still_path, 'w500')} alt={ep.name} className="w-full h-full object-cover" />
-                      ) : null}
+                      <img src={getImageUrl(ep.still_path, 'w500', ep.name)} alt={ep.name} className="w-full h-full object-cover" />
                       {isActive && (
                         <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
                           <span className="text-red-500 font-bold text-xs bg-black/50 px-2 py-1 rounded">PLAYING</span>

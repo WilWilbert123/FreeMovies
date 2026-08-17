@@ -21,7 +21,7 @@ export default function Billboard({ movie }: BillboardProps) {
       <div className="relative h-[56.25vw] max-h-[85vh] w-full">
         <div className="absolute w-full h-full">
           <img
-            src={getImageUrl(movie.backdrop_path, 'original')}
+            src={getImageUrl(movie.backdrop_path, 'original', movie.title || movie.name)}
             alt={movie.title || movie.name}
             className="w-full h-full object-cover brightness-[60%]"
           />
