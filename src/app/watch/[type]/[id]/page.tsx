@@ -278,19 +278,12 @@ export default function WatchPage(props: WatchPageProps) {
               </div>
             </div>
           ) : (
-            <div className="absolute inset-0 w-full h-full flex flex-col">
-              <div className="bg-red-950/80 text-red-200 text-center text-xs sm:text-sm py-2 px-4 flex-shrink-0 flex items-center justify-center gap-2 border-b border-red-900 shadow-sm z-10 backdrop-blur-sm">
-                <strong className="text-white">Please change your server in the TOP RIGHT CORNER.</strong>
-              </div>
-              <div className="flex-1 w-full relative bg-black">
-                <iframe
-                  src={activeServer?.url ? activeServer.url(type, id, selectedSeason, selectedEpisode, details?.title || details?.name) : SERVERS[0].url(type, id, selectedSeason, selectedEpisode, details?.title || details?.name)}
-                  className="absolute inset-0 w-full h-full border-0 shadow-2xl"
-                  allowFullScreen
-                  allow="autoplay; encrypted-media"
-                ></iframe>
-              </div>
-            </div>
+            <iframe
+              src={activeServer?.url ? activeServer.url(type, id, selectedSeason, selectedEpisode, details?.title || details?.name) : SERVERS[0].url(type, id, selectedSeason, selectedEpisode, details?.title || details?.name)}
+              className="absolute inset-0 w-full h-full border-0 rounded-lg shadow-2xl"
+              allowFullScreen
+              allow="autoplay; encrypted-media"
+            ></iframe>
           )}
         </div>
 
