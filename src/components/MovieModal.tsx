@@ -120,7 +120,7 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
             {/* Header Image / Trailer Fallback */}
             <div className="relative w-full h-[40vh] sm:h-[50vh] shrink-0">
               <img
-                src={getImageUrl(movie.backdrop_path || movie.poster_path, 'original')}
+                src={getImageUrl(movie.backdrop_path || movie.poster_path, 'original', movie.title || movie.name)}
                 alt={movie.title || movie.name}
                 className="w-full h-full object-cover"
               />
@@ -265,11 +265,7 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
                             </div>
 
                             <div className="w-32 md:w-40 shrink-0 aspect-video rounded overflow-hidden bg-black flex-shrink-0 relative">
-                              {ep.still_path ? (
-                                <img src={getImageUrl(ep.still_path, 'w500')} alt={ep.name} className="w-full h-full object-cover" />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">No Image</div>
-                              )}
+                              <img src={getImageUrl(ep.still_path, 'w500', ep.name)} alt={ep.name} className="w-full h-full object-cover" />
                               <div className="absolute bottom-1 left-1 bg-black/80 px-1 rounded text-[10px] text-white font-bold">
                                 E{ep.episode_number}
                               </div>
@@ -309,7 +305,7 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
                       <div key={actor.id} className="flex flex-col items-center flex-shrink-0 w-20 md:w-24 snap-start">
                         <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden mb-3 bg-[#222] shadow-lg border-2 border-transparent hover:border-white transition-all duration-300">
                           <img 
-                            src={getImageUrl(actor.profile_path, 'w500')} 
+                            src={getImageUrl(actor.profile_path, 'w500', actor.name)} 
                             alt={actor.name}
                             className="w-full h-full object-cover"
                           />
@@ -332,7 +328,7 @@ export default function MovieModal({ movie, onClose }: MovieModalProps) {
                         <div className="bg-[#2f2f2f] rounded-lg overflow-hidden hover:scale-[1.02] transition duration-300 cursor-pointer h-full flex flex-col shadow-lg">
                           <div className="relative aspect-square">
                             <img 
-                              src={getImageUrl(simMovie.backdrop_path || simMovie.poster_path, 'w500')}
+                              src={getImageUrl(simMovie.backdrop_path || simMovie.poster_path, 'w500', simMovie.title || simMovie.name)}
                               alt={simMovie.title || simMovie.name}
                               className="w-full h-full object-cover"
                             />

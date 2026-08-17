@@ -35,7 +35,7 @@ export default function MovieCard({ movie, layout = 'row' }: MovieCardProps) {
         onClick={openModal}
       >
         <img
-          src={getImageUrl(movie.poster_path || movie.backdrop_path, 'w500')}
+          src={getImageUrl(movie.poster_path || movie.backdrop_path, 'w500', movie.title || movie.name)}
           alt={movie.title || movie.name}
           className="w-full h-full object-cover rounded-md"
         />

@@ -28,7 +28,7 @@ export default function FeaturedMovieCard({ movie }: FeaturedMovieCardProps) {
         {/* Top Image Section */}
         <div className="relative w-full h-[55%] md:h-[65%] shrink-0 bg-black">
           <img
-            src={getImageUrl(movie.backdrop_path || movie.poster_path, 'w500')}
+            src={getImageUrl(movie.backdrop_path || movie.poster_path, 'w500', movie.title || movie.name)}
             alt={movie.title || movie.name}
             className="w-full h-full object-cover"
           />
