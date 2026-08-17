@@ -5,7 +5,14 @@ import { fetchMovies, requests } from "@/lib/tmdb";
 
 export const revalidate = 3600; // Revalidate every hour
 
-export default async function TVShows() {
+type Props = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function TVShows(props: Props) {
+  const searchParams = await props.searchParams;
+  const region = typeof searchParams?.region === 'string' ? searchParams.region : 'ALL';
+
   const [
     trending,
     topRated,
@@ -14,12 +21,12 @@ export default async function TVShows() {
     anime,
     kDramas
   ] = await Promise.all([
-    fetchMovies(requests.fetchTrendingTV),
-    fetchMovies(requests.fetchTopRatedTV),
-    fetchMovies(requests.fetchNetflixOriginals),
-    fetchMovies(requests.fetchComedyTV),
-    fetchMovies(requests.fetchAnime),
-    fetchMovies(requests.fetchKDramas),
+    fetchMovies(requests.fetchTrendingTV, 1, region),
+    fetchMovies(requests.fetchTopRatedTV, 1, region),
+    fetchMovies(requests.fetchNetflixOriginals, 1, region),
+    fetchMovies(requests.fetchComedyTV, 1, region),
+    fetchMovies(requests.fetchAnime, 1, region),
+    fetchMovies(requests.fetchKDramas, 1, region),
   ]);
 
   const allTrending = trending.results;

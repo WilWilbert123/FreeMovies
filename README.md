@@ -1,17 +1,17 @@
 <div align="center">
-  <img src="./asset/FreeMovies.png" alt="FreeMovies Logo" width="200"/>
-  <h1>FreeMovies</h1>
+  <img src="./asset/logofm2.png" alt="FiliFlix Logo" width="200"/>
+  <h1>FiliFlix</h1>
   <p>A premium, high-performance streaming platform built with Next.js 15, Tailwind CSS, and Supabase.</p>
 </div>
 
 ---
 
-![FreeMovies Screenshot](./asset/screenshot.png) 
+![FiliFlix Screenshot](./asset/screenshot.png) 
 
 
 ##  About The Project
 
-FreeMovies is a full-stack, Netflix-inspired movie and TV show catalog application. It provides users with a stunning, dark-mode interface to discover trending media, watch trailers and full movies, and manage their own authenticated profiles.
+FiliFlix is a full-stack, Netflix-inspired movie and TV show catalog application. It provides users with a stunning, dark-mode interface to discover trending media, watch trailers and full movies, and manage their own authenticated profiles.
 
 ##  Key Features
 
@@ -59,6 +59,7 @@ Make sure you have Node.js installed on your machine.
    NEXT_PUBLIC_TMDB_API_KEY=your_tmdb_api_key
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   SCRAPER_API_KEY=your_scraper_api_key  # Required to bypass Cloudflare for torrents in production
    ```
 4. **Run the Development Server**
    ```sh

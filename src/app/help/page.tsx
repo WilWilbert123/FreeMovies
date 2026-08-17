@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import { Search, CreditCard, Key, Settings, Users, ChevronDown, ChevronUp, MessageCircle } from "lucide-react";
+import LiveChat from "@/components/LiveChat";
 
 export default function HelpCenterPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -10,16 +11,20 @@ export default function HelpCenterPage() {
 
   const faqs = [
     {
-      question: "Is FreeMovies really free?",
-      answer: "Yes! FreeMovies is 100% free. You do not need to enter a credit card or pay any subscription fees to enjoy our massive library of movies and TV shows."
+      question: "Is FiliFlix really free?",
+      answer: "Yes! FiliFlix is 100% free. You do not need to enter a credit card or pay any subscription fees to enjoy our massive library of movies and TV shows."
     },
     {
-      question: "Do I need to create an account to watch?",
-      answer: "No account is required to start watching! You can instantly stream any movie or show. However, your personalized 'My List' is saved locally to your current browser, so if you clear your browser data or switch devices, your saved items will not carry over."
+      question: "Do I need to create an account?",
+      answer: "Creating an account is optional but highly recommended. With an account, you can create multiple profiles, save your favorite movies and shows to your list, and pick up watching where you left off."
     },
     {
-      question: "Why am I experiencing video buffering or playback issues?",
-      answer: "Buffering is usually caused by internet connection drops. We recommend a minimum speed of 5.0 Mbps for smooth HD playback. Try restarting your router, clearing your browser cache, or turning off any active VPNs that might be slowing down your connection."
+      question: "How do I add a movie to my list?",
+      answer: "When browsing movies or viewing a movie's details, look for the '+' or 'Add to List' button. Clicking this will save the title to 'My List' for easy access later."
+    },
+    {
+      question: "Can I download movies to watch offline?",
+      answer: "Currently, FiliFlix only supports online streaming. You will need an active internet connection to watch our content, as we do not offer a download feature for offline viewing at this time."
     },
     {
       question: "Why won't the video player load for me?",
@@ -27,7 +32,7 @@ export default function HelpCenterPage() {
     },
     {
       question: "Can I download movies to watch offline?",
-      answer: "Currently, FreeMovies only supports online streaming. You will need an active internet connection to watch our content, as we do not offer a download feature for offline viewing at this time."
+      answer: "Currently, FiliFlix only supports online streaming. You will need an active internet connection to watch our content, as we do not offer a download feature for offline viewing at this time."
     },
     {
       question: "How often are new movies and shows added?",
@@ -35,8 +40,8 @@ export default function HelpCenterPage() {
     }
   ];
 
-  const filteredFaqs = faqs.filter(faq => 
-    faq.question.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const filteredFaqs = faqs.filter(faq =>
+    faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
     faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -47,7 +52,7 @@ export default function HelpCenterPage() {
   return (
     <main className="min-h-screen bg-netflix-dark text-white pb-20">
       <Navbar />
-      
+
       {/* Hero Search Section */}
       <div className="pt-32 pb-16 px-4 md:px-12 bg-gradient-to-b from-gray-900 to-netflix-dark">
         <div className="max-w-3xl mx-auto text-center">
@@ -71,7 +76,7 @@ export default function HelpCenterPage() {
           <h2 className="text-2xl font-semibold mb-6">
             {searchQuery ? "Search Results" : "Popular Articles"}
           </h2>
-          
+
           <div className="bg-[#141414] border border-gray-800 rounded-lg overflow-hidden">
             {filteredFaqs.length > 0 ? (
               filteredFaqs.map((faq, idx) => (
@@ -109,11 +114,15 @@ export default function HelpCenterPage() {
           <p className="text-gray-400 mb-6 max-w-lg">
             If you couldn't find the answer to your question in our articles, our support team is available 24/7 to assist you.
           </p>
-          <button className="px-8 py-3 bg-white text-black font-bold rounded hover:bg-gray-200 transition-colors">
+          <button 
+            onClick={() => window.dispatchEvent(new Event('open-live-chat'))}
+            className="px-8 py-3 bg-white text-black font-bold rounded hover:bg-gray-200 transition-colors"
+          >
             Start Live Chat
           </button>
         </div>
       </div>
+      <LiveChat />
     </main>
   );
 }

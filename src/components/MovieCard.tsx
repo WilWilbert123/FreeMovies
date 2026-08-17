@@ -16,43 +16,10 @@ interface MovieCardProps {
 }
 
 export default function MovieCard({ movie, layout = 'row' }: MovieCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const { addToList, removeFromList, isInList } = useUserStore();
-  const isSaved = isInList(movie.id);
-
-  const handleMouseEnter = () => {
-    // Only trigger hover effect on devices with a mouse
-    if (typeof window !== 'undefined' && window.matchMedia("(hover: none)").matches) {
-      return;
-    }
-    
-    hoverTimeoutRef.current = setTimeout(() => {
-      setIsHovered(true);
-    }, 300); // 300ms delay before hover expansion
-  };
-
-  const handleMouseLeave = () => {
-    if (hoverTimeoutRef.current) {
-      clearTimeout(hoverTimeoutRef.current);
-    }
-    setIsHovered(false);
-  };
-
-  const toggleList = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (isSaved) {
-      removeFromList(movie.id);
-    } else {
-      addToList(movie);
-    }
-  };
 
   const openModal = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsHovered(false);
     setIsModalOpen(true);
   };
 
@@ -60,20 +27,27 @@ export default function MovieCard({ movie, layout = 'row' }: MovieCardProps) {
     <>
       <div
         className={cn(
-          "relative group shrink-0 cursor-pointer transition-transform duration-200",
+          "relative group shrink-0 cursor-pointer transition-transform duration-200 hover:scale-[1.03]",
           layout === 'row' 
-            ? "w-[140px] sm:w-[180px] md:w-[220px] lg:w-[260px] aspect-square" 
-            : "w-full aspect-square"
+            ? "w-[100px] sm:w-[160px] md:w-[220px] lg:w-[260px] aspect-[2/3]" 
+            : "w-full aspect-[2/3]"
         )}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
         onClick={openModal}
       >
         <img
-          src={getImageUrl(movie.backdrop_path || movie.poster_path, 'w500')}
+          src={getImageUrl(movie.poster_path || movie.backdrop_path, 'w500', movie.title || movie.name)}
           alt={movie.title || movie.name}
           className="w-full h-full object-cover rounded-md"
         />
+
+          {/* Top Left Year Badge */}
+          {(movie.release_date || movie.first_air_date) && (
+            <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2 bg-netflix-red/90 backdrop-blur-md px-1.5 py-0.5 md:px-2 md:py-1 rounded flex items-center pointer-events-none border border-red-500/50 shadow-lg">
+              <span className="text-white text-[9px] md:text-[11px] font-bold tracking-wider">
+                {(movie.release_date || movie.first_air_date)?.split('-')[0]}
+              </span>
+            </div>
+          )}
 
         {/* Top Right Rating Badge */}
         <div className="absolute top-1.5 right-1.5 md:top-2 md:right-2 bg-black/50 backdrop-blur-md px-1.5 py-0.5 md:px-2 md:py-1 rounded-md flex items-center gap-1 pointer-events-none border border-white/10 shadow-lg">
@@ -83,75 +57,6 @@ export default function MovieCard({ movie, layout = 'row' }: MovieCardProps) {
           </span>
         </div>
 
-        {/* Glassmorphism Title Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 bg-black/40 backdrop-blur-md rounded-b-md border-t border-white/10 p-2 sm:p-3 opacity-100 transition-all duration-300 pointer-events-none flex flex-col justify-end">
-          <div className="text-white text-xs md:text-sm font-bold truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-wide">
-            {movie.title || movie.name}
-          </div>
-        </div>
-
-        <AnimatePresence>
-          {isHovered && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="absolute top-[-10%] md:top-[-25%] left-[-5%] md:left-[-15%] w-[110%] md:w-[130%] z-50 bg-[#141414] rounded-md shadow-xl overflow-hidden shadow-black/50 origin-center"
-            >
-              <img
-                src={getImageUrl(movie.backdrop_path || movie.poster_path, 'w500')}
-                alt={movie.title || movie.name}
-                className="w-full aspect-video object-cover cursor-pointer"
-                onClick={openModal}
-              />
-
-              <div className="p-2 md:p-4 flex flex-col gap-1 md:gap-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-1 md:gap-2">
-                    <Link
-                      href={`/watch/${movie.media_type || 'movie'}/${movie.id}`}
-                      className="w-6 h-6 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center hover:bg-neutral-300 transition"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Play className="w-3 h-3 md:w-4 md:h-4 text-black ml-0.5 md:ml-1" fill="currentColor" />
-                    </Link>
-                    <button
-                      onClick={toggleList}
-                      className="w-6 h-6 md:w-8 md:h-8 border-2 border-gray-400 rounded-full flex items-center justify-center hover:border-white transition"
-                    >
-                      {isSaved ? (
-                        <Check className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                      ) : (
-                        <Plus className="w-3 h-3 md:w-4 md:h-4 text-white" />
-                      )}
-                    </button>
-                  </div>
-
-                  <button
-                    onClick={openModal}
-                    className="w-6 h-6 md:w-8 md:h-8 border-2 border-gray-400 rounded-full flex items-center justify-center hover:border-white transition group"
-                  >
-                    <ChevronDown className="w-3 h-3 md:w-4 md:h-4 text-white group-hover:text-white" />
-                  </button>
-                </div>
-
-                <div className="flex items-center gap-2 mt-1 hidden md:flex">
-                  <span className="text-green-400 font-semibold text-[10px] md:text-xs">
-                    {Math.round((movie.vote_average || 0) * 10)}% Match
-                  </span>
-                  <span className="border border-gray-500 px-1 py-0.5 rounded text-[8px] md:text-[10px] text-white">
-                    HD
-                  </span>
-                </div>
-
-                <div className="text-white text-xs font-semibold truncate">
-                  {movie.title || movie.name}
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
       {isModalOpen && (

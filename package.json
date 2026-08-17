@@ -9,18 +9,22 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@movie-web/providers": "^2.4.13",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.112.2",
     "axios": "^1.19.0",
     "clsx": "^2.1.1",
     "framer-motion": "^13.0.0",
     "lucide-react": "^1.29.0",
+    "motion": "^13.0.0",
     "next": "16.3.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "recharts": "^3.10.1",
     "tailwind-merge": "^3.6.0",
     "tailwind-scrollbar-hide": "^4.0.0",
+    "ua-parser-js": "^2.0.10",
+    "yt-search": "^2.13.1",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
@@ -28,6 +32,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/ua-parser-js": "^0.7.39",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
     "tailwindcss": "^4",

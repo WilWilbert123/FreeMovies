@@ -5,7 +5,14 @@ import { fetchMovies, requests } from "@/lib/tmdb";
 
 export const revalidate = 3600;
 
-export default async function Movies() {
+type Props = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function Movies(props: Props) {
+  const searchParams = await props.searchParams;
+  const region = typeof searchParams?.region === 'string' ? searchParams.region : 'ALL';
+
   const [
     trending,
     topRated,
@@ -20,18 +27,18 @@ export default async function Movies() {
     mystery,
     family
   ] = await Promise.all([
-    fetchMovies(requests.fetchTrendingMovies),
-    fetchMovies(requests.fetchTopRated),
-    fetchMovies(requests.fetchActionMovies),
-    fetchMovies(requests.fetchComedyMovies),
-    fetchMovies(requests.fetchHorrorMovies),
-    fetchMovies(requests.fetchRomanceMovies),
-    fetchMovies(requests.fetchDocumentaries),
-    fetchMovies(requests.fetchSciFi),
-    fetchMovies(requests.fetchAnimation),
-    fetchMovies(requests.fetchClassics),
-    fetchMovies(requests.fetchMystery),
-    fetchMovies(requests.fetchFamily),
+    fetchMovies(requests.fetchTrendingMovies, 1, region),
+    fetchMovies(requests.fetchTopRated, 1, region),
+    fetchMovies(requests.fetchActionMovies, 1, region),
+    fetchMovies(requests.fetchComedyMovies, 1, region),
+    fetchMovies(requests.fetchHorrorMovies, 1, region),
+    fetchMovies(requests.fetchRomanceMovies, 1, region),
+    fetchMovies(requests.fetchDocumentaries, 1, region),
+    fetchMovies(requests.fetchSciFi, 1, region),
+    fetchMovies(requests.fetchAnimation, 1, region),
+    fetchMovies(requests.fetchClassics, 1, region),
+    fetchMovies(requests.fetchMystery, 1, region),
+    fetchMovies(requests.fetchFamily, 1, region),
   ]);
 
   const allTrending = trending.results;

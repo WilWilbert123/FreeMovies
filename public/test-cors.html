@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <h2>CORS Test</h2>
+  <button onclick="testYts()">Test YTS</button>
+  <button onclick="testApiBay()">Test APIBay</button>
+  <pre id="out"></pre>
+  <script>
+    async function testYts() {
+      try {
+        const r = await fetch("https://yts.mx/api/v2/movie_details.json?imdb_id=tt0111161");
+        const j = await r.json();
+        document.getElementById("out").innerText = JSON.stringify(j).substring(0, 100);
+      } catch (e) { document.getElementById("out").innerText = e.message; }
+    }
+    async function testApiBay() {
+      try {
+        const r = await fetch("https://apibay.org/q.php?q=batman");
+        const j = await r.json();
+        document.getElementById("out").innerText = JSON.stringify(j).substring(0, 100);
+      } catch (e) { document.getElementById("out").innerText = e.message; }
+    }
+  </script>
+</body>
+</html>

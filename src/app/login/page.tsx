@@ -1,19 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Mail, X, Eye, EyeOff } from "lucide-react";
+import ShinyText from "@/components/ShinyText/ShinyText";
+import ShinyImage from "@/components/ShinyText/ShinyImage";
 
-export default function LoginPage() {
+function LoginFormContent() {
+  const searchParams = useSearchParams();
+  const mode = searchParams.get("mode");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(mode === "signup");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    if (mode === "signup") {
+      setIsSignUp(true);
+    } else if (mode === "signin") {
+      setIsSignUp(false);
+    }
+  }, [mode]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,8 +43,8 @@ export default function LoginPage() {
           password,
         });
         if (error) throw error;
-        // Auto sign in after sign up is configured in Supabase by default unless email verification is required
-        alert("Sign up successful! You can now log in.");
+        // Show the beautiful modal instead of alert
+        setShowConfirmModal(true);
         setIsSignUp(false);
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -36,7 +52,7 @@ export default function LoginPage() {
           password,
         });
         if (error) throw error;
-        router.push("/");
+        router.push("/profiles");
         router.refresh(); // Refresh to update navbar state
       }
     } catch (err: any) {
@@ -54,10 +70,29 @@ export default function LoginPage() {
       ></div>
 
       <div className="px-4 py-4 md:px-12 flex justify-between items-center z-50">
-        <Link href="/">
-          <h1 className="text-netflix-red text-3xl font-bold tracking-wider cursor-pointer z-50">
-            FREEMOVIES
-          </h1>
+        <Link href="/" className="flex items-center gap-1 group">
+          <ShinyImage 
+            src="/logofm2.png" 
+            alt="FiliFlix Logo" 
+            className="h-10 md:h-12 w-auto cursor-pointer z-50 relative group-hover:scale-105 transition-transform duration-300" 
+            speed={1.5} 
+            delay={1.5} 
+            offset={0} 
+            direction="left" 
+            shineColor="#ffffff" 
+            spread={120} 
+          />
+          <ShinyText 
+            text="ILIFLIX" 
+            speed={1.5}
+            delay={1.5}
+            offset={1.5}
+            direction="left"
+            className="text-4xl md:text-5xl font-bold tracking-wider cursor-pointer z-50 relative font-bebas" 
+            color="#e50914" 
+            shineColor="#ffffff" 
+            spread={120} 
+          />
         </Link>
       </div>
 
@@ -76,27 +111,40 @@ export default function LoginPage() {
           <form onSubmit={handleAuth} className="flex flex-col gap-4">
             <input 
               type="email"
-              placeholder="Email or phone number"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
               required
             />
-            <input 
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
-              required
-            />
+            <div className="relative">
+              <input 
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500 pr-12"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
             
             <button 
               type="submit" 
               disabled={isLoading}
-              className="bg-netflix-red text-white py-3 rounded-md font-bold mt-4 hover:bg-red-700 transition"
+              className="bg-netflix-red text-white py-3 rounded-md font-bold mt-4 hover:bg-red-700 transition flex justify-center items-center"
             >
-              {isLoading ? "Please wait..." : (isSignUp ? "Sign Up" : "Sign In")}
+              {isLoading ? (
+                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                isSignUp ? "Sign Up" : "Sign In"
+              )}
             </button>
           </form>
 
@@ -105,24 +153,59 @@ export default function LoginPage() {
               <input type="checkbox" id="remember" className="w-4 h-4 bg-gray-500" />
               <label htmlFor="remember">Remember me</label>
             </div>
-            <a href="#" className="hover:underline">Need help?</a>
+            <Link href="/help" className="hover:underline">Need help?</Link>
           </div>
 
           <div className="text-gray-400 mt-10">
-            {isSignUp ? "Already subscribed to FreeMovies? " : "New to FreeMovies? "}
+            {isSignUp ? "Already have an account? " : "New to FiliFlix? "}
             <span 
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-white hover:underline cursor-pointer"
+              className="text-red-600 hover:underline cursor-pointer font-medium"
             >
               {isSignUp ? "Sign in now." : "Sign up now."}
             </span>
           </div>
-          
-          <p className="text-gray-500 text-xs mt-2">
-            This page is protected by Google reCAPTCHA to ensure you're not a bot. <a href="#" className="text-blue-500 hover:underline">Learn more.</a>
-          </p>
         </div>
       </div>
+
+      {/* Email Confirmation Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-[#141414] border border-gray-800 rounded-xl max-w-sm md:max-w-md w-full p-6 md:p-8 relative flex flex-col items-center text-center shadow-2xl scale-in-center">
+            <button 
+              onClick={() => setShowConfirmModal(false)}
+              className="absolute top-3 right-3 md:top-4 md:right-4 text-gray-400 hover:text-white transition bg-gray-800/50 hover:bg-gray-700 p-1.5 md:p-2 rounded-full"
+            >
+              <X className="w-4 h-4 md:w-5 md:h-5" />
+            </button>
+            
+            <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-800 rounded-full flex items-center justify-center mb-4 md:mb-6 ring-4 ring-gray-800/50">
+              <Mail className="w-8 h-8 md:w-10 md:h-10 text-netflix-red" />
+            </div>
+            
+            <h2 className="text-xl md:text-2xl font-bold text-white mb-2 md:mb-3">Check your email</h2>
+            <p className="text-sm md:text-base text-gray-400 mb-6 md:mb-8 leading-relaxed">
+              We've sent a confirmation link to <span className="text-white font-medium">{email}</span>. 
+              Please verify your email address to complete your registration!
+            </p>
+            
+            <button 
+              onClick={() => setShowConfirmModal(false)}
+              className="w-full bg-white text-black font-bold py-2.5 md:py-3.5 rounded-md hover:bg-gray-200 transition text-base md:text-lg"
+            >
+              Back to Login
+            </button>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="h-screen w-screen bg-black flex items-center justify-center text-white">Loading...</div>}>
+      <LoginFormContent />
+    </Suspense>
   );
 }

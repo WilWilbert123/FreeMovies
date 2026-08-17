@@ -37,7 +37,7 @@ export default function SuccessPage() {
             </h1>
             
             <p className="text-gray-400 text-center text-sm mt-4 font-medium px-4">
-              Your email has been verified and your account is now active. Welcome to FreeMovies!
+              Your email has been verified and your account is now active. Welcome to FiliFlix!
             </p>
 
             {/* Glowing borders */}
