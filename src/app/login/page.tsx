@@ -38,10 +38,10 @@ function LoginFormContent() {
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
+          const { error } = await supabase.auth.signUp(
+          { email, password },
+          { redirectTo: "https://filiflix.vercel.app/email-confirmed" }
+        );
         if (error) throw error;
         // Show the beautiful modal instead of alert
         setShowConfirmModal(true);
