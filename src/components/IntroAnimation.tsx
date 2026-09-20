@@ -8,6 +8,7 @@ export default function IntroAnimation() {
   const [showIntro, setShowIntro] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const setIsIntroPlaying = useIntroStore((state) => state.setIsIntroPlaying);
+  const finishIntro = useIntroStore((state) => state.finishIntro);
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
@@ -17,17 +18,9 @@ export default function IntroAnimation() {
     const audio = new Audio('/soundintro.mp3');
     audio.play().catch(e => console.log('Audio autoplay blocked by browser:', e));
 
-    // For testing purposes, we can clear this to see it every load.
-    // Uncomment this to make it play only once per session:
-    // if (sessionStorage.getItem("introPlayed") === "true") {
-    //   setShowIntro(false);
-    //   return;
-    // }
-
     const timer = setTimeout(() => {
       setShowIntro(false);
-      setIsIntroPlaying(false);
-      // sessionStorage.setItem("introPlayed", "true");
+      finishIntro();
     }, 6000); // Sequence takes about 6 seconds
 
     return () => {
@@ -35,7 +28,7 @@ export default function IntroAnimation() {
       audio.pause();
       audio.currentTime = 0;
     };
-  }, []);
+  }, [setIsIntroPlaying, finishIntro]);
 
   if (!showIntro) return null;
 

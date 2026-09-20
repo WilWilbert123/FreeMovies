@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, Bell, User, Menu, X, ChevronDown, Download } from "lucide-react";
+import { Search, Bell, User, Menu, X, ChevronDown, Download, ShieldCheck, Tv, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -13,6 +13,7 @@ import ShinyText from "./ShinyText/ShinyText";
 import ShinyImage from "./ShinyText/ShinyImage";
 import { useIntroStore } from "@/store/useIntroStore";
 import { useRegionStore } from "@/store/useRegionStore";
+import { useTvModeStore } from "@/store/useTvModeStore";
 import { SERVERS } from "@/lib/servers";
 
 export default function Navbar() {
@@ -33,6 +34,7 @@ export default function Navbar() {
   const [isStandalone, setIsStandalone] = useState(false);
 
   const isIntroPlaying = useIntroStore((state) => state.isIntroPlaying);
+  const { isTvMode, toggleTvMode, setIsGuideOpen } = useTvModeStore();
   const { selectedRegion, setRegion } = useRegionStore();
   const pathname = usePathname();
   const router = useRouter();
@@ -250,7 +252,42 @@ export default function Navbar() {
           </ul>
         </div>
 
-        <div className="flex items-center gap-2 md:gap-6 text-white">
+        <div className="flex items-center gap-2 md:gap-4 text-white">
+          {/* Prominent OLD TV Mode Toggle */}
+          <button
+            onClick={toggleTvMode}
+            className={cn(
+              "flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border transition text-xs font-semibold shrink-0 cursor-pointer shadow-sm",
+              isTvMode
+                ? "bg-emerald-600/20 hover:bg-emerald-600/35 text-emerald-400 border-emerald-500/40 shadow-emerald-950/40"
+                : "bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border-amber-500/30 shadow-amber-950/40"
+            )}
+            title="OLD TV Mode: Disables heavy blurs for smooth 60fps on older TVs"
+          >
+            <Zap className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">OLD TV</span>
+            <span
+              className={cn(
+                "text-[10px] px-1.5 py-0.2 rounded font-bold uppercase",
+                isTvMode
+                  ? "bg-emerald-500/25 text-emerald-300 border border-emerald-500/30"
+                  : "bg-gray-800 text-gray-400 border border-gray-700"
+              )}
+            >
+              {isTvMode ? "ON" : "OFF"}
+            </span>
+          </button>
+
+          {/* Ad-Free Guide Button */}
+          <button
+            onClick={() => setIsGuideOpen(true)}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-red-600/20 hover:bg-red-600/35 text-red-400 hover:text-red-300 border border-red-500/30 transition text-xs font-semibold shrink-0 cursor-pointer shadow-sm shadow-red-950/40"
+            title="Ad-Free Guide"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-red-400" />
+            <span className="hidden lg:inline">Ad-Free Guide</span>
+          </button>
+
           {!isStandalone && (
             <button
               onClick={handleInstallClick}
@@ -362,6 +399,29 @@ export default function Navbar() {
                     </div>
                     <Link href="/profiles" className="px-4 py-2 hover:underline text-sm text-gray-300 transition mt-1">Manage Profiles</Link>
                     <div className="h-px bg-gray-700 my-2"></div>
+                    <button
+                      onClick={() => {
+                        setIsGuideOpen(true);
+                        setShowAccountMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition flex items-center gap-2 cursor-pointer"
+                    >
+                      <ShieldCheck className="w-4 h-4 text-red-400" />
+                      <span>Ad-Free Guide</span>
+                    </button>
+                    <button
+                      onClick={toggleTvMode}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition flex items-center justify-between cursor-pointer"
+                    >
+                      <span className="flex items-center gap-2">
+                        <Tv className="w-4 h-4 text-gray-400" />
+                        <span>OLD TV Mode</span>
+                      </span>
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${isTvMode ? 'bg-emerald-500/20 text-emerald-400' : 'text-gray-500 bg-gray-800'}`}>
+                        {isTvMode ? 'ON' : 'OFF'}
+                      </span>
+                    </button>
+                    <div className="h-px bg-gray-700 my-2"></div>
                     {user?.email !== "johnwilbertgamis2022@gmail.com" && (
                       <Link href="/help" className="px-4 py-2 hover:underline text-sm text-gray-300 transition">Help Center</Link>
                     )}
@@ -451,6 +511,34 @@ export default function Navbar() {
                 </li>
               ))}
             </ul>
+          </div>
+
+          <div className="h-px bg-gray-800 w-full my-2"></div>
+
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={() => {
+                setIsGuideOpen(true);
+                setShowMobileMenu(false);
+              }}
+              className="flex items-center gap-2.5 p-3 rounded-xl bg-red-950/40 border border-red-900/50 text-red-300 font-semibold text-sm hover:bg-red-900/50 transition w-full text-left"
+            >
+              <ShieldCheck className="w-5 h-5 text-red-400 shrink-0" />
+              <span>Ad-Free Setup Guide</span>
+            </button>
+
+            <button
+              onClick={toggleTvMode}
+              className="flex items-center justify-between p-3 rounded-xl bg-gray-900 border border-gray-800 text-gray-200 font-semibold text-sm hover:bg-gray-800 transition w-full text-left"
+            >
+              <div className="flex items-center gap-2.5">
+                <Tv className="w-5 h-5 text-gray-400 shrink-0" />
+                <span>OLD TV Mode</span>
+              </div>
+              <span className={`text-xs px-2 py-0.5 rounded font-bold ${isTvMode ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-800 text-gray-400'}`}>
+                {isTvMode ? 'ON' : 'OFF'}
+              </span>
+            </button>
           </div>
 
           <div className="h-px bg-gray-800 w-full my-2"></div>
