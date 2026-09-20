@@ -257,7 +257,7 @@ export default function Navbar() {
           <button
             onClick={toggleTvMode}
             className={cn(
-              "flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border transition text-xs font-semibold shrink-0 cursor-pointer shadow-sm",
+              "hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border transition text-xs font-semibold shrink-0 cursor-pointer shadow-sm",
               isTvMode
                 ? "bg-emerald-600/20 hover:bg-emerald-600/35 text-emerald-400 border-emerald-500/40 shadow-emerald-950/40"
                 : "bg-amber-500/15 hover:bg-amber-500/25 text-amber-400 border-amber-500/30 shadow-amber-950/40"
@@ -265,7 +265,7 @@ export default function Navbar() {
             title="OLD TV Mode: Disables heavy blurs for smooth 60fps on older TVs"
           >
             <Zap className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">OLD TV</span>
+            <span className="hidden sm:inline">Old TV</span>
             <span
               className={cn(
                 "text-[10px] px-1.5 py-0.2 rounded font-bold uppercase",
