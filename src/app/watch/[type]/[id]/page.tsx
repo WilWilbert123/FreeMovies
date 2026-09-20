@@ -1,6 +1,6 @@
 "use client";
 
-import { Play, ArrowLeft, ListVideo, X, ChevronDown, Server as ServerIcon } from "lucide-react";
+import { Play, ArrowLeft, ListVideo, X, ChevronDown, Server as ServerIcon, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
 import { fetchMovieDetails, fetchTVSeason, getImageUrl } from "@/lib/tmdb";
@@ -9,6 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 import { SERVERS, Server } from "@/lib/servers";
 
 import { useUserStore } from "@/store/useUserStore";
+import { useTvModeStore } from "@/store/useTvModeStore";
 
 interface WatchPageProps {
   params: Promise<{
@@ -26,6 +27,7 @@ export default function WatchPage(props: WatchPageProps) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const globalActiveServer = useUserStore((state) => state.activeServer);
   const setGlobalActiveServer = useUserStore((state) => state.setActiveServer);
+  const setIsGuideOpen = useTvModeStore((state) => state.setIsGuideOpen);
 
   // Safely map the stored server back to the actual SERVER object with the url function, or fallback to default
   const mappedServer = SERVERS.find(s => s.id === globalActiveServer?.id) || SERVERS[0];
@@ -149,6 +151,16 @@ export default function WatchPage(props: WatchPageProps) {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          {/* Ad-Free & TV Guide Button */}
+          <button
+            onClick={() => setIsGuideOpen(true)}
+            className="flex items-center gap-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 px-2.5 py-2 sm:px-3 rounded-md transition text-xs sm:text-sm font-semibold shrink-0 cursor-pointer shadow-sm shadow-red-950/30"
+            title="Ad-Free & TV Guide"
+          >
+            <ShieldCheck className="w-4 h-4 text-red-400" />
+            <span className="hidden sm:inline text-xs">Ad-Free Guide</span>
+          </button>
+
           {/* Server Selector */}
           <div className="relative">
             <button

@@ -36,3 +36,38 @@ body {
     display: none;
   }
 }
+
+/* Smart TV & Low-Spec Performance Mode */
+html.tv-mode *,
+html.tv-mode *::before,
+html.tv-mode *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  text-shadow: none !important;
+}
+
+html.tv-mode .backdrop-blur-sm,
+html.tv-mode .backdrop-blur-md,
+html.tv-mode .backdrop-blur-lg,
+html.tv-mode .backdrop-blur-xl {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background-color: rgba(20, 20, 20, 0.98) !important;
+}
+
+/* TV Remote D-Pad Navigation Highlight */
+html.tv-mode button:focus-visible,
+html.tv-mode a:focus-visible,
+html.tv-mode input:focus-visible,
+html.tv-mode select:focus-visible {
+  outline: 3px solid #e50914 !important;
+  outline-offset: 2px !important;
+  transform: scale(1.02);
+}
+
+/* Video Player hardware acceleration */
+iframe {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+

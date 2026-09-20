@@ -91,6 +91,11 @@ export default function PresenceTracker() {
                 }
               } catch (e) {}
             }
+
+            if (typeof document !== 'undefined' && document.documentElement.classList.contains('tv-mode')) {
+              return `${fallback} (Smart TV)`;
+            }
+
             // 2. WebGL GPU Chip Fingerprinting (Apple / Mac)
             try {
               const canvas = document.createElement('canvas');

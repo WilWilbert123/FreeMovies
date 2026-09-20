@@ -25,6 +25,7 @@ export const viewport = {
 
 import Link from "next/link";
 import IntroAnimation from "@/components/IntroAnimation";
+import SetupGuideModal from "@/components/SetupGuideModal";
 import ShinyText from "@/components/ShinyText/ShinyText";
 import PresenceTracker from "@/components/PresenceTracker";
 import { DownloadProvider } from "@/context/DownloadContext";
@@ -39,6 +40,7 @@ export default function RootLayout({
       <body className="min-h-full bg-[#141414] text-white flex flex-col">
         <PresenceTracker />
         <IntroAnimation />
+        <SetupGuideModal />
         <DownloadProvider>
           <div className="flex-grow">
             {children}
