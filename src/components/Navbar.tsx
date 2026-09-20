@@ -125,7 +125,7 @@ export default function Navbar() {
   useEffect(() => {
     let isMounted = true;
 
-    // Fetch some real movies to use as notifications (e.g., Trending)
+
     const getNotifications = async () => {
       try {
         const data = await fetchMovies(requests.fetchTrending);
@@ -135,7 +135,7 @@ export default function Navbar() {
         }
       } catch (error: any) {
         if (error?.name === 'CanceledError' || error?.code === 'ERR_CANCELED' || error?.message?.includes('aborted')) {
-          // Ignore aborted requests during navigation or React StrictMode unmounts
+
           return;
         }
         console.error("Failed to fetch notifications", error);
@@ -253,7 +253,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 md:gap-4 text-white">
-          {/* Prominent OLD TV Mode Toggle */}
+
           <button
             onClick={toggleTvMode}
             className={cn(
