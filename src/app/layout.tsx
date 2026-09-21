@@ -50,7 +50,7 @@ export default function RootLayout({
           <div className="container mx-auto px-4 flex flex-col lg:flex-row items-center justify-center gap-1 lg:gap-3 text-[10px] md:text-xs text-gray-500 text-center flex-wrap">
             <div className="flex flex-row items-center justify-center gap-1.5 flex-wrap">
               <div className="flex items-center gap-1">
-                Created by <ShinyText text="John Wilbert Gamis" speed={5} className="font-bold" />
+                Created by <ShinyText text="JWG" speed={5} className="font-bold" />
               </div>
               <span className="hidden lg:inline">|</span>
               <span>&copy; {new Date().getFullYear()} All rights reserved.</span>
