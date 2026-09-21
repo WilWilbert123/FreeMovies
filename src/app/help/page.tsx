@@ -112,7 +112,7 @@ export default function HelpCenterPage() {
           <MessageCircle className="w-12 h-12 text-gray-400 mb-4" />
           <h2 className="text-2xl font-semibold mb-2">Still need help?</h2>
           <p className="text-gray-400 mb-6 max-w-lg">
-            If you couldn't find the answer to your question in our articles, our support team is available 24/7 to assist you.
+           If you couldn't find the answer to your question, maybe wilbert can answer you hahaha.
           </p>
           <button 
             onClick={() => window.dispatchEvent(new Event('open-live-chat'))}
