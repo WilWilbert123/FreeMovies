@@ -11,6 +11,58 @@ export default async function CategoryPage({ params, searchParams }: { params: P
   let title = "";
 
   switch (slug) {
+    case 'netflix':
+      endpoint = requests.fetchNetflixOriginals;
+      title = 'Netflix Originals & Hits';
+      break;
+    case 'disney':
+      endpoint = requests.fetchDisneyOriginals;
+      title = 'Disney+ Originals & Favorites';
+      break;
+    case 'vivamax':
+      endpoint = requests.fetchVivaMax;
+      title = 'VivaMax & Pinoy Movies';
+      break;
+    case 'hbo':
+      endpoint = requests.fetchHBOOriginals;
+      title = 'HBO Max & HBO Originals';
+      break;
+    case 'apple':
+      endpoint = requests.fetchAppleTV;
+      title = 'Apple TV+ Originals';
+      break;
+    case 'prime':
+      endpoint = requests.fetchPrimeVideo;
+      title = 'Prime Video Originals & Movies';
+      break;
+    case 'paramount':
+      endpoint = requests.fetchParamount;
+      title = 'Paramount+ Movies & Shows';
+      break;
+    case 'hulu':
+      endpoint = requests.fetchHulu;
+      title = 'Hulu Originals & Hits';
+      break;
+    case 'viu':
+      endpoint = requests.fetchViu;
+      title = 'Viu Asian Hits & Dramas';
+      break;
+    case 'marvel':
+      endpoint = requests.fetchMarvel;
+      title = 'Marvel Cinematic Universe';
+      break;
+    case 'starwars':
+      endpoint = requests.fetchStarWars;
+      title = 'Star Wars Collection';
+      break;
+    case 'dc':
+      endpoint = requests.fetchDC;
+      title = 'DC Universe';
+      break;
+    case 'horror':
+      endpoint = requests.fetchHorrorMovies;
+      title = 'Horror & Suspense';
+      break;
     case 'anime':
       endpoint = requests.fetchAnime;
       title = 'Anime';

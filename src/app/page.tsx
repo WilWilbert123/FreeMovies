@@ -1,6 +1,7 @@
 import Billboard from "@/components/Billboard";
 import MovieRow from "@/components/MovieRow";
 import Navbar from "@/components/Navbar";
+import PlatformCategories from "@/components/PlatformCategories";
 import { fetchMovies, requests } from "@/lib/tmdb";
 
 export const revalidate = 3600; // Revalidate every hour
@@ -57,6 +58,7 @@ export default async function Home(props: Props) {
       <Billboard movie={billboardMovie} />
 
       <div className="relative z-10 md:mt-[-2rem] lg:mt-[-4rem] pb-20">
+        <PlatformCategories />
         <MovieRow title="Trending Now" movies={allTrending} featuredFirst={true} />
         <MovieRow title="Netflix Originals" movies={netflixOriginals.results} />
         <MovieRow title="Top Rated" movies={topRated.results} featuredFirst={true} />

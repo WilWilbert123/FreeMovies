@@ -222,13 +222,57 @@ export default function Navbar() {
               <span className="text-gray-200 transition-colors hover:text-gray-300 flex items-center gap-1">
                 Categories <ChevronDown className="w-4 h-4 transition group-hover:rotate-180" />
               </span>
-              <div className="absolute left-0 top-6 hidden w-48 bg-black/95 border border-gray-800 rounded-md shadow-xl py-2 group-hover:flex flex-col z-50">
-                <Link href="/category/anime" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Anime</Link>
-                <Link href="/category/k-dramas" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">K-Dramas</Link>
-                <Link href="/category/mystery" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Mystery</Link>
-                <Link href="/category/family" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Family</Link>
-                <Link href="/category/action" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Action</Link>
-                <Link href="/category/comedy" className="px-4 py-2 hover:bg-gray-800 text-sm text-gray-300 hover:text-white transition">Comedy</Link>
+              <div className="absolute left-0 top-6 hidden w-72 bg-black/95 border border-gray-800 rounded-lg shadow-2xl p-3 group-hover:flex flex-col gap-2 z-50 backdrop-blur-md">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-2 pt-1">Platforms & Networks</div>
+                <div className="grid grid-cols-3 gap-1 pb-2 border-b border-gray-800">
+                  <Link href="/category/netflix" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-red-400 font-medium transition flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span> Netflix
+                  </Link>
+                  <Link href="/category/disney" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-cyan-400 font-medium transition flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Disney+
+                  </Link>
+                  <Link href="/category/vivamax" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-amber-400 font-medium transition flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span> VivaMax
+                  </Link>
+                  <Link href="/category/hbo" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-purple-400 font-medium transition flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-500"></span> HBO Max
+                  </Link>
+                  <Link href="/category/apple" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-white font-medium transition flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gray-300"></span> Apple TV+
+                  </Link>
+                  <Link href="/category/prime" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-sky-400 font-medium transition flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400"></span> Prime
+                  </Link>
+                  <Link href="/category/paramount" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-blue-400 font-medium transition flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Paramount+
+                  </Link>
+                  <Link href="/category/hulu" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-emerald-400 font-medium transition flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Hulu
+                  </Link>
+                  <Link href="/category/viu" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-yellow-400 font-medium transition flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-yellow-400"></span> Viu
+                  </Link>
+                </div>
+
+                <div className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-2 pt-1">Studios & Franchises</div>
+                <div className="grid grid-cols-2 gap-1 pb-2 border-b border-gray-800">
+                  <Link href="/category/marvel" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-red-500 font-bold transition flex items-center gap-1.5">
+                    Marvel Studios
+                  </Link>
+                  <Link href="/category/dc" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-blue-400 font-bold transition flex items-center gap-1.5">
+                    DC Universe
+                  </Link>
+                </div>
+
+                <div className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-2 pt-1">Genres & Themes</div>
+                <div className="grid grid-cols-3 gap-1">
+                  <Link href="/category/anime" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-white transition">Anime</Link>
+                  <Link href="/category/k-dramas" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-white transition">K-Dramas</Link>
+                  <Link href="/category/horror" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-white transition">Horror</Link>
+                  <Link href="/category/action" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-white transition">Action</Link>
+                  <Link href="/category/comedy" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-white transition">Comedy</Link>
+                  <Link href="/category/family" className="px-2 py-1.5 hover:bg-gray-800/80 rounded text-xs text-gray-300 hover:text-white transition">Family</Link>
+                </div>
               </div>
             </li>
 
@@ -544,14 +588,55 @@ export default function Navbar() {
           <div className="h-px bg-gray-800 w-full my-2"></div>
 
           <div className="flex flex-col gap-4">
-            <h2 className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Categories</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <Link href="/category/anime" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Anime</Link>
-              <Link href="/category/k-dramas" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">K-Dramas</Link>
-              <Link href="/category/mystery" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Mystery</Link>
-              <Link href="/category/family" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Family</Link>
-              <Link href="/category/action" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Action</Link>
-              <Link href="/category/comedy" onClick={() => setShowMobileMenu(false)} className="text-lg transition-colors hover:text-gray-300 text-gray-300">Comedy</Link>
+            <h2 className="text-gray-500 text-xs font-bold uppercase tracking-wider">Platforms & Networks</h2>
+            <div className="grid grid-cols-2 gap-2.5">
+              <Link href="/category/netflix" onClick={() => setShowMobileMenu(false)} className="text-sm transition-colors text-red-400 font-semibold flex items-center gap-2 bg-red-950/30 border border-red-900/40 p-2 rounded-lg">
+                <span className="w-2 h-2 rounded-full bg-red-600"></span> Netflix
+              </Link>
+              <Link href="/category/disney" onClick={() => setShowMobileMenu(false)} className="text-sm transition-colors text-cyan-300 font-semibold flex items-center gap-2 bg-cyan-950/30 border border-cyan-900/40 p-2 rounded-lg">
+                <span className="w-2 h-2 rounded-full bg-cyan-400"></span> Disney+
+              </Link>
+              <Link href="/category/vivamax" onClick={() => setShowMobileMenu(false)} className="text-sm transition-colors text-amber-300 font-semibold flex items-center gap-2 bg-amber-950/30 border border-amber-900/40 p-2 rounded-lg">
+                <span className="w-2 h-2 rounded-full bg-amber-400"></span> VivaMax
+              </Link>
+              <Link href="/category/hbo" onClick={() => setShowMobileMenu(false)} className="text-sm transition-colors text-purple-300 font-semibold flex items-center gap-2 bg-purple-950/30 border border-purple-900/40 p-2 rounded-lg">
+                <span className="w-2 h-2 rounded-full bg-purple-500"></span> HBO Max
+              </Link>
+              <Link href="/category/apple" onClick={() => setShowMobileMenu(false)} className="text-sm transition-colors text-gray-200 font-semibold flex items-center gap-2 bg-gray-900 border border-gray-700/60 p-2 rounded-lg">
+                <span className="w-2 h-2 rounded-full bg-gray-300"></span> Apple TV+
+              </Link>
+              <Link href="/category/prime" onClick={() => setShowMobileMenu(false)} className="text-sm transition-colors text-sky-300 font-semibold flex items-center gap-2 bg-sky-950/30 border border-sky-900/40 p-2 rounded-lg">
+                <span className="w-2 h-2 rounded-full bg-sky-400"></span> Prime
+              </Link>
+              <Link href="/category/paramount" onClick={() => setShowMobileMenu(false)} className="text-sm transition-colors text-blue-300 font-semibold flex items-center gap-2 bg-blue-950/30 border border-blue-900/40 p-2 rounded-lg">
+                <span className="w-2 h-2 rounded-full bg-blue-500"></span> Paramount+
+              </Link>
+              <Link href="/category/hulu" onClick={() => setShowMobileMenu(false)} className="text-sm transition-colors text-emerald-300 font-semibold flex items-center gap-2 bg-emerald-950/30 border border-emerald-900/40 p-2 rounded-lg">
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span> Hulu
+              </Link>
+              <Link href="/category/viu" onClick={() => setShowMobileMenu(false)} className="text-sm transition-colors text-yellow-300 font-semibold flex items-center gap-2 bg-yellow-950/30 border border-yellow-900/40 p-2 rounded-lg">
+                <span className="w-2 h-2 rounded-full bg-yellow-400"></span> Viu
+              </Link>
+            </div>
+
+            <h2 className="text-gray-500 text-xs font-bold uppercase tracking-wider mt-2">Studios & Franchises</h2>
+            <div className="grid grid-cols-2 gap-2.5">
+              <Link href="/category/marvel" onClick={() => setShowMobileMenu(false)} className="text-sm transition-colors text-red-400 font-bold flex items-center gap-2 bg-red-950/40 border border-red-800/50 p-2 rounded-lg">
+                Marvel Studios
+              </Link>
+              <Link href="/category/dc" onClick={() => setShowMobileMenu(false)} className="text-sm transition-colors text-blue-300 font-bold flex items-center gap-2 bg-blue-950/40 border border-blue-800/50 p-2 rounded-lg">
+                DC Universe
+              </Link>
+            </div>
+
+            <h2 className="text-gray-500 text-xs font-bold uppercase tracking-wider mt-2">Genres</h2>
+            <div className="grid grid-cols-2 gap-3">
+              <Link href="/category/anime" onClick={() => setShowMobileMenu(false)} className="text-base transition-colors hover:text-gray-300 text-gray-300">Anime</Link>
+              <Link href="/category/k-dramas" onClick={() => setShowMobileMenu(false)} className="text-base transition-colors hover:text-gray-300 text-gray-300">K-Dramas</Link>
+              <Link href="/category/mystery" onClick={() => setShowMobileMenu(false)} className="text-base transition-colors hover:text-gray-300 text-gray-300">Mystery</Link>
+              <Link href="/category/family" onClick={() => setShowMobileMenu(false)} className="text-base transition-colors hover:text-gray-300 text-gray-300">Family</Link>
+              <Link href="/category/action" onClick={() => setShowMobileMenu(false)} className="text-base transition-colors hover:text-gray-300 text-gray-300">Action</Link>
+              <Link href="/category/comedy" onClick={() => setShowMobileMenu(false)} className="text-base transition-colors hover:text-gray-300 text-gray-300">Comedy</Link>
             </div>
           </div>
 
