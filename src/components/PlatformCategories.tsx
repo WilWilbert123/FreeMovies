@@ -78,13 +78,13 @@ export default function PlatformCategories() {
             <text x="5" y="38" fontFamily="Arial, 'Trebuchet MS', sans-serif" fontSize="32" fontWeight="900" fontStyle="italic" fill="#FFFFFF" letterSpacing="-1">
               Disney
             </text>
-            <path d="M12 12C45 -3 115 -2 152 18" stroke="url(#disneyArc)" strokeWidth="3.5" strokeLinecap="round"/>
-            <path d="M152 8v16M144 16h16" stroke="#38BDF8" strokeWidth="4" strokeLinecap="round"/>
+            <path d="M12 12C45 -3 115 -2 152 18" stroke="url(#disneyArc)" strokeWidth="3.5" strokeLinecap="round" />
+            <path d="M152 8v16M144 16h16" stroke="#38BDF8" strokeWidth="4" strokeLinecap="round" />
             <defs>
               <linearGradient id="disneyArc" x1="12" y1="12" x2="152" y2="18" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#60A5FA"/>
-                <stop offset="0.5" stopColor="#38BDF8"/>
-                <stop offset="1" stopColor="#A855F7"/>
+                <stop stopColor="#60A5FA" />
+                <stop offset="0.5" stopColor="#38BDF8" />
+                <stop offset="1" stopColor="#A855F7" />
               </linearGradient>
             </defs>
           </svg>
@@ -112,7 +112,7 @@ export default function PlatformCategories() {
             <text x="82" y="34" fontFamily="Impact, Arial Black, sans-serif" fontSize="32" fontWeight="900" fontStyle="italic" fill="#FFFFFF" letterSpacing="-1">
               MAX
             </text>
-            <path d="M152 10L154 16L160 18L154 20L152 26L150 20L144 18L150 16Z" fill="#FF0055"/>
+            <path d="M152 10L154 16L160 18L154 20L152 26L150 20L144 18L150 16Z" fill="#FF0055" />
           </svg>
         </div>
       ),
@@ -132,16 +132,16 @@ export default function PlatformCategories() {
       logo: (
         <div className="flex items-center gap-2">
           <svg className="h-7 sm:h-8 md:h-9 w-auto" viewBox="0 0 175 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 5h11v13H24V5h11v35H24V26H16v14H5V5z" fill="#FFFFFF"/>
-            <path d="M38 5h16c5.5 0 9.5 3 9.5 8.2 0 3.2-1.8 5.8-4.5 7.1 3.5 1.2 5.5 4.2 5.5 8 0 5.8-4.5 9.7-10.5 9.7H38V5zm11 11h4c2 0 3.5-1 3.5-2.5S55 12 53 12h-4v4zm0 17h4.5c2.2 0 3.8-1.2 3.8-2.8s-1.6-2.7-3.8-2.7H49v5.5z" fill="#FFFFFF"/>
-            <circle cx="82" cy="22.5" r="16.5" fill="#FFFFFF"/>
-            <circle cx="82" cy="22.5" r="7.5" fill="#09090B"/>
-            <circle cx="82" cy="22.5" r="3" fill="#FFFFFF"/>
+            <path d="M5 5h11v13H24V5h11v35H24V26H16v14H5V5z" fill="#FFFFFF" />
+            <path d="M38 5h16c5.5 0 9.5 3 9.5 8.2 0 3.2-1.8 5.8-4.5 7.1 3.5 1.2 5.5 4.2 5.5 8 0 5.8-4.5 9.7-10.5 9.7H38V5zm11 11h4c2 0 3.5-1 3.5-2.5S55 12 53 12h-4v4zm0 17h4.5c2.2 0 3.8-1.2 3.8-2.8s-1.6-2.7-3.8-2.7H49v5.5z" fill="#FFFFFF" />
+            <circle cx="82" cy="22.5" r="16.5" fill="#FFFFFF" />
+            <circle cx="82" cy="22.5" r="7.5" fill="#09090B" />
+            <circle cx="82" cy="22.5" r="3" fill="#FFFFFF" />
             <text x="105" y="32" fontFamily="Arial Black, Impact, sans-serif" fontSize="24" fontWeight="900" fill="url(#hboMaxGrad)" letterSpacing="1">MAX</text>
             <defs>
               <linearGradient id="hboMaxGrad" x1="105" y1="5" x2="175" y2="40" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#C084FC"/>
-                <stop offset="1" stopColor="#818CF8"/>
+                <stop stopColor="#C084FC" />
+                <stop offset="1" stopColor="#818CF8" />
               </linearGradient>
             </defs>
           </svg>
@@ -163,7 +163,7 @@ export default function PlatformCategories() {
       logo: (
         <div className="flex items-center gap-2">
           <svg className="h-6 sm:h-7 md:h-8 w-auto" viewBox="0 0 135 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19.7 19.3c.1-3.6 2.9-5.3 3.1-5.5-1.7-2.4-4.2-2.8-5.1-2.8-2.2-.2-4.3 1.3-5.4 1.3-1.1 0-2.8-1.3-4.6-1.2-2.4.1-4.6 1.4-5.8 3.5-2.5 4.3-.6 10.7 1.8 14.2 1.2 1.7 2.6 3.6 4.4 3.5 1.8-.1 2.5-1.1 4.6-1.1 2.2 0 2.8 1.1 4.6 1.1 1.9.1 3.1-1.7 4.3-3.4 1.4-2 1.9-3.9 2-4-.1-.1-3.8-1.5-3.9-5.6zM15.4 9.4c1-1.2 1.6-2.8 1.4-4.4-1.4.1-3.1.9-4.1 2.1-.9 1.1-1.7 2.7-1.5 4.3 1.6.1 3.2-.8 4.2-2z" fill="#FFFFFF"/>
+            <path d="M19.7 19.3c.1-3.6 2.9-5.3 3.1-5.5-1.7-2.4-4.2-2.8-5.1-2.8-2.2-.2-4.3 1.3-5.4 1.3-1.1 0-2.8-1.3-4.6-1.2-2.4.1-4.6 1.4-5.8 3.5-2.5 4.3-.6 10.7 1.8 14.2 1.2 1.7 2.6 3.6 4.4 3.5 1.8-.1 2.5-1.1 4.6-1.1 2.2 0 2.8 1.1 4.6 1.1 1.9.1 3.1-1.7 4.3-3.4 1.4-2 1.9-3.9 2-4-.1-.1-3.8-1.5-3.9-5.6zM15.4 9.4c1-1.2 1.6-2.8 1.4-4.4-1.4.1-3.1.9-4.1 2.1-.9 1.1-1.7 2.7-1.5 4.3 1.6.1 3.2-.8 4.2-2z" fill="#FFFFFF" />
             <text x="30" y="31" fontFamily="system-ui, -apple-system, sans-serif" fontSize="26" fontWeight="700" fill="#FFFFFF" letterSpacing="0.5">tv+</text>
           </svg>
         </div>
@@ -187,8 +187,8 @@ export default function PlatformCategories() {
             <text x="0" y="26" fontFamily="system-ui, -apple-system, sans-serif" fontSize="22" fontWeight="800" fill="#FFFFFF" letterSpacing="-0.5">
               prime <tspan fill="#38BDF8">video</tspan>
             </text>
-            <path d="M10 33C40 43 110 43 145 32" stroke="#38BDF8" strokeWidth="3.5" strokeLinecap="round"/>
-            <path d="M140 28L148 32L142 38" stroke="#38BDF8" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M10 33C40 43 110 43 145 32" stroke="#38BDF8" strokeWidth="3.5" strokeLinecap="round" />
+            <path d="M140 28L148 32L142 38" stroke="#38BDF8" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
       ),
@@ -372,7 +372,7 @@ export default function PlatformCategories() {
   });
 
   return (
-    <section className="px-3 sm:px-4 md:px-12 my-3 sm:my-6 md:my-8 relative z-20 group/section">
+    <section className="hidden sm:block px-3 sm:px-4 md:px-12 my-3 sm:my-6 md:my-8 relative z-20 group/section">
       {/* Section Header with Category Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 md:gap-4 mb-2.5 sm:mb-4 md:mb-6">
         <div className="flex items-center justify-between w-full sm:w-auto">
@@ -407,11 +407,10 @@ export default function PlatformCategories() {
         <div className="w-full sm:w-auto grid grid-cols-4 sm:flex items-center gap-1 sm:gap-1.5 bg-gray-900/90 p-1 sm:p-1.5 rounded-full border border-gray-800 backdrop-blur-md">
           <button
             onClick={() => setActiveTab("all")}
-            className={`px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[9.5px] sm:text-xs font-semibold sm:font-bold transition-all whitespace-nowrap cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 ${
-              activeTab === "all"
+            className={`px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[9.5px] sm:text-xs font-semibold sm:font-bold transition-all whitespace-nowrap cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 ${activeTab === "all"
                 ? "bg-netflix-red text-white shadow-lg shadow-red-950/50"
                 : "text-gray-400 hover:text-white hover:bg-gray-800"
-            }`}
+              }`}
           >
             <Layers className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 shrink-0" />
             <span className="inline sm:hidden">All ({brands.length})</span>
@@ -419,11 +418,10 @@ export default function PlatformCategories() {
           </button>
           <button
             onClick={() => setActiveTab("platform")}
-            className={`px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[9.5px] sm:text-xs font-semibold sm:font-bold transition-all whitespace-nowrap cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 ${
-              activeTab === "platform"
+            className={`px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[9.5px] sm:text-xs font-semibold sm:font-bold transition-all whitespace-nowrap cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 ${activeTab === "platform"
                 ? "bg-red-600 text-white shadow-lg shadow-red-950/50"
                 : "text-gray-400 hover:text-white hover:bg-gray-800"
-            }`}
+              }`}
           >
             <Tv className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 shrink-0" />
             <span className="inline sm:hidden">Networks</span>
@@ -431,11 +429,10 @@ export default function PlatformCategories() {
           </button>
           <button
             onClick={() => setActiveTab("studio")}
-            className={`px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[9.5px] sm:text-xs font-semibold sm:font-bold transition-all whitespace-nowrap cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 ${
-              activeTab === "studio"
+            className={`px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[9.5px] sm:text-xs font-semibold sm:font-bold transition-all whitespace-nowrap cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 ${activeTab === "studio"
                 ? "bg-red-600 text-white shadow-lg shadow-red-950/50"
                 : "text-gray-400 hover:text-white hover:bg-gray-800"
-            }`}
+              }`}
           >
             <Film className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 shrink-0" />
             <span className="inline sm:hidden">Studios</span>
@@ -443,11 +440,10 @@ export default function PlatformCategories() {
           </button>
           <button
             onClick={() => setActiveTab("genre")}
-            className={`px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[9.5px] sm:text-xs font-semibold sm:font-bold transition-all whitespace-nowrap cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 ${
-              activeTab === "genre"
+            className={`px-1 sm:px-3 py-1 sm:py-1.5 rounded-full text-[9.5px] sm:text-xs font-semibold sm:font-bold transition-all whitespace-nowrap cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 ${activeTab === "genre"
                 ? "bg-red-600 text-white shadow-lg shadow-red-950/50"
                 : "text-gray-400 hover:text-white hover:bg-gray-800"
-            }`}
+              }`}
           >
             <PlayCircle className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 shrink-0" />
             <span className="inline sm:hidden">Genres</span>
@@ -492,15 +488,12 @@ export default function PlatformCategories() {
               key={brand.id}
               href={brand.href}
               tabIndex={0}
-              className={`group relative overflow-hidden rounded-lg sm:rounded-xl bg-gradient-to-br ${brand.gradient} border ${
-                brand.borderColor
-              } ${brand.hoverShadow} p-2 sm:p-3.5 md:p-4 flex flex-col justify-between items-center text-center transition-all duration-300 ease-out hover:-translate-y-1 cursor-pointer backdrop-blur-md ${
-                layoutMode === "scroll"
+              className={`group relative overflow-hidden rounded-lg sm:rounded-xl bg-gradient-to-br ${brand.gradient} border ${brand.borderColor
+                } ${brand.hoverShadow} p-2 sm:p-3.5 md:p-4 flex flex-col justify-between items-center text-center transition-all duration-300 ease-out hover:-translate-y-1 cursor-pointer backdrop-blur-md ${layoutMode === "scroll"
                   ? "min-w-[125px] sm:min-w-[170px] md:min-w-[210px] flex-shrink-0"
                   : "min-w-[115px] sm:min-w-0"
-              } min-h-[85px] sm:min-h-[110px] md:min-h-[135px] snap-start focus:outline-none focus:ring-4 focus:ring-red-600 focus:scale-105 focus:z-30 ${
-                isTvMode ? "p-4 sm:p-5 border-2 shadow-2xl scale-100" : ""
-              }`}
+                } min-h-[85px] sm:min-h-[110px] md:min-h-[135px] snap-start focus:outline-none focus:ring-4 focus:ring-red-600 focus:scale-105 focus:z-30 ${isTvMode ? "p-4 sm:p-5 border-2 shadow-2xl scale-100" : ""
+                }`}
             >
               {/* Top Shine Highlight */}
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/25 to-transparent group-hover:via-white/60 transition-all duration-300" />
