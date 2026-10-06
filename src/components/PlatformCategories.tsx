@@ -48,12 +48,11 @@ export default function PlatformCategories() {
       badgeBg: "bg-red-600/20 border-red-500/40",
       badgeText: "text-red-400",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg"
-          alt="Netflix"
-          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
-          loading="lazy"
-        />
+        <div className="flex items-center gap-2">
+          <span className="text-2xl sm:text-3xl md:text-4xl font-black tracking-wider text-[#E50914] font-sans drop-shadow-[0_0_12px_rgba(229,9,20,0.5)]">
+            NETFLIX
+          </span>
+        </div>
       ),
     },
     {
@@ -69,12 +68,14 @@ export default function PlatformCategories() {
       badgeBg: "bg-cyan-500/20 border-cyan-400/40",
       badgeText: "text-cyan-300",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg"
-          alt="Disney+"
-          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
-          loading="lazy"
-        />
+        <div className="flex items-center justify-center gap-0.5">
+          <span className="text-2xl sm:text-3xl md:text-4xl font-black italic tracking-tighter text-white font-serif drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
+            Disney
+          </span>
+          <span className="text-2xl sm:text-3xl md:text-4xl font-black text-cyan-400 font-sans ml-0.5 drop-shadow-[0_0_12px_rgba(34,211,238,0.7)]">
+            +
+          </span>
+        </div>
       ),
     },
     {
@@ -90,12 +91,14 @@ export default function PlatformCategories() {
       badgeBg: "bg-amber-500/20 border-amber-400/40",
       badgeText: "text-amber-300",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/en/a/a9/Vivamax_logo.png"
-          alt="VivaMax"
-          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px] filter drop-shadow-[0_0_8px_rgba(255,199,0,0.4)]"
-          loading="lazy"
-        />
+        <div className="flex items-center justify-center gap-1 font-black italic">
+          <span className="text-2xl sm:text-3xl md:text-4xl text-[#FFC700] tracking-tighter drop-shadow-[0_0_12px_rgba(255,199,0,0.6)]">
+            VIVA
+          </span>
+          <span className="text-2xl sm:text-3xl md:text-4xl text-white tracking-tighter drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
+            MAX
+          </span>
+        </div>
       ),
     },
     {
@@ -111,12 +114,14 @@ export default function PlatformCategories() {
       badgeBg: "bg-purple-500/20 border-purple-400/40",
       badgeText: "text-purple-300",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg"
-          alt="HBO Max"
-          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
-          loading="lazy"
-        />
+        <div className="flex items-center gap-1.5 font-black">
+          <span className="text-2xl sm:text-3xl md:text-4xl text-white tracking-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
+            HBO
+          </span>
+          <span className="text-xl sm:text-2xl md:text-3xl text-purple-400 tracking-wider bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(168,85,247,0.6)]">
+            MAX
+          </span>
+        </div>
       ),
     },
     {
@@ -132,12 +137,11 @@ export default function PlatformCategories() {
       badgeBg: "bg-gray-400/20 border-gray-300/40",
       badgeText: "text-gray-200",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg"
-          alt="Apple TV+"
-          className="h-6 sm:h-7 md:h-8 w-auto object-contain max-w-[130px]"
-          loading="lazy"
-        />
+        <div className="flex items-center gap-1">
+          <span className="text-2xl sm:text-3xl md:text-4xl text-white font-bold tracking-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">
+             tv+
+          </span>
+        </div>
       ),
     },
     {
@@ -153,12 +157,14 @@ export default function PlatformCategories() {
       badgeBg: "bg-sky-500/20 border-sky-400/40",
       badgeText: "text-sky-300",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg"
-          alt="Prime Video"
-          className="h-6 sm:h-7 md:h-8 w-auto object-contain max-w-[130px]"
-          loading="lazy"
-        />
+        <div className="flex items-center gap-1 font-extrabold">
+          <span className="text-xl sm:text-2xl md:text-3xl text-white tracking-tight">
+            prime
+          </span>
+          <span className="text-xl sm:text-2xl md:text-3xl text-sky-400 tracking-tight drop-shadow-[0_0_10px_rgba(56,189,248,0.6)]">
+            video
+          </span>
+        </div>
       ),
     },
     {
@@ -174,12 +180,14 @@ export default function PlatformCategories() {
       badgeBg: "bg-blue-600/20 border-blue-400/40",
       badgeText: "text-blue-300",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Paramount_Plus_logo.svg"
-          alt="Paramount+"
-          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
-          loading="lazy"
-        />
+        <div className="flex items-center gap-0.5">
+          <span className="text-xl sm:text-2xl md:text-3xl font-black italic text-white font-serif tracking-tight drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
+            Paramount
+          </span>
+          <span className="text-2xl sm:text-3xl md:text-4xl font-black text-blue-400 not-italic ml-0.5 drop-shadow-[0_0_12px_rgba(59,130,246,0.7)]">
+            +
+          </span>
+        </div>
       ),
     },
     {
@@ -195,12 +203,11 @@ export default function PlatformCategories() {
       badgeBg: "bg-emerald-500/20 border-emerald-400/40",
       badgeText: "text-emerald-300",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Hulu_Logo.svg"
-          alt="Hulu"
-          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
-          loading="lazy"
-        />
+        <div className="flex items-center">
+          <span className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-[#1CE783] drop-shadow-[0_0_14px_rgba(28,231,131,0.7)]">
+            hulu
+          </span>
+        </div>
       ),
     },
     {
@@ -216,12 +223,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-yellow-500/20 border-yellow-400/40",
       badgeText: "text-yellow-300",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Viu_logo.svg"
-          alt="Viu"
-          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
-          loading="lazy"
-        />
+        <div className="flex items-center gap-1.5">
+          <span className="text-2xl sm:text-3xl md:text-4xl font-black text-amber-400 tracking-wider font-sans drop-shadow-[0_0_12px_rgba(251,191,36,0.6)]">
+            viu
+          </span>
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+        </div>
       ),
     },
 
@@ -239,12 +246,11 @@ export default function PlatformCategories() {
       badgeBg: "bg-red-600 text-white font-bold",
       badgeText: "text-white",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Marvel_Logo.svg"
-          alt="Marvel Studios"
-          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
-          loading="lazy"
-        />
+        <div className="bg-red-600 px-3 py-1 rounded shadow-xl border border-red-500">
+          <span className="text-lg sm:text-2xl md:text-3xl font-black tracking-widest text-white uppercase font-sans drop-shadow-md">
+            MARVEL
+          </span>
+        </div>
       ),
     },
     {
@@ -260,12 +266,14 @@ export default function PlatformCategories() {
       badgeBg: "bg-blue-600/20 border-blue-400/40",
       badgeText: "text-blue-300",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/3/3d/DC_Comics_logo.svg"
-          alt="DC Universe"
-          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px] filter drop-shadow-[0_0_10px_rgba(37,99,235,0.5)]"
-          loading="lazy"
-        />
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-600 text-white font-black text-lg sm:text-xl flex items-center justify-center border-2 border-blue-400 shadow-[0_0_12px_rgba(37,99,235,0.7)]">
+            DC
+          </div>
+          <span className="text-lg sm:text-xl md:text-2xl font-black text-white tracking-wider drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
+            UNIVERSE
+          </span>
+        </div>
       ),
     },
 
@@ -283,12 +291,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-fuchsia-500/20 border-fuchsia-400/40",
       badgeText: "text-fuchsia-300",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/0/08/Crunchyroll_logo.svg"
-          alt="Anime Hub"
-          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
-          loading="lazy"
-        />
+        <div className="flex items-center gap-1.5">
+          <span className="text-2xl sm:text-3xl md:text-4xl font-black tracking-wider text-fuchsia-400 drop-shadow-[0_0_12px_rgba(217,70,239,0.7)]">
+            ANIME
+          </span>
+          <span className="text-lg text-pink-400 font-bold">🌸</span>
+        </div>
       ),
     },
     {
@@ -304,12 +312,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-pink-500/20 border-pink-400/40",
       badgeText: "text-pink-300",
       logo: (
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/a/a4/JTBC_Logo.svg"
-          alt="K-Drama Hub"
-          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
-          loading="lazy"
-        />
+        <div className="flex items-center gap-1.5">
+          <span className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-pink-300 drop-shadow-[0_0_12px_rgba(244,114,182,0.7)]">
+            K-DRAMA
+          </span>
+          <span className="text-lg text-rose-400 font-bold">🫰</span>
+        </div>
       ),
     },
     {
@@ -326,10 +334,10 @@ export default function PlatformCategories() {
       badgeText: "text-red-400",
       logo: (
         <div className="flex items-center gap-1.5">
-          <span className="text-xl sm:text-2xl md:text-3xl font-black tracking-widest text-red-600 font-serif drop-shadow-[0_0_10px_rgba(220,38,38,0.7)]">
+          <span className="text-2xl sm:text-3xl md:text-4xl font-black tracking-widest text-red-600 font-serif drop-shadow-[0_0_12px_rgba(220,38,38,0.8)]">
             HORROR
           </span>
-          <span className="text-base">🩸</span>
+          <span className="text-lg">🩸</span>
         </div>
       ),
     },
