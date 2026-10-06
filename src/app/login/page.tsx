@@ -211,7 +211,7 @@ function LoginFormContent() {
                 onClick={() => { setError(null); setView("magic"); }}
                 className="flex items-center justify-center gap-3 w-full bg-[#1a1a2e] border border-indigo-500/40 text-indigo-300 py-3 rounded-md font-semibold hover:bg-indigo-950/60 hover:border-indigo-400/60 transition"
               >
-                <Sparkles size={18} className="text-indigo-400" />
+
                 Send Magic Link
               </button>
 
