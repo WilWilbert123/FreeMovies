@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { Users, Mail, Calendar, Clock, Film, Tv, Trophy, TrendingUp, Activity } from "lucide-react";
+import { Users, Mail, Calendar, Clock, Film, Tv, Trophy, TrendingUp, Activity, RefreshCw } from "lucide-react";
 import { useOnlineStore } from "@/store/useOnlineStore";
 
 type AdminUser = {
@@ -38,6 +38,10 @@ export default function AdminUsersList() {
   const [topTitles, setTopTitles] = useState<TopTitle[]>([]);
   const [movieCount, setMovieCount] = useState<number>(0);
   const [tvCount, setTvCount] = useState<number>(0);
+  // Analytics are NOT loaded automatically — only when admin clicks Refresh.
+  // Previously this fired one RPC per user on every page open (massive CPU spike).
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [analyticsLoaded, setAnalyticsLoaded] = useState(false);
 
   const onlineUsersArray = useOnlineStore((state) => state.onlineUsers);
 
@@ -75,63 +79,9 @@ export default function AdminUsersList() {
             console.error("Profiles error:", profilesError);
           }
 
-          // 3. Fetch Watch History for all users & compute analytics
-          try {
-            const historyPromises = usersArr.map(async (u) => {
-              const res = await supabase.rpc("get_user_watch_history", { target_user_id: u.id });
-              if (res.data) {
-                return res.data.map((item: any) => ({
-                  ...item,
-                  user_email: u.email,
-                }));
-              }
-              return [];
-            });
-
-            const historyResults = await Promise.all(historyPromises);
-            const allEvents: GlobalWatchEvent[] = historyResults.flat();
-
-            if (isMounted) {
-              setTotalWatches(allEvents.length);
-
-              // Sort newest first
-              const sortedEvents = [...allEvents].sort(
-                (a, b) => new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
-              );
-              setGlobalHistory(sortedEvents.slice(0, 20));
-
-              // Compute movie vs tv and top titles
-              let movies = 0;
-              let tvs = 0;
-              const titleMap: Record<string, { media_type: string; count: number }> = {};
-
-              allEvents.forEach((evt) => {
-                if (evt.media_type === "movie") movies++;
-                else if (evt.media_type === "tv") tvs++;
-
-                if (!titleMap[evt.title]) {
-                  titleMap[evt.title] = { media_type: evt.media_type, count: 0 };
-                }
-                titleMap[evt.title].count += 1;
-              });
-
-              setMovieCount(movies);
-              setTvCount(tvs);
-
-              const sortedTitles: TopTitle[] = Object.entries(titleMap)
-                .map(([title, info]) => ({
-                  title,
-                  media_type: info.media_type,
-                  count: info.count,
-                }))
-                .sort((a, b) => b.count - a.count)
-                .slice(0, 5);
-
-              setTopTitles(sortedTitles);
-            }
-          } catch (e) {
-            console.error("Failed to load total watches:", e);
-          }
+          // NOTE: Watch history analytics are intentionally NOT loaded here.
+          // Loading them on mount fires one RPC per user (N+1 queries) — a massive
+          // Vercel CPU spike. Use the Refresh button in the sidebar to load them on demand.
         }
       } catch (err: any) {
         console.error("Error fetching users:", err);
@@ -151,6 +101,67 @@ export default function AdminUsersList() {
       isMounted = false;
     };
   }, []);
+
+  // Load watch analytics ONLY when admin clicks Refresh — not automatically.
+  const loadWatchAnalytics = async () => {
+    if (analyticsLoading || users.length === 0) return;
+    setAnalyticsLoading(true);
+    try {
+      const historyPromises = users.map(async (u) => {
+        const res = await supabase.rpc("get_user_watch_history", { target_user_id: u.id });
+        if (res.data) {
+          return res.data.map((item: any) => ({
+            ...item,
+            user_email: u.email,
+          }));
+        }
+        return [];
+      });
+
+      const historyResults = await Promise.all(historyPromises);
+      const allEvents: GlobalWatchEvent[] = historyResults.flat();
+
+      setTotalWatches(allEvents.length);
+
+      const sortedEvents = [...allEvents].sort(
+        (a, b) => new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
+      );
+      setGlobalHistory(sortedEvents.slice(0, 20));
+
+      let movies = 0;
+      let tvs = 0;
+      const titleMap: Record<string, { media_type: string; count: number }> = {};
+
+      allEvents.forEach((evt) => {
+        if (evt.media_type === "movie") movies++;
+        else if (evt.media_type === "tv") tvs++;
+
+        if (!titleMap[evt.title]) {
+          titleMap[evt.title] = { media_type: evt.media_type, count: 0 };
+        }
+        titleMap[evt.title].count += 1;
+      });
+
+      setMovieCount(movies);
+      setTvCount(tvs);
+
+      const sortedTitles: TopTitle[] = Object.entries(titleMap)
+        .map(([title, info]) => ({
+          title,
+          media_type: info.media_type,
+          count: info.count,
+        }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
+
+      setTopTitles(sortedTitles);
+      setAnalyticsLoaded(true);
+    } catch (e) {
+      console.error("Failed to load watch analytics:", e);
+    } finally {
+      setAnalyticsLoading(false);
+    }
+  };
 
   return (
     <div className="flex w-full flex-col bg-gray-900 min-h-screen">
@@ -320,116 +331,144 @@ export default function AdminUsersList() {
 
             {/* Analytics Sidebar (1 Col on Large) */}
             <div className="space-y-6">
-              {/* Movies vs TV Shows */}
-              <div className="bg-[#141414] border border-gray-800 rounded-lg p-5 shadow-xl">
-                <h3 className="text-base font-bold text-white flex items-center gap-2 mb-3">
-                  <TrendingUp className="w-5 h-5 text-netflix-red" />
-                  Movies vs. TV Shows
-                </h3>
-                {totalWatches === 0 ? (
-                  <p className="text-xs text-gray-500 py-2">No watch data available.</p>
-                ) : (
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-xs font-semibold text-gray-300">
-                      <span className="flex items-center gap-1.5 text-netflix-red">
-                        <Film className="w-4 h-4" />
-                        Movies: {movieCount} ({Math.round((movieCount / totalWatches) * 100)}%)
-                      </span>
-                      <span className="flex items-center gap-1.5 text-blue-400">
-                        <Tv className="w-4 h-4" />
-                        TV: {tvCount} ({Math.round((tvCount / totalWatches) * 100)}%)
-                      </span>
-                    </div>
-                    <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden flex">
-                      <div
-                        className="bg-netflix-red h-full transition-all duration-500"
-                        style={{ width: `${(movieCount / totalWatches) * 100}%` }}
-                      />
-                      <div
-                        className="bg-blue-500 h-full transition-all duration-500"
-                        style={{ width: `${(tvCount / totalWatches) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Top 5 Most Watched */}
-              <div className="bg-[#141414] border border-gray-800 rounded-lg p-5 shadow-xl">
-                <h3 className="text-base font-bold text-white flex items-center gap-2 mb-3">
-                  <Trophy className="w-5 h-5 text-yellow-500" />
-                  Top 5 Most Watched
-                </h3>
-                {topTitles.length === 0 ? (
-                  <p className="text-xs text-gray-500 py-2">No watch data available.</p>
-                ) : (
-                  <div className="space-y-2.5">
-                    {topTitles.map((item, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-between p-2.5 rounded bg-gray-900/60 border border-gray-800 text-xs"
+              {/* Analytics Load/Refresh button */}
+              {!analyticsLoaded ? (
+                <div className="bg-[#141414] border border-gray-800 rounded-lg p-5 shadow-xl flex flex-col items-center justify-center gap-3 py-8">
+                  <Activity className="w-8 h-8 text-gray-600" />
+                  <p className="text-xs text-gray-500 text-center">Watch analytics are loaded on demand to save CPU.</p>
+                  <button
+                    onClick={loadWatchAnalytics}
+                    disabled={analyticsLoading}
+                    className="flex items-center gap-2 px-4 py-2 bg-netflix-red hover:bg-red-700 text-white text-xs font-semibold rounded-md transition-colors disabled:opacity-50"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${analyticsLoading ? "animate-spin" : ""}`} />
+                    {analyticsLoading ? "Loading..." : "Load Analytics"}
+                  </button>
+                </div>
+              ) : (
+                <>
+                  {/* Movies vs TV Shows */}
+                  <div className="bg-[#141414] border border-gray-800 rounded-lg p-5 shadow-xl">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-base font-bold text-white flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-netflix-red" />
+                        Movies vs. TV Shows
+                      </h3>
+                      <button
+                        onClick={loadWatchAnalytics}
+                        disabled={analyticsLoading}
+                        title="Refresh analytics"
+                        className="p-1 rounded hover:bg-gray-800 text-gray-500 hover:text-white transition-colors disabled:opacity-50"
                       >
-                        <div className="flex items-center gap-2.5 truncate max-w-[80%]">
-                          <span
-                            className={`w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] ${idx === 0
-                                ? "bg-yellow-500 text-black"
-                                : idx === 1
-                                  ? "bg-gray-400 text-black"
-                                  : idx === 2
-                                    ? "bg-amber-700 text-white"
-                                    : "bg-gray-800 text-gray-400"
-                              }`}
+                        <RefreshCw className={`w-3.5 h-3.5 ${analyticsLoading ? "animate-spin" : ""}`} />
+                      </button>
+                    </div>
+                    {totalWatches === 0 ? (
+                      <p className="text-xs text-gray-500 py-2">No watch data available.</p>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-xs font-semibold text-gray-300">
+                          <span className="flex items-center gap-1.5 text-netflix-red">
+                            <Film className="w-4 h-4" />
+                            Movies: {movieCount} ({Math.round((movieCount / totalWatches) * 100)}%)
+                          </span>
+                          <span className="flex items-center gap-1.5 text-blue-400">
+                            <Tv className="w-4 h-4" />
+                            TV: {tvCount} ({Math.round((tvCount / totalWatches) * 100)}%)
+                          </span>
+                        </div>
+                        <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden flex">
+                          <div
+                            className="bg-netflix-red h-full transition-all duration-500"
+                            style={{ width: `${(movieCount / totalWatches) * 100}%` }}
+                          />
+                          <div
+                            className="bg-blue-500 h-full transition-all duration-500"
+                            style={{ width: `${(tvCount / totalWatches) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Top 5 Most Watched */}
+                  <div className="bg-[#141414] border border-gray-800 rounded-lg p-5 shadow-xl">
+                    <h3 className="text-base font-bold text-white flex items-center gap-2 mb-3">
+                      <Trophy className="w-5 h-5 text-yellow-500" />
+                      Top 5 Most Watched
+                    </h3>
+                    {topTitles.length === 0 ? (
+                      <p className="text-xs text-gray-500 py-2">No watch data available.</p>
+                    ) : (
+                      <div className="space-y-2.5">
+                        {topTitles.map((item, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center justify-between p-2.5 rounded bg-gray-900/60 border border-gray-800 text-xs"
                           >
-                            {idx + 1}
-                          </span>
-                          <span className="text-white font-medium truncate">{item.title}</span>
-                        </div>
-                        <span className="text-netflix-red font-bold shrink-0">{item.count} plays</span>
+                            <div className="flex items-center gap-2.5 truncate max-w-[80%]">
+                              <span
+                                className={`w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] ${idx === 0
+                                    ? "bg-yellow-500 text-black"
+                                    : idx === 1
+                                      ? "bg-gray-400 text-black"
+                                      : idx === 2
+                                        ? "bg-amber-700 text-white"
+                                        : "bg-gray-800 text-gray-400"
+                                  }`}
+                              >
+                                {idx + 1}
+                              </span>
+                              <span className="text-white font-medium truncate">{item.title}</span>
+                            </div>
+                            <span className="text-netflix-red font-bold shrink-0">{item.count} plays</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
-                )}
-              </div>
 
-              {/* Global Recent Activity Feed */}
-              <div className="bg-[#141414] border border-gray-800 rounded-lg p-5 shadow-xl">
-                <h3 className="text-base font-bold text-white flex items-center gap-2 mb-3">
-                  <Activity className="w-5 h-5 text-green-500" />
-                  Global Recent Activity
-                </h3>
-                {globalHistory.length === 0 ? (
-                  <p className="text-xs text-gray-500 py-2">No recent activity detected.</p>
-                ) : (
-                  <div className="space-y-2.5 max-h-72 overflow-y-auto pr-1">
-                    {globalHistory.map((event) => (
-                      <div
-                        key={event.id}
-                        className="p-2.5 rounded bg-gray-900/60 border border-gray-800 text-xs space-y-1"
-                      >
-                        <div className="flex justify-between items-center text-gray-400">
-                          <span className="font-semibold text-gray-300 truncate max-w-[150px]">
-                            {event.user_email}
-                          </span>
-                          <span className="text-[10px] text-gray-500 shrink-0">
-                            {new Date(event.started_at).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-white font-medium truncate">
-                          {event.media_type === "movie" ? (
-                            <Film className="w-3.5 h-3.5 text-netflix-red shrink-0" />
-                          ) : (
-                            <Tv className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-                          )}
-                          <span className="truncate">{event.title}</span>
-                        </div>
+                  {/* Global Recent Activity Feed */}
+                  <div className="bg-[#141414] border border-gray-800 rounded-lg p-5 shadow-xl">
+                    <h3 className="text-base font-bold text-white flex items-center gap-2 mb-3">
+                      <Activity className="w-5 h-5 text-green-500" />
+                      Global Recent Activity
+                    </h3>
+                    {globalHistory.length === 0 ? (
+                      <p className="text-xs text-gray-500 py-2">No recent activity detected.</p>
+                    ) : (
+                      <div className="space-y-2.5 max-h-72 overflow-y-auto pr-1">
+                        {globalHistory.map((event) => (
+                          <div
+                            key={event.id}
+                            className="p-2.5 rounded bg-gray-900/60 border border-gray-800 text-xs space-y-1"
+                          >
+                            <div className="flex justify-between items-center text-gray-400">
+                              <span className="font-semibold text-gray-300 truncate max-w-[150px]">
+                                {event.user_email}
+                              </span>
+                              <span className="text-[10px] text-gray-500 shrink-0">
+                                {new Date(event.started_at).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-white font-medium truncate">
+                              {event.media_type === "movie" ? (
+                                <Film className="w-3.5 h-3.5 text-netflix-red shrink-0" />
+                              ) : (
+                                <Tv className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                              )}
+                              <span className="truncate">{event.title}</span>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
-                )}
-              </div>
+                </>
+              )}
             </div>
           </div>
         )}

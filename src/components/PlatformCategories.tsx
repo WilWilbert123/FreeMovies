@@ -48,16 +48,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-red-600/20 border-red-500/40",
       badgeText: "text-red-400",
       logo: (
-        <div className="flex items-center gap-2">
-          <svg className="h-7 sm:h-8 md:h-9 w-auto" viewBox="0 0 45 75" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7 0H21V75H7V0Z" fill="#B81D24" />
-            <path d="M24 0H38V75H24V0Z" fill="#E50914" />
-            <path d="M7 0L38 75H24L7 0Z" fill="#E50914" />
-          </svg>
-          <span className="text-xl sm:text-2xl md:text-3xl font-black tracking-widest text-[#E50914] font-sans">
-            NETFLIX
-          </span>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg"
+          alt="Netflix"
+          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
+          loading="lazy"
+        />
       ),
     },
     {
@@ -73,22 +69,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-cyan-500/20 border-cyan-400/40",
       badgeText: "text-cyan-300",
       logo: (
-        <div className="flex items-center justify-center">
-          <svg className="h-7 sm:h-8 md:h-9 w-auto" viewBox="0 0 170 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <text x="5" y="38" fontFamily="Arial, 'Trebuchet MS', sans-serif" fontSize="32" fontWeight="900" fontStyle="italic" fill="#FFFFFF" letterSpacing="-1">
-              Disney
-            </text>
-            <path d="M12 12C45 -3 115 -2 152 18" stroke="url(#disneyArc)" strokeWidth="3.5" strokeLinecap="round" />
-            <path d="M152 8v16M144 16h16" stroke="#38BDF8" strokeWidth="4" strokeLinecap="round" />
-            <defs>
-              <linearGradient id="disneyArc" x1="12" y1="12" x2="152" y2="18" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#60A5FA" />
-                <stop offset="0.5" stopColor="#38BDF8" />
-                <stop offset="1" stopColor="#A855F7" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg"
+          alt="Disney+"
+          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
+          loading="lazy"
+        />
       ),
     },
     {
@@ -104,17 +90,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-amber-500/20 border-amber-400/40",
       badgeText: "text-amber-300",
       logo: (
-        <div className="flex items-center justify-center">
-          <svg className="h-7 sm:h-8 md:h-9 w-auto" viewBox="0 0 165 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <text x="5" y="34" fontFamily="Impact, Arial Black, sans-serif" fontSize="32" fontWeight="900" fontStyle="italic" fill="#FFC700" letterSpacing="-1">
-              VIVA
-            </text>
-            <text x="82" y="34" fontFamily="Impact, Arial Black, sans-serif" fontSize="32" fontWeight="900" fontStyle="italic" fill="#FFFFFF" letterSpacing="-1">
-              MAX
-            </text>
-            <path d="M152 10L154 16L160 18L154 20L152 26L150 20L144 18L150 16Z" fill="#FF0055" />
-          </svg>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/en/a/a9/Vivamax_logo.png"
+          alt="VivaMax"
+          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px] filter drop-shadow-[0_0_8px_rgba(255,199,0,0.4)]"
+          loading="lazy"
+        />
       ),
     },
     {
@@ -130,22 +111,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-purple-500/20 border-purple-400/40",
       badgeText: "text-purple-300",
       logo: (
-        <div className="flex items-center gap-2">
-          <svg className="h-7 sm:h-8 md:h-9 w-auto" viewBox="0 0 175 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M5 5h11v13H24V5h11v35H24V26H16v14H5V5z" fill="#FFFFFF" />
-            <path d="M38 5h16c5.5 0 9.5 3 9.5 8.2 0 3.2-1.8 5.8-4.5 7.1 3.5 1.2 5.5 4.2 5.5 8 0 5.8-4.5 9.7-10.5 9.7H38V5zm11 11h4c2 0 3.5-1 3.5-2.5S55 12 53 12h-4v4zm0 17h4.5c2.2 0 3.8-1.2 3.8-2.8s-1.6-2.7-3.8-2.7H49v5.5z" fill="#FFFFFF" />
-            <circle cx="82" cy="22.5" r="16.5" fill="#FFFFFF" />
-            <circle cx="82" cy="22.5" r="7.5" fill="#09090B" />
-            <circle cx="82" cy="22.5" r="3" fill="#FFFFFF" />
-            <text x="105" y="32" fontFamily="Arial Black, Impact, sans-serif" fontSize="24" fontWeight="900" fill="url(#hboMaxGrad)" letterSpacing="1">MAX</text>
-            <defs>
-              <linearGradient id="hboMaxGrad" x1="105" y1="5" x2="175" y2="40" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#C084FC" />
-                <stop offset="1" stopColor="#818CF8" />
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg"
+          alt="HBO Max"
+          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
+          loading="lazy"
+        />
       ),
     },
     {
@@ -161,12 +132,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-gray-400/20 border-gray-300/40",
       badgeText: "text-gray-200",
       logo: (
-        <div className="flex items-center gap-2">
-          <svg className="h-6 sm:h-7 md:h-8 w-auto" viewBox="0 0 135 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19.7 19.3c.1-3.6 2.9-5.3 3.1-5.5-1.7-2.4-4.2-2.8-5.1-2.8-2.2-.2-4.3 1.3-5.4 1.3-1.1 0-2.8-1.3-4.6-1.2-2.4.1-4.6 1.4-5.8 3.5-2.5 4.3-.6 10.7 1.8 14.2 1.2 1.7 2.6 3.6 4.4 3.5 1.8-.1 2.5-1.1 4.6-1.1 2.2 0 2.8 1.1 4.6 1.1 1.9.1 3.1-1.7 4.3-3.4 1.4-2 1.9-3.9 2-4-.1-.1-3.8-1.5-3.9-5.6zM15.4 9.4c1-1.2 1.6-2.8 1.4-4.4-1.4.1-3.1.9-4.1 2.1-.9 1.1-1.7 2.7-1.5 4.3 1.6.1 3.2-.8 4.2-2z" fill="#FFFFFF" />
-            <text x="30" y="31" fontFamily="system-ui, -apple-system, sans-serif" fontSize="26" fontWeight="700" fill="#FFFFFF" letterSpacing="0.5">tv+</text>
-          </svg>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg"
+          alt="Apple TV+"
+          className="h-6 sm:h-7 md:h-8 w-auto object-contain max-w-[130px]"
+          loading="lazy"
+        />
       ),
     },
     {
@@ -182,15 +153,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-sky-500/20 border-sky-400/40",
       badgeText: "text-sky-300",
       logo: (
-        <div className="flex flex-col items-center">
-          <svg className="h-6 sm:h-7 md:h-8 w-auto" viewBox="0 0 160 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <text x="0" y="26" fontFamily="system-ui, -apple-system, sans-serif" fontSize="22" fontWeight="800" fill="#FFFFFF" letterSpacing="-0.5">
-              prime <tspan fill="#38BDF8">video</tspan>
-            </text>
-            <path d="M10 33C40 43 110 43 145 32" stroke="#38BDF8" strokeWidth="3.5" strokeLinecap="round" />
-            <path d="M140 28L148 32L142 38" stroke="#38BDF8" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg"
+          alt="Prime Video"
+          className="h-6 sm:h-7 md:h-8 w-auto object-contain max-w-[130px]"
+          loading="lazy"
+        />
       ),
     },
     {
@@ -206,11 +174,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-blue-600/20 border-blue-400/40",
       badgeText: "text-blue-300",
       logo: (
-        <div className="flex items-center gap-1">
-          <span className="text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-white font-serif italic">
-            Paramount<tspan className="text-blue-400 font-sans not-italic font-black ml-0.5">+</tspan>
-          </span>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Paramount_Plus_logo.svg"
+          alt="Paramount+"
+          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
+          loading="lazy"
+        />
       ),
     },
     {
@@ -226,11 +195,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-emerald-500/20 border-emerald-400/40",
       badgeText: "text-emerald-300",
       logo: (
-        <div className="flex items-center">
-          <span className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tighter text-[#1CE783] drop-shadow-[0_0_12px_rgba(28,231,131,0.5)]">
-            hulu
-          </span>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Hulu_Logo.svg"
+          alt="Hulu"
+          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
+          loading="lazy"
+        />
       ),
     },
     {
@@ -246,12 +216,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-yellow-500/20 border-yellow-400/40",
       badgeText: "text-yellow-300",
       logo: (
-        <div className="flex items-center gap-1">
-          <span className="text-2xl sm:text-3xl md:text-4xl font-black text-amber-400 tracking-wider font-sans">
-            viu
-          </span>
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Viu_logo.svg"
+          alt="Viu"
+          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
+          loading="lazy"
+        />
       ),
     },
 
@@ -269,11 +239,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-red-600 text-white font-bold",
       badgeText: "text-white",
       logo: (
-        <div className="bg-red-600 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded shadow-lg border border-red-500">
-          <span className="text-base sm:text-xl md:text-2xl font-black tracking-widest text-white uppercase font-sans">
-            MARVEL
-          </span>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Marvel_Logo.svg"
+          alt="Marvel Studios"
+          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
+          loading="lazy"
+        />
       ),
     },
     {
@@ -289,14 +260,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-blue-600/20 border-blue-400/40",
       badgeText: "text-blue-300",
       logo: (
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-600 text-white font-black text-base sm:text-lg flex items-center justify-center border border-blue-400">
-            DC
-          </div>
-          <span className="text-lg sm:text-xl md:text-2xl font-extrabold text-white tracking-wider">
-            UNIVERSE
-          </span>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/3/3d/DC_Comics_logo.svg"
+          alt="DC Universe"
+          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px] filter drop-shadow-[0_0_10px_rgba(37,99,235,0.5)]"
+          loading="lazy"
+        />
       ),
     },
 
@@ -314,12 +283,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-fuchsia-500/20 border-fuchsia-400/40",
       badgeText: "text-fuchsia-300",
       logo: (
-        <div className="flex items-center gap-1.5">
-          <span className="text-xl sm:text-2xl md:text-3xl font-black tracking-wider text-fuchsia-400 drop-shadow-[0_0_10px_rgba(217,70,239,0.5)]">
-            ANIME
-          </span>
-          <span className="text-base text-pink-400 font-bold">🌸</span>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/0/08/Crunchyroll_logo.svg"
+          alt="Anime Hub"
+          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
+          loading="lazy"
+        />
       ),
     },
     {
@@ -335,12 +304,12 @@ export default function PlatformCategories() {
       badgeBg: "bg-pink-500/20 border-pink-400/40",
       badgeText: "text-pink-300",
       logo: (
-        <div className="flex items-center gap-1.5">
-          <span className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-pink-300">
-            K-DRAMA
-          </span>
-          <span className="text-base text-rose-400 font-bold">🫰</span>
-        </div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/a/a4/JTBC_Logo.svg"
+          alt="K-Drama Hub"
+          className="h-7 sm:h-8 md:h-9 w-auto object-contain max-w-[130px]"
+          loading="lazy"
+        />
       ),
     },
     {
@@ -357,7 +326,7 @@ export default function PlatformCategories() {
       badgeText: "text-red-400",
       logo: (
         <div className="flex items-center gap-1.5">
-          <span className="text-xl sm:text-2xl md:text-3xl font-black tracking-widest text-red-600 font-serif">
+          <span className="text-xl sm:text-2xl md:text-3xl font-black tracking-widest text-red-600 font-serif drop-shadow-[0_0_10px_rgba(220,38,38,0.7)]">
             HORROR
           </span>
           <span className="text-base">🩸</span>
