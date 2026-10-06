@@ -64,12 +64,15 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
+     * Only run middleware on routes that actually require auth checks:
+     * - /watch/* (protected: must be logged in)
+     * - /login   (redirect if already logged in)
+     *
+     * All other routes (/, /movies, /tv, /category/*, etc.) are public
+     * and don't need a server round-trip to Supabase on every request.
+     * This was the #1 Vercel Fluid CPU consumer.
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/watch/:path*',
+    '/login',
   ],
 }
