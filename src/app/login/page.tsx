@@ -32,12 +32,7 @@ function GoogleIcon() {
   );
 }
 
-// ─── Auth Mode Types ──────────────────────────────────────────────────────────
-type AuthView =
-  | "select"       // landing — pick how to sign in/up
-  | "signup"       // manual email+password sign up
-  | "signin"       // manual email+password sign in
-  | "magic";       // magic link (send email)
+type AuthView = "signin" | "signup" | "magic";
 
 function LoginFormContent() {
   const searchParams = useSearchParams();
@@ -45,7 +40,7 @@ function LoginFormContent() {
   const urlError = searchParams.get("error");
 
   const [view, setView] = useState<AuthView>(
-    modeParam === "signup" ? "signup" : modeParam === "signin" ? "signin" : "select"
+    modeParam === "signup" ? "signup" : "signin"
   );
 
   const [email, setEmail] = useState("");
@@ -80,7 +75,6 @@ function LoginFormContent() {
       setError(error.message);
       setIsLoading(false);
     }
-    // If no error, browser will redirect — no need to setIsLoading(false)
   };
 
   // ── Magic Link ──────────────────────────────────────────────────────────────
@@ -182,14 +176,14 @@ function LoginFormContent() {
       </div>
 
       {/* Card */}
-      <div className="flex justify-center items-center mt-8 md:mt-16 px-4 pb-16">
+      <div className="flex justify-center items-center mt-6 md:mt-12 px-4 pb-16">
         <div className="bg-black/80 p-8 md:p-12 rounded-md w-full max-w-md flex flex-col gap-4">
 
-          {/* ── SELECT VIEW ── */}
-          {view === "select" && (
+          {/* ── SIGN UP VIEW (Fresh Account Creation with Google + Magic Link) ── */}
+          {view === "signup" && (
             <>
-              <h2 className="text-white text-3xl font-bold mb-2">Sign In</h2>
-              <p className="text-gray-400 text-sm mb-2">Choose how you want to continue</p>
+              <h2 className="text-white text-3xl font-bold mb-1">Sign Up</h2>
+              <p className="text-gray-400 text-sm mb-2">Create a new FiliFlix account</p>
 
               {error && (
                 <div className="bg-orange-500/90 p-3 rounded text-white text-sm flex justify-between items-start">
@@ -198,11 +192,107 @@ function LoginFormContent() {
                 </div>
               )}
 
-              {/* Google */}
+              {/* Continue with Google */}
               <button
                 onClick={handleGoogleSignIn}
                 disabled={isLoading}
-                className="flex items-center justify-center gap-3 w-full bg-white text-gray-900 py-3 rounded-md font-semibold hover:bg-gray-100 transition disabled:opacity-60"
+                className="flex items-center justify-center gap-3 w-full bg-white text-gray-900 py-3 rounded-md font-semibold hover:bg-gray-100 transition disabled:opacity-60 shadow-md"
+              >
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <GoogleIcon />
+                )}
+                Continue with Google
+              </button>
+
+              {/* Send Magic Link */}
+              <button
+                onClick={() => { setError(null); setView("magic"); }}
+                className="flex items-center justify-center gap-3 w-full bg-[#1a1a2e] border border-indigo-500/40 text-indigo-300 py-3 rounded-md font-semibold hover:bg-indigo-950/60 hover:border-indigo-400/60 transition"
+              >
+                <Sparkles size={18} className="text-indigo-400" />
+                Send Magic Link
+              </button>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3 my-1">
+                <div className="flex-1 h-px bg-gray-700" />
+                <span className="text-gray-500 text-xs uppercase tracking-wider">or email & password</span>
+                <div className="flex-1 h-px bg-gray-700" />
+              </div>
+
+              {/* Manual Email + Password Form */}
+              <form onSubmit={handleSignUp} className="flex flex-col gap-4">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  required
+                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500 pr-12"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="bg-netflix-red hover:bg-red-700 text-white py-3 rounded-md font-bold mt-2 transition flex justify-center items-center disabled:opacity-60"
+                >
+                  {isLoading ? (
+                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    "Sign Up"
+                  )}
+                </button>
+              </form>
+
+              <div className="text-gray-400 text-sm text-center mt-4">
+                Already have an account?{" "}
+                <span
+                  onClick={() => { setError(null); setView("signin"); }}
+                  className="text-red-500 hover:underline cursor-pointer font-medium"
+                >
+                  Sign in now.
+                </span>
+              </div>
+            </>
+          )}
+
+          {/* ── SIGN IN VIEW (Existing User Login) ── */}
+          {view === "signin" && (
+            <>
+              <h2 className="text-white text-3xl font-bold mb-1">Sign In</h2>
+              <p className="text-gray-400 text-sm mb-2">Welcome back to FiliFlix</p>
+
+              {error && (
+                <div className="bg-orange-500/90 p-3 rounded text-white text-sm flex justify-between items-start">
+                  <span>{error}</span>
+                  <button onClick={clearError} className="ml-2 shrink-0"><X size={14} /></button>
+                </div>
+              )}
+
+              {/* Continue with Google */}
+              <button
+                onClick={handleGoogleSignIn}
+                disabled={isLoading}
+                className="flex items-center justify-center gap-3 w-full bg-white text-gray-900 py-3 rounded-md font-semibold hover:bg-gray-100 transition disabled:opacity-60 shadow-md"
               >
                 {isLoading ? (
                   <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
@@ -215,34 +305,57 @@ function LoginFormContent() {
               {/* Divider */}
               <div className="flex items-center gap-3 my-1">
                 <div className="flex-1 h-px bg-gray-700" />
-                <span className="text-gray-500 text-xs uppercase tracking-wider">or</span>
+                <span className="text-gray-500 text-xs uppercase tracking-wider">or sign in with password</span>
                 <div className="flex-1 h-px bg-gray-700" />
               </div>
 
-              {/* Magic Link */}
-              <button
-                onClick={() => { setError(null); setView("magic"); }}
-                className="flex items-center justify-center gap-3 w-full bg-[#1a1a2e] border border-indigo-500/40 text-indigo-300 py-3 rounded-md font-semibold hover:bg-indigo-950/60 hover:border-indigo-400/60 transition"
-              >
-                <Sparkles size={18} className="text-indigo-400" />
-                Send Magic Link
-              </button>
+              <form onSubmit={handleSignIn} className="flex flex-col gap-4">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  required
+                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500 pr-12"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
 
-              {/* Divider */}
-              <div className="flex items-center gap-3 my-1">
-                <div className="flex-1 h-px bg-gray-700" />
-                <span className="text-gray-500 text-xs uppercase tracking-wider">or</span>
-                <div className="flex-1 h-px bg-gray-700" />
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="bg-netflix-red hover:bg-red-700 text-white py-3 rounded-md font-bold mt-2 transition flex justify-center items-center disabled:opacity-60"
+                >
+                  {isLoading ? (
+                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    "Sign In"
+                  )}
+                </button>
+              </form>
+
+              <div className="flex justify-between text-sm text-gray-400 mt-2">
+                <div className="flex items-center gap-1">
+                  <input type="checkbox" id="remember" className="w-4 h-4 bg-gray-500" />
+                  <label htmlFor="remember">Remember me</label>
+                </div>
+                <Link href="/help" className="hover:underline">Need help?</Link>
               </div>
-
-              {/* Email + Password Sign In */}
-              <button
-                onClick={() => { setError(null); setView("signin"); }}
-                className="flex items-center justify-center gap-3 w-full bg-[#333] text-white py-3 rounded-md font-semibold hover:bg-[#444] transition"
-              >
-                <Mail size={18} className="text-gray-400" />
-                Sign In with Email
-              </button>
 
               <div className="text-gray-400 text-sm text-center mt-4">
                 New to FiliFlix?{" "}
@@ -250,7 +363,7 @@ function LoginFormContent() {
                   onClick={() => { setError(null); setView("signup"); }}
                   className="text-red-500 hover:underline cursor-pointer font-medium"
                 >
-                  Create an account
+                  Sign up now.
                 </span>
               </div>
             </>
@@ -260,10 +373,10 @@ function LoginFormContent() {
           {view === "magic" && (
             <>
               <button
-                onClick={() => { setError(null); setView("select"); }}
+                onClick={() => { setError(null); setView("signup"); }}
                 className="flex items-center gap-1 text-gray-400 hover:text-white text-sm mb-2 transition w-fit"
               >
-                <ArrowLeft size={15} /> Back
+                <ArrowLeft size={15} /> Back to Sign Up
               </button>
               <h2 className="text-white text-3xl font-bold mb-1">Magic Link</h2>
               <p className="text-gray-400 text-sm mb-2">
@@ -302,156 +415,6 @@ function LoginFormContent() {
                   )}
                 </button>
               </form>
-            </>
-          )}
-
-          {/* ── SIGN UP VIEW ── */}
-          {view === "signup" && (
-            <>
-              <button
-                onClick={() => { setError(null); setView("select"); }}
-                className="flex items-center gap-1 text-gray-400 hover:text-white text-sm mb-2 transition w-fit"
-              >
-                <ArrowLeft size={15} /> Back
-              </button>
-              <h2 className="text-white text-3xl font-bold mb-1">Sign Up</h2>
-              <p className="text-gray-400 text-sm mb-2">Create your FiliFlix account</p>
-
-              {error && (
-                <div className="bg-orange-500/90 p-3 rounded text-white text-sm flex justify-between items-start">
-                  <span>{error}</span>
-                  <button onClick={clearError} className="ml-2 shrink-0"><X size={14} /></button>
-                </div>
-              )}
-
-              <form onSubmit={handleSignUp} className="flex flex-col gap-4">
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  required
-                  autoFocus
-                />
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500 pr-12"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="bg-netflix-red hover:bg-red-700 text-white py-3 rounded-md font-bold mt-2 transition flex justify-center items-center disabled:opacity-60"
-                >
-                  {isLoading ? (
-                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    "Sign Up"
-                  )}
-                </button>
-              </form>
-
-              <div className="text-gray-400 text-sm text-center mt-4">
-                Already have an account?{" "}
-                <span
-                  onClick={() => { setError(null); setView("signin"); }}
-                  className="text-red-500 hover:underline cursor-pointer font-medium"
-                >
-                  Sign in now.
-                </span>
-              </div>
-            </>
-          )}
-
-          {/* ── SIGN IN VIEW ── */}
-          {view === "signin" && (
-            <>
-              <button
-                onClick={() => { setError(null); setView("select"); }}
-                className="flex items-center gap-1 text-gray-400 hover:text-white text-sm mb-2 transition w-fit"
-              >
-                <ArrowLeft size={15} /> Back
-              </button>
-              <h2 className="text-white text-3xl font-bold mb-1">Sign In</h2>
-              <p className="text-gray-400 text-sm mb-2">Welcome back to FiliFlix</p>
-
-              {error && (
-                <div className="bg-orange-500/90 p-3 rounded text-white text-sm flex justify-between items-start">
-                  <span>{error}</span>
-                  <button onClick={clearError} className="ml-2 shrink-0"><X size={14} /></button>
-                </div>
-              )}
-
-              <form onSubmit={handleSignIn} className="flex flex-col gap-4">
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  required
-                  autoFocus
-                />
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500 pr-12"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="bg-netflix-red hover:bg-red-700 text-white py-3 rounded-md font-bold mt-2 transition flex justify-center items-center disabled:opacity-60"
-                >
-                  {isLoading ? (
-                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    "Sign In"
-                  )}
-                </button>
-              </form>
-
-              <div className="flex justify-between text-sm text-gray-400 mt-2">
-                <div className="flex items-center gap-1">
-                  <input type="checkbox" id="remember" className="w-4 h-4 bg-gray-500" />
-                  <label htmlFor="remember">Remember me</label>
-                </div>
-                <Link href="/help" className="hover:underline">Need help?</Link>
-              </div>
-
-              <div className="text-gray-400 text-sm text-center mt-4">
-                New to FiliFlix?{" "}
-                <span
-                  onClick={() => { setError(null); setView("signup"); }}
-                  className="text-red-500 hover:underline cursor-pointer font-medium"
-                >
-                  Sign up now.
-                </span>
-              </div>
             </>
           )}
         </div>
