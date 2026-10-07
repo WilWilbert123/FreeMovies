@@ -210,7 +210,7 @@ function LoginFormContent() {
                   onClick={() => { setError(null); setView("password"); }}
                   className="text-red-500 text-xs hover:text-red-400 transition underline underline-offset-2"
                 >
-                  Already have a account? Sign in manually
+                  Already have an account? Sign in manually
                 </button>
               </p>
             </>
