@@ -487,14 +487,9 @@ export default function Navbar() {
                     </div>
                   </>
                 ) : (
-                  <>
-                    <Link href="/login" className="px-4 py-2 hover:underline text-sm font-bold text-white transition text-center bg-netflix-red rounded mx-2 my-1">
-                      Sign In
-                    </Link>
-                    <Link href="/login?mode=signup" className="px-4 py-2 hover:underline text-sm text-gray-300 transition text-center">
-                      Sign Up
-                    </Link>
-                  </>
+                  <Link href="/login" className="px-4 py-2 hover:underline text-sm font-bold text-white transition text-center bg-netflix-red rounded mx-2 my-1">
+                    Sign In
+                  </Link>
                 )}
               </div>
             )}
@@ -735,7 +730,6 @@ export default function Navbar() {
             ) : (
               <div className="flex flex-col gap-4">
                 <Link href="/login" onClick={() => setShowMobileMenu(false)} className="text-lg font-bold text-white bg-netflix-red px-4 py-2 rounded-md text-center">Sign In</Link>
-                <Link href="/login?mode=signup" onClick={() => setShowMobileMenu(false)} className="text-lg text-gray-300 text-center">Sign Up</Link>
               </div>
             )}
           </div>
