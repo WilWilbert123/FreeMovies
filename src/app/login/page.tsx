@@ -2,9 +2,10 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Mail, X, Eye, EyeOff, Sparkles, ArrowLeft } from "lucide-react";
+import { Mail, X, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import ShinyText from "@/components/ShinyText/ShinyText";
 import ShinyImage from "@/components/ShinyText/ShinyImage";
 
@@ -32,36 +33,28 @@ function GoogleIcon() {
   );
 }
 
-type AuthView = "signin" | "signup" | "magic";
+type AuthView = "main" | "magic" | "password";
 
 function LoginFormContent() {
   const searchParams = useSearchParams();
-  const modeParam = searchParams.get("mode");
   const urlError = searchParams.get("error");
 
-  const [view, setView] = useState<AuthView>(
-    modeParam === "signup" ? "signup" : "signin"
-  );
-
+  const [view, setView] = useState<AuthView>("main");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(urlError || null);
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-
-  // Modal states
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showMagicModal, setShowMagicModal] = useState(false);
 
-  const router = useRouter();
   const supabase = createClient();
+  const router = useRouter();
 
   useEffect(() => {
-    if (modeParam === "signup") setView("signup");
-    else if (modeParam === "signin") setView("signin");
-  }, [modeParam]);
+    if (urlError) setError(urlError);
+  }, [urlError]);
 
-  // ── Google OAuth ────────────────────────────────────────────────────────────
+  // ── Google OAuth ─────────────────────────────────────────────────────────────
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     setError(null);
@@ -77,7 +70,7 @@ function LoginFormContent() {
     }
   };
 
-  // ── Magic Link ──────────────────────────────────────────────────────────────
+  // ── Magic Link ───────────────────────────────────────────────────────────────
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -96,28 +89,7 @@ function LoginFormContent() {
     setIsLoading(false);
   };
 
-  // ── Manual Sign Up ──────────────────────────────────────────────────────────
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: "https://filiflix.vercel.app/email-confirmed",
-      },
-    });
-    if (error) {
-      setError(error.message);
-    } else {
-      setShowConfirmModal(true);
-      setView("signin");
-    }
-    setIsLoading(false);
-  };
-
-  // ── Manual Sign In ──────────────────────────────────────────────────────────
+  // ── Password Sign In ─────────────────────────────────────────────────────────
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -179,21 +151,26 @@ function LoginFormContent() {
       <div className="flex justify-center items-center mt-6 md:mt-12 px-4 pb-16">
         <div className="bg-black/80 p-8 md:p-12 rounded-md w-full max-w-md flex flex-col gap-4">
 
-          {/* ── SIGN UP VIEW (Fresh Account Creation with Google + Magic Link) ── */}
-          {view === "signup" && (
+          {/* ── MAIN VIEW ─────────────────────────────────────────────────── */}
+          {view === "main" && (
             <>
-              <h2 className="text-white text-3xl font-bold mb-1">Sign Up</h2>
-              <p className="text-gray-400 text-sm mb-2">Create a new FiliFlix account</p>
+              <h2 className="text-white text-3xl font-bold mb-1">Sign In</h2>
+              <p className="text-gray-400 text-sm mb-2">
+                Welcome back to FiliFlix. No password needed.
+              </p>
 
               {error && (
                 <div className="bg-orange-500/90 p-3 rounded text-white text-sm flex justify-between items-start">
                   <span>{error}</span>
-                  <button onClick={clearError} className="ml-2 shrink-0"><X size={14} /></button>
+                  <button onClick={clearError} className="ml-2 shrink-0">
+                    <X size={14} />
+                  </button>
                 </div>
               )}
 
               {/* Continue with Google */}
               <button
+                id="btn-google-signin"
                 onClick={handleGoogleSignIn}
                 disabled={isLoading}
                 className="flex items-center justify-center gap-3 w-full bg-white text-gray-900 py-3 rounded-md font-semibold hover:bg-gray-100 transition disabled:opacity-60 shadow-md"
@@ -205,126 +182,134 @@ function LoginFormContent() {
                 )}
                 Continue with Google
               </button>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px bg-gray-700" />
+                <span className="text-gray-500 text-xs uppercase tracking-wider">or</span>
+                <div className="flex-1 h-px bg-gray-700" />
+              </div>
 
               {/* Send Magic Link */}
               <button
+                id="btn-magic-link"
                 onClick={() => { setError(null); setView("magic"); }}
-                className="flex items-center justify-center gap-3 w-full bg-[#1a1a2e] border border-indigo-500/40 text-indigo-300 py-3 rounded-md font-semibold hover:bg-indigo-950/60 hover:border-indigo-400/60 transition"
+                className="flex items-center justify-center gap-3 w-full border border-gray-600 text-gray-200 py-3 rounded-md font-semibold hover:border-gray-400 hover:text-white transition"
               >
-
+                <Mail size={18} />
                 Send Magic Link
               </button>
 
-              {/* Divider */}
-              <div className="flex items-center gap-3 my-1">
-                <div className="flex-1 h-px bg-gray-700" />
-                <span className="text-gray-500 text-xs uppercase tracking-wider">or email & password</span>
-                <div className="flex-1 h-px bg-gray-700" />
-              </div>
+              <p className="text-gray-400 text-xs text-center leading-relaxed mt-2">
+                New to FiliFlix? Enter your email via magic link — your account will be created automatically.
+              </p>
 
-              {/* Manual Email + Password Form */}
-              <form onSubmit={handleSignUp} className="flex flex-col gap-4">
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  required
-                />
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500 pr-12"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-
+              {/* Password fallback */}
+              <p className="text-center mt-1">
                 <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="bg-netflix-red hover:bg-red-700 text-white py-3 rounded-md font-bold mt-2 transition flex justify-center items-center disabled:opacity-60"
+                  onClick={() => { setError(null); setView("password"); }}
+                  className="text-red-500 text-xs hover:text-red-400 transition underline underline-offset-2"
                 >
-                  {isLoading ? (
-                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    "Sign Up"
-                  )}
+                  Already have a account? Sign in manually
                 </button>
-              </form>
-
-              <div className="text-gray-400 text-sm text-center mt-4">
-                Already have an account?{" "}
-                <span
-                  onClick={() => { setError(null); setView("signin"); }}
-                  className="text-red-500 hover:underline cursor-pointer font-medium"
-                >
-                  Sign in now.
-                </span>
-              </div>
+              </p>
             </>
           )}
 
-          {/* ── SIGN IN VIEW (Existing User Login) ── */}
-          {view === "signin" && (
+          {/* ── MAGIC LINK VIEW ───────────────────────────────────────────── */}
+          {view === "magic" && (
             <>
-              <h2 className="text-white text-3xl font-bold mb-1">Sign In</h2>
-              <p className="text-gray-400 text-sm mb-2">Welcome back to FiliFlix</p>
+              <button
+                onClick={() => { setError(null); setView("main"); }}
+                className="flex items-center gap-1 text-gray-400 hover:text-white text-sm mb-2 transition w-fit"
+              >
+                <ArrowLeft size={15} /> Back
+              </button>
+
+              <h2 className="text-white text-3xl font-bold mb-1">Magic Link</h2>
+              <p className="text-gray-400 text-sm mb-2">
+                Enter your email and we will send you a sign-in link. No password required.
+              </p>
 
               {error && (
                 <div className="bg-orange-500/90 p-3 rounded text-white text-sm flex justify-between items-start">
                   <span>{error}</span>
-                  <button onClick={clearError} className="ml-2 shrink-0"><X size={14} /></button>
+                  <button onClick={clearError} className="ml-2 shrink-0">
+                    <X size={14} />
+                  </button>
                 </div>
               )}
 
-              {/* Continue with Google */}
+              <form onSubmit={handleMagicLink} className="flex flex-col gap-4">
+                <input
+                  id="input-magic-email"
+                  type="email"
+                  placeholder="Enter your email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-white/30"
+                  required
+                  autoFocus
+                />
+                <button
+                  id="btn-send-magic-link"
+                  type="submit"
+                  disabled={isLoading}
+                  className="bg-netflix-red hover:bg-red-700 text-white py-3 rounded-md font-bold transition flex justify-center items-center gap-2 disabled:opacity-60"
+                >
+                  {isLoading ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    "Send Link"
+                  )}
+                </button>
+              </form>
+            </>
+          )}
+
+          {/* ── PASSWORD SIGN IN VIEW ─────────────────────────────────────── */}
+          {view === "password" && (
+            <>
               <button
-                onClick={handleGoogleSignIn}
-                disabled={isLoading}
-                className="flex items-center justify-center gap-3 w-full bg-white text-gray-900 py-3 rounded-md font-semibold hover:bg-gray-100 transition disabled:opacity-60 shadow-md"
+                onClick={() => { setError(null); setView("main"); }}
+                className="flex items-center gap-1 text-gray-400 hover:text-white text-sm mb-2 transition w-fit"
               >
-                {isLoading ? (
-                  <div className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <GoogleIcon />
-                )}
-                Continue with Google
+                <ArrowLeft size={15} /> Back
               </button>
 
-              {/* Divider */}
-              <div className="flex items-center gap-3 my-1">
-                <div className="flex-1 h-px bg-gray-700" />
-                <span className="text-gray-500 text-xs uppercase tracking-wider">or sign in with password</span>
-                <div className="flex-1 h-px bg-gray-700" />
-              </div>
+              <h2 className="text-white text-3xl font-bold mb-1">Sign In</h2>
+              <p className="text-gray-400 text-sm mb-2">
+                Sign in using your email and password.
+              </p>
+
+              {error && (
+                <div className="bg-orange-500/90 p-3 rounded text-white text-sm flex justify-between items-start">
+                  <span>{error}</span>
+                  <button onClick={clearError} className="ml-2 shrink-0">
+                    <X size={14} />
+                  </button>
+                </div>
+              )}
 
               <form onSubmit={handleSignIn} className="flex flex-col gap-4">
                 <input
+                  id="input-password-email"
                   type="email"
-                  placeholder="Email"
+                  placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-white/30"
                   required
+                  autoFocus
                 />
                 <div className="relative">
                   <input
+                    id="input-password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-gray-500 pr-12"
+                    className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-white/30 pr-12"
                     required
                   />
                   <button
@@ -337,140 +322,94 @@ function LoginFormContent() {
                 </div>
 
                 <button
+                  id="btn-password-signin"
                   type="submit"
                   disabled={isLoading}
-                  className="bg-netflix-red hover:bg-red-700 text-white py-3 rounded-md font-bold mt-2 transition flex justify-center items-center disabled:opacity-60"
+                  className="bg-netflix-red hover:bg-red-700 text-white py-3 rounded-md font-bold transition flex justify-center items-center disabled:opacity-60"
                 >
                   {isLoading ? (
-                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   ) : (
                     "Sign In"
                   )}
                 </button>
               </form>
 
-              <div className="flex justify-between text-sm text-gray-400 mt-2">
-                <div className="flex items-center gap-1">
-                  <input type="checkbox" id="remember" className="w-4 h-4 bg-gray-500" />
-                  <label htmlFor="remember">Remember me</label>
-                </div>
-                <Link href="/help" className="hover:underline">Need help?</Link>
-              </div>
-
-              <div className="text-gray-400 text-sm text-center mt-4">
-                New to FiliFlix?{" "}
-                <span
-                  onClick={() => { setError(null); setView("signup"); }}
-                  className="text-red-500 hover:underline cursor-pointer font-medium"
-                >
-                  Sign up now.
-                </span>
-              </div>
-            </>
-          )}
-
-          {/* ── MAGIC LINK VIEW ── */}
-          {view === "magic" && (
-            <>
-              <button
-                onClick={() => { setError(null); setView("signup"); }}
-                className="flex items-center gap-1 text-gray-400 hover:text-white text-sm mb-2 transition w-fit"
-              >
-                <ArrowLeft size={15} /> Back to Sign Up
-              </button>
-              <h2 className="text-white text-3xl font-bold mb-1">Magic Link</h2>
-              <p className="text-gray-400 text-sm mb-2">
-                Enter your email and we'll send a link. Click it to sign in instantly — no password needed.
-              </p>
-
-              {error && (
-                <div className="bg-orange-500/90 p-3 rounded text-white text-sm flex justify-between items-start">
-                  <span>{error}</span>
-                  <button onClick={clearError} className="ml-2 shrink-0"><X size={14} /></button>
-                </div>
-              )}
-
-              <form onSubmit={handleMagicLink} className="flex flex-col gap-4">
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-[#333] text-white px-4 py-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  required
-                  autoFocus
-                />
+              <p className="text-gray-500 text-xs text-center mt-2">
+                Forgot your password?{" "}
                 <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-md font-bold transition flex justify-center items-center gap-2 disabled:opacity-60"
+                  onClick={() => { setError(null); setView("magic"); }}
+                  className="text-gray-300 hover:text-white underline underline-offset-2 transition"
                 >
-                  {isLoading ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <Sparkles size={17} />
-                      Send Magic Link
-                    </>
-                  )}
+                  Use a magic link instead
                 </button>
-              </form>
+              </p>
             </>
           )}
         </div>
       </div>
 
-      {/* ── Email Confirmation Modal (after manual sign-up) ── */}
-      {showConfirmModal && (
-        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-[#141414] border border-gray-800 rounded-xl max-w-sm md:max-w-md w-full p-6 md:p-8 relative flex flex-col items-center text-center shadow-2xl">
-            <button
-              onClick={() => setShowConfirmModal(false)}
-              className="absolute top-3 right-3 md:top-4 md:right-4 text-gray-400 hover:text-white transition bg-gray-800/50 hover:bg-gray-700 p-1.5 md:p-2 rounded-full"
-            >
-              <X className="w-4 h-4 md:w-5 md:h-5" />
-            </button>
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-800 rounded-full flex items-center justify-center mb-4 md:mb-6 ring-4 ring-gray-800/50">
-              <Mail className="w-8 h-8 md:w-10 md:h-10 text-netflix-red" />
-            </div>
-            <h2 className="text-xl md:text-2xl font-bold text-white mb-2 md:mb-3">Check your email</h2>
-            <p className="text-sm md:text-base text-gray-400 mb-6 md:mb-8 leading-relaxed">
-              We've sent a confirmation link to{" "}
-              <span className="text-white font-medium">{email}</span>.{" "}
-              Please verify your email address to complete your registration!
-            </p>
-            <button
-              onClick={() => setShowConfirmModal(false)}
-              className="w-full bg-white text-black font-bold py-2.5 md:py-3.5 rounded-md hover:bg-gray-200 transition text-base md:text-lg"
-            >
-              Back to Login
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ── Magic Link Sent Modal ── */}
+      {/* ── Magic Link Sent Modal ──────────────────────────────────────────────── */}
       {showMagicModal && (
-        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-[#141414] border border-gray-800 rounded-xl max-w-sm md:max-w-md w-full p-6 md:p-8 relative flex flex-col items-center text-center shadow-2xl">
+        <div className="fixed inset-0 bg-black/85 z-[100] flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-[#141414] border border-gray-800 rounded-xl max-w-sm md:max-w-md w-full p-6 md:p-8 relative flex flex-col shadow-2xl">
+            {/* Close */}
             <button
               onClick={() => setShowMagicModal(false)}
               className="absolute top-3 right-3 md:top-4 md:right-4 text-gray-400 hover:text-white transition bg-gray-800/50 hover:bg-gray-700 p-1.5 md:p-2 rounded-full"
             >
               <X className="w-4 h-4 md:w-5 md:h-5" />
             </button>
-            <div className="w-16 h-16 md:w-20 md:h-20 bg-indigo-900/50 rounded-full flex items-center justify-center mb-4 md:mb-6 ring-4 ring-indigo-800/30">
-              <Sparkles className="w-8 h-8 md:w-10 md:h-10 text-indigo-400" />
+
+            {/* Icon */}
+            <div className="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mb-5 ring-2 ring-gray-700">
+              <Mail className="w-7 h-7 text-white" />
             </div>
-            <h2 className="text-xl md:text-2xl font-bold text-white mb-2 md:mb-3">Magic link sent! ✨</h2>
-            <p className="text-sm md:text-base text-gray-400 mb-6 md:mb-8 leading-relaxed">
+
+            {/* Title */}
+            <h2 className="text-xl md:text-2xl font-bold text-white mb-1">
+              Check your inbox
+            </h2>
+            <p className="text-sm text-gray-400 mb-6 leading-relaxed">
               We sent a sign-in link to{" "}
-              <span className="text-white font-medium">{email}</span>.{" "}
-              Click the link in your email to instantly sign in — no password needed.
+              <span className="text-white font-medium">{email}</span>.
+              Follow the steps below if you don't see it.
             </p>
+
+            {/* Steps */}
+            <div className="flex flex-col gap-3 mb-6">
+              {[
+                { step: "1", text: "Open your email inbox and look for an email from FiliFlix." },
+                { step: "2", text: "Not there? Check your Spam or Junk folder." },
+                { step: "3", text: "If it's in spam, mark it as Not Spam so future emails arrive normally." },
+                { step: "4", text: "Click the Sign In button inside the email to access your account." },
+              ].map(({ step, text }) => (
+                <div key={step} className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-xs font-bold text-gray-200">{step}</span>
+                  </div>
+                  <p className="text-sm text-gray-300 leading-relaxed">{text}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Resend hint */}
+            <p className="text-xs text-gray-500 mb-4 text-center">
+              Link not working?{" "}
+              <button
+                onClick={() => {
+                  setShowMagicModal(false);
+                  setView("magic");
+                }}
+                className="text-gray-300 hover:text-white underline underline-offset-2 transition"
+              >
+                Send a new one
+              </button>
+            </p>
+
             <button
               onClick={() => setShowMagicModal(false)}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 md:py-3.5 rounded-md transition text-base md:text-lg"
+              className="w-full bg-white text-black font-bold py-3 rounded-md hover:bg-gray-200 transition text-sm md:text-base"
             >
               Got it
             </button>
